@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permdesc_power_off_alarm">den Wecker stellen und zurücksetzen, der das Gerät aus dem ausgeschalteten Zustand aufweckt</string>
+</resources>

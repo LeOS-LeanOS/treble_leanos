@@ -1,0 +1,90 @@
+From 554cca358ebd6d1450c5d529c4d9cff21d629745 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Sat, 22 Jun 2024 13:21:22 +0200
+Subject: [PATCH] captivePortal
+
+Change-Id: I6d6eefc9b6fa1c4009af1cbe016caa0644aaddf8
+---
+ res/values-mcc460/config.xml                             | 4 ++--
+ res/values/config.xml                                    | 8 ++++----
+ src/com/android/networkstack/util/NetworkStackUtils.java | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/res/values-mcc460/config.xml b/res/values-mcc460/config.xml
+index 3c4b493..fe8f9db 100644
+--- a/res/values-mcc460/config.xml
++++ b/res/values-mcc460/config.xml
+@@ -11,14 +11,14 @@
+          config_captive_portal_http_url and *NOT* by changing or overlaying
+          this resource. It will break if the enforcement of overlayable starts.
+          -->
+-    <string name="default_captive_portal_http_url" translatable="false">http://connectivitycheck.gstatic.cn/generate_204</string>
++    <string name="default_captive_portal_http_url" translatable="false">http://captiveportal.kuketz.de/generate_204</string>
+     <!-- default_captive_portal_https_url is not configured as overlayable so
+          OEMs that wish to change captive_portal_https_url configuration must
+          do so via configuring runtime resource overlay to
+          config_captive_portal_https_url and *NOT* by changing or overlaying
+          this resource. It will break if the enforcement of overlayable starts.
+          -->
+-    <string name="default_captive_portal_https_url" translatable="false">https://connectivitycheck.gstatic.cn/generate_204</string>
++    <string name="default_captive_portal_https_url" translatable="false">https://captiveportal.kuketz.de/generate_204</string>
+     <!-- default_captive_portal_fallback_urls is not configured as overlayable
+          so OEMs that wish to change captive_portal_fallback_urls configuration
+          must do so via configuring runtime resource overlay to
+diff --git a/res/values/config.xml b/res/values/config.xml
+index aed375c..f553150 100644
+--- a/res/values/config.xml
++++ b/res/values/config.xml
+@@ -13,7 +13,7 @@
+          config_captive_portal_http_url and *NOT* by changing or overlaying
+          this resource. It will break if the enforcement of overlayable starts.
+          -->
+-    <string name="default_captive_portal_http_url" translatable="false">http://connectivitycheck.gstatic.com/generate_204</string>
++    <string name="default_captive_portal_http_url" translatable="false">http://captiveportal.kuketz.de/generate_204</string>
+     <!-- HTTPS URL for network validation, to use for confirming internet connectivity. -->
+     <!-- default_captive_portal_https_url is not configured as overlayable so
+          OEMs that wish to change captive_portal_https_url configuration must
+@@ -21,7 +21,7 @@
+          config_captive_portal_https_url and *NOT* by changing or overlaying
+          this resource. It will break if the enforcement of overlayable starts.
+          -->
+-    <string name="default_captive_portal_https_url" translatable="false">https://www.google.com/generate_204</string>
++    <string name="default_captive_portal_https_url" translatable="false">https://captiveportal.kuketz.de/generate_204</string>
+ 
+     <!-- List of fallback URLs to use for detecting captive portals. -->
+     <!-- default_captive_portal_fallback_urls is not configured as overlayable
+@@ -31,8 +31,8 @@
+          this resource. It will break if the enforcement of overlayable starts.
+          -->
+     <string-array name="default_captive_portal_fallback_urls" translatable="false">
+-        <item>http://www.google.com/gen_204</item>
+-        <item>http://play.googleapis.com/generate_204</item>
++        <item>http://captiveportal.kuketz.de/generate_2044</item>
++        <item>https://captiveportal.kuketz.de/generate_204</item>
+     </string-array>
+     <!-- Configuration hooks for the above settings.
+          Empty by default but may be overridden by RROs. -->
+diff --git a/src/com/android/networkstack/util/NetworkStackUtils.java b/src/com/android/networkstack/util/NetworkStackUtils.java
+index 0cb31fe..b3d4839 100755
+--- a/src/com/android/networkstack/util/NetworkStackUtils.java
++++ b/src/com/android/networkstack/util/NetworkStackUtils.java
+@@ -141,14 +141,14 @@ public class NetworkStackUtils {
+      * The default list of HTTP URLs to use for detecting captive portals.
+      */
+     public static final String[] DEFAULT_CAPTIVE_PORTAL_HTTP_URLS =
+-            new String [] {"http://connectivitycheck.gstatic.com/generate_204"};
++            new String [] {"https://captiveportal.kuketz.de/generate_204"};
+ 
+     /**
+      * The default list of HTTPS URLs for network validation, to use for confirming internet
+      * connectivity.
+      */
+     public static final String[] DEFAULT_CAPTIVE_PORTAL_HTTPS_URLS =
+-            new String [] {"https://www.google.com/generate_204"};
++            new String [] {"https://captiveportal.kuketz.de/generate_204"};
+ 
+     /**
+      * Minimum module version at which to enable the DHCP Rapid Commit option.
+-- 
+2.34.1
+

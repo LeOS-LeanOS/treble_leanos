@@ -1,0 +1,35 @@
+From f1266842b748e6da66c0d881e5040c0038c5d3bf Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Fri, 18 Apr 2025 09:09:36 +0200
+Subject: [PATCH] 1003-A15-r29-rw-system
+
+---
+ rw-system.sh | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/rw-system.sh b/rw-system.sh
+index 6903559..af20050 100644
+--- a/rw-system.sh
++++ b/rw-system.sh
+@@ -855,8 +855,8 @@ copyprop() {
+     resetprop_phh ro.boot.veritymode enforcing
+     resetprop_phh ro.boot.warranty_bit 0
+     resetprop_phh ro.warranty_bit 0
+-    resetprop_phh ro.debuggable 0
+-    resetprop_phh ro.secure 1
++    resetprop_phh ro.debuggable 1
++    resetprop_phh ro.secure 0
+     resetprop_phh ro.build.type user
+     resetprop_phh ro.product.build.type user
+     resetprop_phh ro.system.build.type user
+@@ -864,7 +864,6 @@ copyprop() {
+     resetprop_phh ro.vendor.build.type user
+     resetprop_phh --delete ro.build.selinux
+ 
+-    resetprop_phh ro.adb.secure 1
+ 
+ for abi in "" 64;do
+     f=/vendor/lib$abi/libstagefright_foundation.so
+-- 
+2.34.1
+

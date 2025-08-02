@@ -1,0 +1,85 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
+}
+def versionMajor = 0
+def versionMinor = 0
+def versionPatch = 1
+def releasePatch = "alpha11"
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 32
+        versionCode versionMajor * 1000000 + versionMinor * 1000 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}-${releasePatch}"
+    }
+    libraryVariants.all{ variant ->
+            variant.outputs.each{ output->
+                    output.outputFileName = "elib-${defaultConfig.versionName}.aar"
+            }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation 'com.google.android.material:material:1.4.0'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'foundation.e'
+            artifactId 'elib'
+            version android.defaultConfig.versionName
+            artifact "$buildDir/outputs/aar/elib-${android.defaultConfig.versionName}.aar"
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each { dependency ->
+                    if (dependency.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', dependency.group)
+                        dependencyNode.appendNode('artifactId', dependency.name)
+                        dependencyNode.appendNode('version', dependency.version)
+                    }
+                }
+                // Licenses
+                def license = asNode().appendNode('licenses').appendNode('license')
+                license.appendNode('name', 'GNU GENERAL PUBLIC LICENSE')
+                license.appendNode('url', 'https://gitlab.e.foundation/e/os/elib/-/raw/main/LICENSE')
+            }
+
+            repositories {
+                maven {
+                    url "https://gitlab.e.foundation/api/v4/projects/1272/packages/maven"
+                    name "GitLab"
+                    credentials(HttpHeaderCredentials) {
+                        name = 'Job-Token'
+                        value = System.getenv("CI_JOB_TOKEN")
+                    }
+                    authentication {
+                        header(HttpHeaderAuthentication)
+                    }
+                }
+            }
+        }
+    }
+}
+

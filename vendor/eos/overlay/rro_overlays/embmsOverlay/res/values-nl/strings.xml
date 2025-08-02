@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permlab_useEmbms">Inhoud van service provider ophalen</string>
+    <string name="permdesc_useEmbms">Maak inhoud, uitgezonden door uw service provider, beschikbaar voor applicaties op uw toestel</string>
+</resources>

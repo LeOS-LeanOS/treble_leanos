@@ -1,0 +1,26 @@
+From 35d878e2e8ecff313ebc69e0e5ee816d1f045547 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Sun, 20 Aug 2023 10:01:43 +0200
+Subject: [PATCH] packages_apps_WallpaperPicker2
+
+Change-Id: I335a8ad66f42e315e256a80b035e08d829f42735
+---
+ AndroidManifest.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 62708365..2b8af1a2 100755
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -100,7 +100,7 @@
+             <category android:name="android.intent.category.DEFAULT" />
+             <category android:name="android.intent.category.BROWSABLE" />
+             <data
+-                android:host="g.co"
++                android:host="leos-gsi.de"
+                 android:pathPrefix="/wallpaper"
+                 android:scheme="https" />
+         </intent-filter>
+-- 
+2.34.1
+

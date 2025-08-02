@@ -1,0 +1,25 @@
+From 1de54eabcc668ba08c7115b6d4ed51ebf7eaaa29 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Wed, 11 Jun 2025 19:50:05 +0200
+Subject: [PATCH] androidBP
+
+Change-Id: Ic651feb2b089fb5e73a9275177fc95077502642d
+---
+ ui/build/androidmk_denylist.go | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/ui/build/androidmk_denylist.go b/ui/build/androidmk_denylist.go
+index 82666548d..5eb5f003e 100644
+--- a/ui/build/androidmk_denylist.go
++++ b/ui/build/androidmk_denylist.go
+@@ -34,7 +34,6 @@ var androidmk_denylist []string = []string{
+ 	"device/google/",
+ 	"device/google_car/",
+ 	"device/sample/",
+-	"external/",
+ 	"frameworks/",
+ 	"hardware/google/",
+ 	"hardware/interfaces/",
+-- 
+2.34.1
+

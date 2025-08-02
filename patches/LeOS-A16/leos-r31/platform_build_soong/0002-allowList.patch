@@ -1,0 +1,43 @@
+From 966baca02a42f944a817570d981f391ce82841fe Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Thu, 12 Jun 2025 20:13:17 +0200
+Subject: [PATCH] allowList
+
+Change-Id: I0c37c1bd4d67020c3f04f463802b91d87c34708d
+---
+ ui/build/androidmk_denylist.go | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/ui/build/androidmk_denylist.go b/ui/build/androidmk_denylist.go
+index 82666548d..0b9aa145a 100644
+--- a/ui/build/androidmk_denylist.go
++++ b/ui/build/androidmk_denylist.go
+@@ -34,7 +34,6 @@ var androidmk_denylist []string = []string{
+ 	"device/google/",
+ 	"device/google_car/",
+ 	"device/sample/",
+-	"external/",
+ 	"frameworks/",
+ 	"hardware/google/",
+ 	"hardware/interfaces/",
+@@ -63,6 +62,17 @@ var androidmk_allowlist []string = []string{
+ 	"art/Android.mk",
+ 	"bootable/deprecated-ota/updater/Android.mk",
+ 	"tools/vendor/google_prebuilts/arc/Android.mk",
++	"vendor/LeOS/prebuiltapks/GsfProxy/Android.mk",
++	"vendor/LeOS/prebuiltapks/AdvancedPrivacy/Android.mk",
++	"vendor/LeOS/prebuiltapks/FakeStore/Android.mk",
++                  "vendor/LeOS/prebuiltapks/GmsCore/Android.mk",
++	"vendor/LeOS/prebuiltapks/GsfProxy/Android.mk",
++	"vendor/LeOS/prebuiltapks/Icons/Android.mk",
++	"vendor/LeOS/prebuiltapks/LatinIME/Android.mk",
++	"vendor/LeOS/prebuiltapks/Launcher/Android.mk",
++	"vendor/LeOS/prebuiltapks/LeOS-Droid/Android.mk",
++	"vendor/LeOS/prebuiltapks/Sherpa/Android.mk",
++	"vendor/LeOS/prebuiltapks/Wallpaper/Android.mk",
+ }
+ 
+ func getAllLines(ctx Context, filename string) []string {
+-- 
+2.34.1
+

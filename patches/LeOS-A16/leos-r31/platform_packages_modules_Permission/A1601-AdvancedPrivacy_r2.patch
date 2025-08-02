@@ -1,0 +1,25 @@
+From 1b7ef198a642366147806eca6184028e649c3594 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Fri, 15 Dec 2023 18:17:04 +0100
+Subject: [PATCH] AdvancedPrivacy
+
+Change-Id: I0eaa178ef7621670ce7f193fd28c82bcdc47ef2f
+---
+ .../com/android/permissioncontroller/permission/utils/Utils.java | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/PermissionController/src/com/android/permissioncontroller/permission/utils/Utils.java b/PermissionController/src/com/android/permissioncontroller/permission/utils/Utils.java
+index d4354bd72..4b90f9327 100644
+--- a/PermissionController/src/com/android/permissioncontroller/permission/utils/Utils.java
++++ b/PermissionController/src/com/android/permissioncontroller/permission/utils/Utils.java
+@@ -21,6 +21,7 @@ import static android.Manifest.permission_group.CALENDAR;
+ import static android.Manifest.permission_group.CALL_LOG;
+ import static android.Manifest.permission_group.CAMERA;
+ import static android.Manifest.permission_group.CONTACTS;
++import static android.Manifest.permission_group.FAKE_PACKAGE;
+ import static android.Manifest.permission_group.LOCATION;
+ import static android.Manifest.permission_group.MICROPHONE;
+ import static android.Manifest.permission_group.NEARBY_DEVICES;
+-- 
+2.34.1
+

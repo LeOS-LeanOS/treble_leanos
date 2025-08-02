@@ -1,0 +1,25 @@
+From 4923f297c9ba72ab23438aad1ccc7cdd7a53525c Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 9 Sep 2024 18:25:30 +0200
+Subject: [PATCH] android.bp
+
+Change-Id: Ic57485f6ef05797f1ea533fa5566052155524261
+---
+ apps/CtsVerifier/Android.bp | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/apps/CtsVerifier/Android.bp b/apps/CtsVerifier/Android.bp
+index 60664210..9bb7a909 100644
+--- a/apps/CtsVerifier/Android.bp
++++ b/apps/CtsVerifier/Android.bp
+@@ -193,7 +193,6 @@ filegroup {
+         ":CtsVpnFirewallAppApi23",
+         ":CtsVpnFirewallAppApi24",
+         ":CtsVpnFirewallAppNotAlwaysOn",
+-        ":jetpack-camera-app",
+     ],
+ }
+ 
+-- 
+2.34.1
+

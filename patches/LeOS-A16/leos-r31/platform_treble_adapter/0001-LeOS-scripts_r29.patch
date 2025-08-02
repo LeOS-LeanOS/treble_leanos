@@ -1,0 +1,283 @@
+From 501804686794c8de29493159edb1c34df2145927 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Wed, 13 Dec 2023 10:33:20 +0100
+Subject: [PATCH] LeOS-scripts
+
+---
+ lite-adapterN.sh    | 82 ++++++++++++++++++++++++++++++++++++++++++
+ lite-adapterNa64.sh | 88 +++++++++++++++++++++++++++++++++++++++++++++
+ lite-adapterSa64.sh | 78 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 248 insertions(+)
+ create mode 100644 lite-adapterN.sh
+ create mode 100644 lite-adapterNa64.sh
+ create mode 100644 lite-adapterSa64.sh
+
+diff --git a/lite-adapterN.sh b/lite-adapterN.sh
+new file mode 100644
+index 0000000..d0d7136
+--- /dev/null
++++ b/lite-adapterN.sh
+@@ -0,0 +1,82 @@
++#!/bin/bash
++
++#Usage:
++#bash lite-adapter.sh <32|64> [/path/to/system/image]
++
++#cleanups
++umount d
++
++set -ex
++
++origin="$(readlink -f -- "$0")"
++origin="$(dirname "$origin")"
++
++[ ! -d vendor_vndk ] && git clone https://github.com/phhusson/vendor_vndk -b android-10.0
++
++targetArch=64
++[ "$1" == 32 ] && targetArch=32
++
++[ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/build2/AOSP-11.0/
++if [ "$targetArch" == 32 ];then
++    srcFile="$ANDROID_BUILD_TOP/out/target/product/phhgsi_a64_ab/system.img"
++else
++    srcFile="$ANDROID_BUILD_TOP/out/target/product/phhgsi_arm64_ab/system.img"
++fi
++if [ -f "$2" ];then
++    srcFile="$2"
++fi
++
++if [ ! -f "$srcFile" ];then
++	echo "Usage: sudo bash lite-adapter.sh <32|64> [/path/to/system.img]"
++	exit 1
++fi
++
++"$origin"/simg2img "$srcFile" s.img || cp "$srcFile" s.img
++
++rm -Rf tmp
++mkdir -p d tmp
++e2fsck -y -f s.img
++resize2fs s.img 5000M
++e2fsck -E unshare_blocks -y -f s.img
++mount -o loop,rw s.img d
++(
++cd d
++find -name \*.capex -or -name \*.apex -type f -delete
++for vndk in 28 29;do
++    for arch in 32 64;do
++        d="$origin/vendor_vndk/vndk-${vndk}-arm${arch}"
++        [ ! -d "$d" ] && continue
++        p=lib
++        [ "$arch" = 64 ] && p=lib64
++        [ ! -d system/system_ext/apex/com.android.vndk.v${vndk}/${p}/ ] && continue
++        for lib in $(cd "$d"; echo *);do
++            cp "$origin/vendor_vndk/vndk-${vndk}-arm${arch}/$lib" system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
++            xattr -w security.selinux u:object_r:system_lib_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
++            echo $lib >> system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++        done
++        sort -u system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt > v
++        mv -f v system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++        xattr -w security.selinux u:object_r:system_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++
++        grep -v -e libgui.so -e libft2.so system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt > v
++        mv -f v system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt
++        xattr -w security.selinux u:object_r:system_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt
++    done
++done
++mkdir -p firmware/radio
++xattr -w security.selinux u:object_r:firmware_file:s0 firmware
++xattr -w security.selinux u:object_r:firmware_file:s0 firmware/radio
++)
++sleep 1
++
++sudo touch d/system/phh/secure
++rm d/system/xbin/su
++rm d/system/etc/init/su.rc
++rm d/system/bin/phh-securize.sh
++rm -Rf d/system/{app,priv-app}/me.phh.superuser/
++sleep 1
++
++umount d
++
++e2fsck -f -y s.img || true
++resize2fs -M s.img
+diff --git a/lite-adapterNa64.sh b/lite-adapterNa64.sh
+new file mode 100644
+index 0000000..e32cf99
+--- /dev/null
++++ b/lite-adapterNa64.sh
+@@ -0,0 +1,88 @@
++#!/bin/bash
++#Usage:
++#bash lite-adapter.sh <32|64> [/path/to/system/image]
++
++#cleanups
++umount d
++
++set -ex
++
++origin="$(readlink -f -- "$0")"
++origin="$(dirname "$origin")"
++
++[ ! -d vendor_vndk ] && git clone https://github.com/phhusson/vendor_vndk -b android-10.0
++
++targetArch=64
++[ "$1" == 32 ] && targetArch=32
++
++[ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/home/ich/src/LeOS19.1/
++if [ "$targetArch" == 32 ];then
++    srcFile="$ANDROID_BUILD_TOP/out/target/product/tdgsi_a64_ab/system.img"
++else
++    srcFile="$ANDROID_BUILD_TOP/out/target/product/tdgsi_arm64_ab/system.img"
++fi
++if [ -f "$2" ];then
++    srcFile="$2"
++fi
++
++if [ ! -f "$srcFile" ];then
++	echo "Usage: sudo bash lite-adapter.sh <32|64> [/path/to/system.img]"
++	exit 1
++fi
++
++simg2img "$srcFile" s.img || cp "$srcFile" s.img
++
++rm -Rf tmp
++mkdir -p d tmp
++e2fsck -y -f s.img
++resize2fs s.img 3500M
++e2fsck -E unshare_blocks -y -f s.img
++mount -o loop,rw s.img d
++(
++cd d
++find -name \*.capex -or -name \*.apex -type f -delete
++for vndk in 28 29;do
++    for arch in 32 64;do
++        d="$origin/vendor_vndk/vndk-${vndk}-arm${arch}"
++        [ ! -d "$d" ] && continue
++        p=lib
++        [ "$arch" = 64 ] && p=lib64
++        [ ! -d system/system_ext/apex/com.android.vndk.v${vndk}/${p}/ ] && continue
++        for lib in $(cd "$d"; echo *);do
++            cp "$origin/vendor_vndk/vndk-${vndk}-arm${arch}/$lib" system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
++            xattr -w security.selinux u:object_r:system_lib_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
++            echo $lib >> system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++        done
++        sort -u system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt > v
++        mv -f v system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++        xattr -w security.selinux u:object_r:system_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++
++        grep -v -e libgui.so -e libft2.so system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt > v
++        mv -f v system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt
++        xattr -w security.selinux u:object_r:system_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt
++    done
++done
++mkdir -p firmware/radio
++xattr -w security.selinux u:object_r:firmware_file:s0 firmware
++xattr -w security.selinux u:object_r:firmware_file:s0 firmware/radio
++)
++sleep 1
++
++#mount -o loop,rw LeOS.img d
++
++sudo touch d/system/phh/secure
++rm d/system/xbin/su
++rm d/system/etc/init/su.rc
++rm d/system/bin/phh-securize.sh
++rm -Rf d/system/{app,priv-app}/me.phh.superuser/
++sleep 1
++
++umount d
++
++e2fsck -f -y s.img || true
++resize2fs -M s.img
++
++mv s.img LeOS-20-VNDKLITE-a64-bvN.img
++
++
++
+diff --git a/lite-adapterSa64.sh b/lite-adapterSa64.sh
+new file mode 100644
+index 0000000..895c752
+--- /dev/null
++++ b/lite-adapterSa64.sh
+@@ -0,0 +1,78 @@
++#!/bin/bash
++
++#Usage:
++#bash lite-adapter.sh <32|64> [/path/to/system/image]
++
++#cleanups
++umount d
++
++set -ex
++
++origin="$(readlink -f -- "$0")"
++origin="$(dirname "$origin")"
++
++[ ! -d vendor_vndk ] && git clone https://github.com/phhusson/vendor_vndk -b android-10.0
++
++targetArch=64
++[ "$1" == 32 ] && targetArch=32
++
++[ -z "$ANDROID_BUILD_TOP" ] && ANDROID_BUILD_TOP=/ome/ich/src/LeOS-20/
++if [ "$targetArch" == 32 ];then
++    srcFile="$ANDROID_BUILD_TOP/out/target/product/tdgsi_a64_ab/system.img"
++else
++    srcFile="$ANDROID_BUILD_TOP/out/target/product/tdgsi_arm64_ab/system.img"
++fi
++if [ -f "$2" ];then
++    srcFile="$2"
++fi
++
++if [ ! -f "$srcFile" ];then
++	echo "Usage: sudo bash lite-adapter.sh <32|64> [/path/to/system.img]"
++	exit 1
++fi
++
++"$origin"/simg2img "$srcFile" s.img || cp "$srcFile" s.img
++
++rm -Rf tmp
++mkdir -p d tmp
++e2fsck -y -f s.img
++resize2fs s.img 3500M
++e2fsck -E unshare_blocks -y -f s.img
++mount -o loop,rw s.img d
++(
++cd d
++find -name \*.capex -or -name \*.apex -type f -delete
++for vndk in 28 29;do
++    for arch in 32 64;do
++        d="$origin/vendor_vndk/vndk-${vndk}-arm${arch}"
++        [ ! -d "$d" ] && continue
++        p=lib
++        [ "$arch" = 64 ] && p=lib64
++        [ ! -d system/system_ext/apex/com.android.vndk.v${vndk}/${p}/ ] && continue
++        for lib in $(cd "$d"; echo *);do
++            cp "$origin/vendor_vndk/vndk-${vndk}-arm${arch}/$lib" system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
++            xattr -w security.selinux u:object_r:system_lib_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/${p}/$lib
++            echo $lib >> system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++        done
++        sort -u system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt > v
++        mv -f v system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++        xattr -w security.selinux u:object_r:system_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkcore.libraries.${vndk}.txt
++
++        grep -v -e libgui.so -e libft2.so system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt > v
++        mv -f v system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt
++        xattr -w security.selinux u:object_r:system_file:s0 system/system_ext/apex/com.android.vndk.v${vndk}/etc/vndkprivate.libraries.${vndk}.txt
++    done
++done
++mkdir -p firmware/radio
++xattr -w security.selinux u:object_r:firmware_file:s0 firmware
++xattr -w security.selinux u:object_r:firmware_file:s0 firmware/radio
++)
++sleep 1
++
++umount d
++
++e2fsck -f -y s.img || true
++resize2fs -M s.img
++
++mv s.img LeOS-20-VNDKLITE-a64_bvS.img
++#sudo bash lite-adapterNa64.sh 64 /home/ich/src/LeOS-20/out/target/product/tdgsi_a64_ab/system.img
+-- 
+2.34.1
+
