@@ -1,0 +1,30 @@
+From d2daaab03d929cb31a14e491967d2aa2cb3e7c15 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Tue, 15 Apr 2025 13:34:34 +0200
+Subject: [PATCH] 0002-plattform_testing_Calendar_ContatcsTest
+
+Change-Id: I41508f7ec357477a22fd44699f2b0c203e4f2567
+---
+ build/tasks/tests/platform_test_list.mk | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/build/tasks/tests/platform_test_list.mk b/build/tasks/tests/platform_test_list.mk
+index cf889d8ce..97344dfb4 100644
+--- a/build/tasks/tests/platform_test_list.mk
++++ b/build/tasks/tests/platform_test_list.mk
+@@ -20,12 +20,10 @@ platform_tests += \
+     BootHelperApp \
+     BusinessCard \
+     CalculatorFunctionalTests \
+-    CalendarTests \
+     camera_client_test \
+     camera_metadata_tests \
+     CellBroadcastReceiverTests \
+     ConnectivityManagerTest \
+-    ContactsTests \
+     CtsCameraTestCases \
+     CtsHardwareTestCases \
+     DataIdleTest \
+-- 
+2.34.1
+

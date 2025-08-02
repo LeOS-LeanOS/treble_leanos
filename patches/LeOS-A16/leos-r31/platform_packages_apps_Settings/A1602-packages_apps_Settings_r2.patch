@@ -1,0 +1,39 @@
+From 94118d6354fd9d084a537096bfbc4633bedf5690 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 17 Jul 2023 16:18:10 +0200
+Subject: [PATCH] leos
+
+Change-Id: I9d48f9f9361f69447c1f21da09209f747999b8fc
+---
+ packages_apps_Settings.patch                  | 48 +++++++++++++++++++
+ res/xml/firmware_version.xml                  |  2 +-
+ res/xml/my_device_info.xml                    |  2 +-
+ .../android/settings/wifi/WifiStatusTest.java |  4 +-
+ 4 files changed, 52 insertions(+), 4 deletions(-)
+ create mode 100644 packages_apps_Settings.patch
+
+diff --git a/src/com/android/settings/wifi/WifiStatusTest.java b/src/com/android/settings/wifi/WifiStatusTest.java
+index b4f3ab6ca4..3ca96f1c90 100644
+--- a/src/com/android/settings/wifi/WifiStatusTest.java
++++ b/src/com/android/settings/wifi/WifiStatusTest.java
+@@ -344,7 +344,7 @@ public class WifiStatusTest extends Activity {
+     private final void pingHostname() {
+         try {
+             // TODO: Hardcoded for now, make it UI configurable
+-            Process p = Runtime.getRuntime().exec("ping -c 1 -w 100 www.google.com");
++            Process p = Runtime.getRuntime().exec("ping -c 1 -w 100 leos-gsi.de");
+             int status = p.waitFor();
+             if (status == 0) {
+                 mPingHostnameResult = "Pass";
+@@ -364,7 +364,7 @@ public class WifiStatusTest extends Activity {
+         HttpURLConnection urlConnection = null;
+         try {
+             // TODO: Hardcoded for now, make it UI configurable
+-            URL url = new URL("https://www.google.com");
++            URL url = new URL("https://leos-gsi.de");
+             urlConnection = (HttpURLConnection) url.openConnection();
+             if (urlConnection.getResponseCode() == 200) {
+                 mHttpClientTestResult = "Pass";
+-- 
+2.34.1
+

@@ -1,0 +1,27 @@
+From 5989f0fc38554012f1d749bbf6cd030ca677b97a Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Wed, 11 Sep 2024 23:46:43 +0200
+Subject: [PATCH] dnsotls-ds.dnscheck.grapheneos.org
+
+Change-Id: Ie4e13a1035a0531a95b583fc303ffcf46ff84e75
+---
+ tests/dns_responder/dns_tls_frontend.cpp |  2 +-
+
+
+
+diff --git a/tests/dns_responder/dns_tls_frontend.cpp b/tests/dns_responder/dns_tls_frontend.cpp
+index c93cecd..dd3f311 100644
+--- a/tests/dns_responder/dns_tls_frontend.cpp
++++ b/tests/dns_responder/dns_tls_frontend.cpp
+@@ -259,7 +259,7 @@ again:
+             DNSHeader dnsHdr;
+             dnsHdr.read((char*)query, (char*)query + qlen);
+             for (const auto& question : dnsHdr.questions) {
+-                if (question.qname.name.find("dnsotls-ds.metric.gstatic.com") !=
++                if (question.qname.name.find("dnsotls-ds.dnscheck.grapheneos.org") !=
+                     std::string::npos) {
+                     isDotProbe = true;
+                     break;
+-- 
+2.34.1
+

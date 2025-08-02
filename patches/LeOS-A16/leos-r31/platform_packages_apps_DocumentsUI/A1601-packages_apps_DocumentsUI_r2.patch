@@ -1,0 +1,37 @@
+From 9591d6dd98536a271824f518cd7d2fa5889ed974 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Sat, 22 Jun 2024 09:51:31 +0200
+Subject: [PATCH] packages_apps_DocumentsUI
+
+Change-Id: I1339a0544b9d2443b05485294a180f5a14f9c7e3
+---
+ AndroidManifest.xml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 7680234..d2825ce 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -42,6 +42,10 @@
+ 
+     <!-- Permissions required for reading device configs -->
+     <uses-permission android:name="android.permission.READ_DEVICE_CONFIG"/>
++    
++    <uses-feature
++    android:name="android.software.leanback"
++    android:required="true" />
+ 
+     <application
+         android:name=".DocumentsApplication"
+@@ -109,7 +113,7 @@
+             android:icon="@drawable/launcher_icon" >
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+-                <category android:name="android.intent.category.LAUNCHER" />
++                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                 <category android:name="android.intent.category.APP_FILES" />
+             </intent-filter>
+             <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
+-- 
+2.34.1
+

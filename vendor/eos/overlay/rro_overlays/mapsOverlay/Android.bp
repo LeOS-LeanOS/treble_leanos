@@ -1,0 +1,4 @@
+runtime_resource_overlay {
+    name: "mapsOverlay",
+    product_specific: true,
+}

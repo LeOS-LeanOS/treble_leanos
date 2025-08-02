@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">[ÞöŵéŕÖƒƒÅļåŕḿ one two]</string>
+    <string name="dismiss">[ðîšḿîšš one two]</string>
+    <string name="firing_message">[Åļåŕḿ Îš Fîŕîñĝ¡ one two three]</string>
+    <string name="permdesc_power_off_alarm">[šéţ åñð çļéåŕ ţĥé åļåŕḿ ŵĥîçĥ ŵîļļ ŵåķé ûþ ðéVîçé ƒŕöḿ ţĥé þöŵéŕ öƒƒ šţåţé one two three four five six seven eight]</string>
+    <string name="permlab_power_off_alarm">[Þöŵéŕ Öƒƒ Åļåŕḿ one two three]</string>
+    <string name="power_on_off_text">[Þöŵéŕ Öñ öŕ Þöŵéŕ Öƒƒ¿ one two three]</string>
+    <string name="poweron_no">[Þöŵéŕ Öƒƒ one two]</string>
+    <string name="poweron_yes">[Þöŵéŕ Öñ one two]</string>
+    <string name="snooze">[šñööžé one two]</string>
+</resources>

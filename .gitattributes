@@ -1,0 +1,4 @@
+*.apk filter=lfs diff=lfs merge=lfs -text
+*.apk[[:space:]]*.so filter=lfs diff=lfs merge=lfs -text
+*.so filter=lfs diff=lfs merge=lfs -text
+patches/leos_voltage_OLD/platform_vendor_voltage/0001-LeOS-Stuff.patch filter=lfs diff=lfs merge=lfs -text

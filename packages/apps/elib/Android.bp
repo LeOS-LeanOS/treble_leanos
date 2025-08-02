@@ -1,0 +1,10 @@
+android_library {
+    name: "elib",
+    resource_dirs: ["lib/src/main/res"],
+    static_libs: [
+            "elib-com.google.android.material_material",
+        ],
+    manifest: "lib/src/main/AndroidManifest.xml",
+    sdk_version: "current",
+    min_sdk_version: "29",
+}
