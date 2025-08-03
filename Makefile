@@ -25,7 +25,7 @@ ANDROID_VERSION_TAG ?= ap1a
 APPLY_DEBUG_PATCHES ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
-PONCES_TAG ?= android-16.0
+PONCES_AOSP_TAG ?= android-16.0
 VERIFY_SEPOLICY ?= true
 UPLOAD_TO_GITHUB ?= false
 
@@ -65,7 +65,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 # Define all phony targets
 #######################
 .PHONY: all build-container build-prerequisites build-treble-app \
-	clean clone-ponces-gsi-repo compress-images copy-manifest-config create-folders \
+	clean clone-ponces-aosp-repo compress-images copy-manifest-config create-folders \
 	full-build generate-signing-keys init-aosp-manifest post-build rename-images \
 	stash-partner-gms sync-sources upload-to-github \
 	build-arm64 build-arm32
@@ -100,12 +100,12 @@ build-arm32: build-prerequisites
 	$(call build_gsi_variant,a64,$(VERIFY_SEPOLICY),$(ANDROID_VERSION_TAG))
 
 # Full build process
-full-build: clone-ponces-gsi-repo init-aosp-manifest copy-manifest-config sync-sources \
+full-build: clone-ponces-aosp-repo init-aosp-manifest copy-manifest-config sync-sources \
 	apply-patches stash-partner-gms generate-signing-keys \
 	build-treble-app build-arm64 build-arm32 post-build
 
 # Common build prerequisites
-build-prerequisites: build-container create-folders clone-ponces-gsi-repo copy-manifest-config sync-sources apply-patches stash-partner-gms generate-signing-keys build-treble-app
+build-prerequisites: build-container create-folders clone-ponces-aosp-repo copy-manifest-config sync-sources apply-patches stash-partner-gms generate-signing-keys build-treble-app
 
 # Post-build steps
 post-build: rename-images compress-images
@@ -117,14 +117,14 @@ post-build: rename-images compress-images
 # Build steps
 #######################
 
-# Step 1: Clone ponces GSI manifest
-clone-ponces-gsi-repo: build-container create-folders
-	$(call print_section,Clone ponces-gsi manifest)
+# Step 1: Clone ponces AOSP manifest
+clone-ponces-aosp-repo: build-container create-folders
+	$(call print_section,Clone ponces-aosp manifest)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				rm -rf ponces_gsi/
-				git clone --depth=1 https://github.com/ponces_gsi/treble_aosp.git -b $(PONCES_TAG) ponces_gsi/ && \
+				rm -rf ponces_aosp/
+				git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_AOSP_TAG) ponces_aosp/ && \
 			popd'
 
 # Step 2: Init AOSP manifest
@@ -133,7 +133,7 @@ init-aosp-manifest: build-container create-folders
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				ANDROID_TAG=$$(grep "repo init" ponces_gsi/build.sh | sed "s/.*-b \([^ ]*\).*/\1/") && \
+				ANDROID_TAG=$$(grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/") && \
 				repo init -u https://android.googlesource.com/platform/manifest -b $$ANDROID_TAG --depth=1 --git-lfs && \
 			popd'
 
@@ -144,8 +144,8 @@ copy-manifest-config: build-container create-folders
 		/bin/bash -e -c ' \
 			mkdir -p /repo/src/.repo/local_manifests && \
 			cp -v /repo/configs/*.xml /repo/src/.repo/local_manifests/ && \
-			cp -v /repo/src/ponces_gsi/build/default.xml /repo/src/.repo/local_manifests/ponces_default.xml && \
-			cp -v /repo/src/ponces_gsi/build/remove.xml /repo/src/.repo/local_manifests/ponces_remove.xml'
+			cp -v /repo/src/ponces_aosp/build/default.xml /repo/src/.repo/local_manifests/ponces_default.xml && \
+			cp -v /repo/src/ponces_aosp/build/remove.xml /repo/src/.repo/local_manifests/ponces_remove.xml'
 
 # Step 4: Perform full sources sync - Download all source code with automatic retry on failure
 sync-sources: build-container create-folders
@@ -167,9 +167,9 @@ apply-patches: build-container create-folders
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
 				cp -Rv /repo/patches patches/ && \
-				cp -Rv ponces_gsi/patches/trebledroid patches/ && \
-				cp -Rv ponces_gsi/patches/staging/ patches/ponces_staging && \
-				cp -Rv ponces_gsi/patches/personal/ patches/ponces_personal && \
+				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
+				cp -Rv ponces_aosp/patches/staging/ patches/ponces_staging && \
+				cp -Rv ponces_aosp/patches/personal/ patches/ponces_personal && \
 				patches/apply.sh . trebledroid && \
 				patches/apply.sh . ponces_personal && \
 				patches/apply.sh . ponces_staging && \
