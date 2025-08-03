@@ -21,5 +21,8 @@
   <remove-project name="platform/packages/apps/QuickSearchBox" />
   <remove-project name="platform/packages/apps/UniversalMediaPlayer" />
   <remove-project name="platform/packages/inputmethods/LatinIME" />
-  <remove-project name="platform/external/chromium-webview" />  
+  <remove-project name="platform/external/chromium-webview" />
+
+  <!-- ponces vendor-priv -->
+  <remove-project name="ponces/vendor_ponces-priv" />
 </manifest>
