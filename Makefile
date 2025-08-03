@@ -166,6 +166,7 @@ apply-patches: build-container create-folders
 		leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
+				rm -rf patches/ && \
 				cp -Rv /repo/patches . && \
 				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
