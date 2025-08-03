@@ -174,7 +174,6 @@ apply-patches: build-container create-folders
 				patches/apply.sh . ponces_personal && \
 				patches/apply.sh . ponces_staging && \
 				patches/apply.sh . leos && \
-				patches/apply.sh . personal && \
 				if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
 					patches/apply.sh . debug; \
 				fi && \
