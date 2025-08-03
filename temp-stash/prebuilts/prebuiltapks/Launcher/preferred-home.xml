@@ -1,0 +1,9 @@
+<preferred-activities>
+  <item name="com.leos.launcher/.MainActivity" match="100" always="true" set="2">
+    <filter>
+      <action name="android.intent.action.MAIN" />
+      <category name="android.intent.category.HOME" />
+      <category name="android.intent.category.DEFAULT" />
+    </filter>
+  </item>
+</preferred-activities>

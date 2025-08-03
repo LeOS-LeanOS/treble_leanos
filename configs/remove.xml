@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
   <!-- google devices -->
-  <remove-project name="platform/prebuilts/android-emulator" />  
+  <remove-project name="platform/prebuilts/android-emulator" />
   <remove-project name="platform/packages/apps/AvatarPicker" />
   <remove-project name="platform/packages/apps/BasicSmsReceiver" />
   <remove-project name="platform/packages/apps/Browser2" />

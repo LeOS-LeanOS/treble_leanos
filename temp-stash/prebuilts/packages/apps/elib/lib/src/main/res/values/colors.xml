@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="e_accent_light">#0086FF</color>
+    <color name="e_accent_inverse_light">#5DB2FF</color>
+    <color name="e_alpha_accent_light">#140086FF</color>
+    <color name="e_background_light">#FFFFFF</color>
+    <color name="e_background_variant_light">#FAFAFA</color>
+    <color name="e_background_overlay_light">#14212121</color>
+    <color name="e_floating_background_light">#FFFFFF</color>
+    <color name="e_floating_background_variant_light">#EEEEEE</color>
+    <color name="e_action_bar_light">#FFFFFF</color>
+    <color name="e_alpha_base_light">#000000</color>
+    <color name="e_drawer_background_light">#FFFFFF</color>
+    <color name="e_divider_color_light">#14212121</color>
+    <color name="e_primary_text_color_light">#DE000000</color>
+    <color name="e_secondary_text_color_light">#99000000</color>
+    <color name="e_secondary_text_color_variant_light">#BD000000</color>
+    <color name="e_disabled_color_light">#61000000</color>
+    <color name="e_icon_color_light">#99000000</color>
+    <color name="e_ripple_color_light">#33000000</color>
+    <color name="e_stroke_color_light">#1F000000</color>
+    <color name="e_launcher_widget_background_light">#40202020</color>
+    <color name="e_launcher_search_background_light">#94353535</color>
+
+
+
+    <color name="e_accent_dark">#5DB2FF</color>
+    <color name="e_accent_inverse_dark">#0086FF</color>
+    <color name="e_alpha_accent_dark">#145DB2FF</color>
+    <color name="e_background_dark">#121212</color>
+    <color name="e_background_variant_dark">#121212</color>
+    <color name="e_background_overlay_dark">#1FFFFFFF</color>
+    <color name="e_floating_background_dark">#1E1E1E</color>
+    <color name="e_floating_background_variant_dark">#272727</color>
+    <color name="e_action_bar_dark">#272727</color>
+    <color name="e_alpha_base_dark">#FFFFFF</color>
+    <color name="e_drawer_background_dark">#363636</color>
+    <color name="e_divider_color_dark">#1FFFFFFF</color>
+    <color name="e_primary_text_color_dark">#DEFFFFFF</color>
+    <color name="e_secondary_text_color_dark">#99FFFFFF</color>
+    <color name="e_secondary_text_color_variant_dark">#BDFFFFFF</color>
+    <color name="e_icon_color_dark">#99FFFFFF</color>
+    <color name="e_disabled_color_dark">#61FFFFFF</color>
+    <color name="e_ripple_color_dark">#33FFFFFF</color>
+    <color name="e_stroke_color_dark">#1FFFFFFF</color>
+
+
+    <color name="e_accent">@color/e_accent_light</color>
+    <color name="e_accent_inverse">@color/e_accent_inverse_light</color>
+    <color name="e_alpha_accent">@color/e_alpha_accent_light</color>
+    <color name="e_background">@color/e_background_light</color>
+    <color name="e_background_inverse">@color/e_background_dark</color>
+    <color name="e_background_variant">@color/e_background_variant_light</color>
+    <color name="e_background_overlay">@color/e_background_overlay_light</color>
+    <color name="e_floating_background">@color/e_floating_background_light</color>
+    <color name="e_floating_background_variant">@color/e_floating_background_variant_light</color>
+    <color name="e_action_bar">@color/e_action_bar_light</color>
+    <color name="e_alpha_base">@color/e_alpha_base_light</color>
+    <color name="e_drawer_background">@color/e_drawer_background_light</color>
+    <color name="e_divider_color">@color/e_divider_color_light</color>
+    <color name="e_primary_text_color">@color/e_primary_text_color_light</color>
+    <color name="e_secondary_text_color">@color/e_secondary_text_color_light</color>
+    <color name="e_secondary_text_color_variant">@color/e_secondary_text_color_variant_light</color>
+    <color name="e_icon_color">@color/e_icon_color_light</color>
+    <color name="e_disabled_color">@color/e_disabled_color_light</color>
+    <color name="e_ripple_color">@color/e_ripple_color_light</color>
+    <color name="e_stroke_color">@color/e_stroke_color_light</color>
+    <color name="e_launcher_widget_background">@color/e_launcher_widget_background_light</color>
+    <color name="e_launcher_search_background">@color/e_launcher_search_background_light</color>
+
+
+
+    <color name="e_switch_thumb_on">@android:color/white</color>
+    <color name="e_switch_thumb_off">@android:color/white</color>
+    <color name="e_switch_track_on">#2CC766</color>
+    <color name="e_switch_track_off">#C8CED0</color>
+    <color name="e_accent_green">#44B04C</color>
+    <color name="e_error">#FF5630</color>
+
+    <color name="e_palette_1">#0F94F6</color>
+    <color name="e_palette_2">#00B4B4</color>
+    <color name="e_palette_3">#008D96</color>
+    <color name="e_palette_4">#44B04C</color>
+    <color name="e_palette_5">#AFD83D</color>
+    <color name="e_palette_6">#FFED21</color>
+    <color name="e_palette_7">#FFC300</color>
+    <color name="e_palette_8">#FF7A00</color>
+    <color name="e_palette_9">#F8432E</color>
+    <color name="e_palette_10">#ED1C61</color>
+    <color name="e_palette_11">#6934B9</color>
+    <color name="e_palette_12">#5754DC</color>
+</resources>
