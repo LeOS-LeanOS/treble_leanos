@@ -123,7 +123,7 @@ clone-ponces-aosp-repo: build-container create-folders
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				rm -rf ponces_aosp/
+				rm -rf ponces_aosp/ && \
 				git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_AOSP_TAG) ponces_aosp/ && \
 			popd'
 
@@ -166,10 +166,10 @@ apply-patches: build-container create-folders
 		leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				cp -Rv /repo/patches patches/ && \
+				cp -Rv /repo/patches . && \
 				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
-				cp -Rv ponces_aosp/patches/staging/ patches/ponces_staging && \
-				cp -Rv ponces_aosp/patches/personal/ patches/ponces_personal && \
+				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
+				cp -Rv ponces_aosp/patches/personal patches/ponces_personal && \
 				patches/apply.sh . trebledroid && \
 				patches/apply.sh . ponces_personal && \
 				patches/apply.sh . ponces_staging && \
