@@ -165,11 +165,19 @@ apply-patches: build-container create-folders
 		leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				/repo/patches/apply.sh . leos && \
-				/repo/patches/apply.sh . personal && \
+				cp -Rv /repo/patches patches/ && \
+				cp -Rv ponces/patches/trebledroid patches/ && \
+				cp -Rv ponces/patches/staging/ patches/ponces_staging && \
+				cp -Rv ponces/patches/personal/ patches/ponces_personal && \
+				patches/apply.sh . trebledroid && \
+				patches/apply.sh . ponces_personal && \
+				patches/apply.sh . ponces_staging && \
+				patches/apply.sh . leos && \
+				patches/apply.sh . personal && \
 				if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
-					/repo/patches/apply.sh . debug; \
+					patches/apply.sh . debug; \
 				fi && \
+				rm -rf patches/ && \
 			popd'
 
 # Step 6: Stash partner GMS - Move partner GMS files to tmp for microg builds
