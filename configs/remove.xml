@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+  <!-- google devices -->
   <remove-project name="device/generic/trusty" />
   <remove-project name="device/google/akita" />
   <remove-project name="device/google/akita-kernels/5.15" />
@@ -44,6 +45,7 @@
   <remove-project name="device/google/zumapro" />
   <remove-project name="device/google/zumapro-sepolicy" />
   <remove-project name="device/google_car" />
+
   <remove-project name="platform/prebuilts/android-emulator" />  
   <remove-project name="platform/packages/apps/AvatarPicker" />
   <remove-project name="platform/packages/apps/BasicSmsReceiver" />
