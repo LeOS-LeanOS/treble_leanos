@@ -21,7 +21,7 @@ endef
 #######################
 
 # ROM configuration
-ANDROID_VERSION_TAG ?= bp1a
+ANDROID_VERSION_TAG ?= android-16.0
 APPLY_DEBUG_PATCHES ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
@@ -64,7 +64,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 # Define all phony targets
 #######################
 .PHONY: all build-container build-prerequisites build-treble-app \
-	clean clone-rom-manifest compress-images copy-manifest-config create-folders \
+	clean clone-ponces-manifest compress-images copy-manifest-config create-folders \
 	full-build generate-signing-keys post-build rename-images \
 	stash-partner-gms sync-sources upload-to-github \
 	build-arm64 build-arm32
@@ -116,13 +116,13 @@ post-build: rename-images compress-images
 # Build steps
 #######################
 
-# Step 1: Clone ROM manifest - Initialize the repo with LeOS manifest
-clone-rom-manifest: build-container create-folders
+# Step 1: Clone ponces manifest
+clone-ponces-manifest: build-container create-folders
 	$(call print_section,Clone ROM Manifest)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				repo init -u https://github.com/cawilliamson/manifest.git -b $(ANDROID_VERSION_TAG) --depth=1 --git-lfs && \
+				repo init -u https://github.com/ponces/treble_aosp.git -b $(ANDROID_VERSION_TAG) --depth=1 --git-lfs && \
 			popd'
 
 # Step 2: Copy manifest config - Add local manifest files to customize the source tree
