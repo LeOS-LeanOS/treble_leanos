@@ -99,12 +99,12 @@ build-arm32: build-prerequisites
 	$(call build_gsi_variant,a64,$(VERIFY_SEPOLICY),$(ANDROID_VERSION_TAG))
 
 # Full build process
-full-build: clone-rom-manifest copy-manifest-config sync-sources \
+full-build: clone-ponces-manifest copy-manifest-config sync-sources \
 	apply-patches stash-partner-gms generate-signing-keys \
 	build-treble-app build-arm64 build-arm32 post-build
 
 # Common build prerequisites
-build-prerequisites: build-container create-folders clone-rom-manifest copy-manifest-config sync-sources apply-patches stash-partner-gms generate-signing-keys build-treble-app
+build-prerequisites: build-container create-folders clone-ponces-manifest copy-manifest-config sync-sources apply-patches stash-partner-gms generate-signing-keys build-treble-app
 
 # Post-build steps
 post-build: rename-images compress-images
