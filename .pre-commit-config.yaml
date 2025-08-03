@@ -1,0 +1,22 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: check-xml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+    args: [--markdown-linebreak-ext=md]
+    exclude: '^patches/'
+- repo: https://github.com/syntaqx/git-hooks
+  rev: v0.0.18
+  hooks:
+  - id: shellcheck
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.28.0
+  hooks:
+  - id: check-github-workflows
+#- repo: https://github.com/shini4i/pre-commit-makefile
+#  rev: v0.2.2
+#  hooks:
+#  - id: makefile-validator
+#  - id: makefile-readme-updater
