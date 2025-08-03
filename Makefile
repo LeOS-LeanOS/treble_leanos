@@ -21,10 +21,11 @@ endef
 #######################
 
 # ROM configuration
-ANDROID_VERSION_TAG ?= android-16.0
+ANDROID_VERSION_TAG ?= ap1a
 APPLY_DEBUG_PATCHES ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
+PONCES_TAG ?= android-16.0
 VERIFY_SEPOLICY ?= true
 UPLOAD_TO_GITHUB ?= false
 
@@ -64,8 +65,8 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 # Define all phony targets
 #######################
 .PHONY: all build-container build-prerequisites build-treble-app \
-	clean clone-ponces-manifest compress-images copy-manifest-config create-folders \
-	full-build generate-signing-keys post-build rename-images \
+	clean clone-ponces-repo compress-images copy-manifest-config create-folders \
+	full-build generate-signing-keys init-aosp-manifest post-build rename-images \
 	stash-partner-gms sync-sources upload-to-github \
 	build-arm64 build-arm32
 
@@ -99,12 +100,12 @@ build-arm32: build-prerequisites
 	$(call build_gsi_variant,a64,$(VERIFY_SEPOLICY),$(ANDROID_VERSION_TAG))
 
 # Full build process
-full-build: clone-ponces-manifest copy-manifest-config sync-sources \
+full-build: clone-ponces-repo copy-manifest-config sync-sources \
 	apply-patches stash-partner-gms generate-signing-keys \
 	build-treble-app build-arm64 build-arm32 post-build
 
 # Common build prerequisites
-build-prerequisites: build-container create-folders clone-ponces-manifest copy-manifest-config sync-sources apply-patches stash-partner-gms generate-signing-keys build-treble-app
+build-prerequisites: build-container create-folders clone-ponces-repo copy-manifest-config sync-sources apply-patches stash-partner-gms generate-signing-keys build-treble-app
 
 # Post-build steps
 post-build: rename-images compress-images
@@ -117,23 +118,35 @@ post-build: rename-images compress-images
 #######################
 
 # Step 1: Clone ponces manifest
-clone-ponces-manifest: build-container create-folders
-	$(call print_section,Clone ROM Manifest)
+clone-ponces-repo: build-container create-folders
+	$(call print_section,Clone poncest manifest)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				repo init -u https://github.com/ponces/treble_aosp.git -b $(ANDROID_VERSION_TAG) --depth=1 --git-lfs && \
+				git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_TAG) ponces/ && \
 			popd'
 
-# Step 2: Copy manifest config - Add local manifest files to customize the source tree
+# Step 2: Init AOSP manifest
+init-aosp-manifest: build-container create-folders
+	$(call print_section,Init AOSP manifest)
+	$(CONTAINER_RUN) leos-gsi-builder \
+		/bin/bash -e -c ' \
+			pushd /repo/src/ && \
+				ANDROID_TAG=$$(grep "repo init" ponces/build.sh | sed "s/.*-b \([^ ]*\).*/\1/") && \
+				repo init -u https://android.googlesource.com/platform/manifest -b $$ANDROID_TAG --depth=1 --git-lfs && \
+			popd'
+
+# Step 3: Copy manifest config - Add local manifest files to customize the source tree
 copy-manifest-config: build-container create-folders
-	$(call print_section,Copy Manifest Config)
+	$(call print_section,Copy manifest config)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			mkdir -p /repo/src/.repo/local_manifests && \
-			cp -v /repo/configs/*.xml /repo/src/.repo/local_manifests/'
+			cp -v /repo/configs/*.xml /repo/src/.repo/local_manifests/ && \
+			cp -v /repo/src/ponces/build/default.xml /repo/src/.repo/local_manifests/ponces_default.xml && \
+			cp -v /repo/src/ponces/build/remove.xml /repo/src/.repo/local_manifests/ponces_remove.xml'
 
-# Step 3: Perform full sources sync - Download all source code with automatic retry on failure
+# Step 4: Perform full sources sync - Download all source code with automatic retry on failure
 sync-sources: build-container create-folders
 	$(call print_section,Sync Sources)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -145,7 +158,7 @@ sync-sources: build-container create-folders
 				done && \
 			popd'
 
-# Step 4: Apply patches - Apply LeOS patches to the source
+# Step 5: Apply patches - Apply LeOS patches to the source
 apply-patches: build-container create-folders
 	$(call print_section,Apply Patches)
 	$(CONTAINER_RUN) \
@@ -159,7 +172,7 @@ apply-patches: build-container create-folders
 				fi && \
 			popd'
 
-# Step 5: Stash partner GMS - Move partner GMS files to tmp for microg builds
+# Step 6: Stash partner GMS - Move partner GMS files to tmp for microg builds
 stash-partner-gms: build-container create-folders
 	$(call print_section,Stash Partner GMS)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -170,7 +183,7 @@ stash-partner-gms: build-container create-folders
 				fi && \
 			popd'
 
-# Step 6: Generate signing keys - Create keys for signing the build
+# Step 7: Generate signing keys - Create keys for signing the build
 generate-signing-keys: build-container create-folders
 	$(call print_section,Generate Signing Keys)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -183,7 +196,7 @@ generate-signing-keys: build-container create-folders
 				fi && \
 			popd'
 
-# Step 7: Build treble app - Compile the Treble App
+# Step 8: Build treble app - Compile the Treble App
 build-treble-app: build-container create-folders
 	$(call print_section,Build Treble App)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -196,7 +209,7 @@ build-treble-app: build-container create-folders
 				fi && \
 			popd'
 
-# Step 8: Helper function to build a specific GSI variant
+# Step 9: Helper function to build a specific GSI variant
 define build_gsi_variant
 	$(CONTAINER_RUN) \
 	-e ARCH="$(1)" \
@@ -220,7 +233,7 @@ define build_gsi_variant
 		popd'
 endef
 
-# Step 9: Rename image files - Convert temporary image names to final release filenames
+# Step 10: Rename image files - Convert temporary image names to final release filenames
 rename-images: build-container create-folders
 	$(call print_section,Rename Images)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -238,7 +251,7 @@ rename-images: build-container create-folders
 			done && \
 			popd'
 
-# Step 10: Compress all images with xz
+# Step 11: Compress all images with xz
 compress-images: build-container create-folders
 	$(call print_section,Compress Images)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -248,7 +261,7 @@ compress-images: build-container create-folders
 				cp -fv *.img.xz /repo/out/ && \
 			popd'
 
-# Step 11: Upload images to GitHub
+# Step 12: Upload images to GitHub
 upload-to-github: create-folders
 	$(call print_section,Upload to GitHub)
 	@if ! command -v gh &> /dev/null; then \
