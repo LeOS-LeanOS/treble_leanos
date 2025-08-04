@@ -1,0 +1,66 @@
+//
+// Copyright (C) 2014 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Install the prebuilt webview apk.
+package {
+    default_applicable_licenses: ["external_chromium-webview_license"],
+}
+// Added automatically by a large-scale-change
+// See: http://go/android-license-faq
+license {
+    name: "external_chromium-webview_license",
+    visibility: [":__subpackages__"],
+    license_kinds: [
+        "SPDX-license-identifier-Unicode-DFS",
+    ],
+    // large-scale-change unable to identify any license_text files
+}
+soong_config_module_type {
+    name: "webview_app_import",
+    module_type: "android_app_import",
+    config_namespace: "webview",
+    value_variables: [
+        "release_package_webview_version",
+    ],
+    properties: [
+        "arch.arm.apk",
+        "arch.arm64.apk",
+    ],
+}
+webview_app_import {
+    name: "webview",
+    product_specific: true,
+    default_dev_cert: true,
+    required: [
+        "libwebviewchromium_loader",
+        "libwebviewchromium_plat_support",
+    ],
+    soong_config_variables: {
+        release_package_webview_version: {
+            arch: {
+                arm: {
+                    apk: "%s/arm/webview.apk",
+                },
+                arm64: {
+                    apk: "%s/arm64/webview.apk",
+                },
+            },
+        },
+    },
+    optional_uses_libs: [
+        "androidx.window.extensions",
+        "android.ext.adservices",
+    ],
+}

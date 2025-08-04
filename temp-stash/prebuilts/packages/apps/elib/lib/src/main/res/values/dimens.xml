@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="high_emphasis">0.87</dimen>
-    <dimen name="medium_emphasis">0.6</dimen>
-    <dimen name="disabled">0.38</dimen>
-    <dimen name="accent_selector">0.08</dimen>
-    <dimen name="ripple">0.2</dimen>
-    <dimen name="switch_disabled">0.75</dimen>
-</resources>

@@ -1,8 +1,0 @@
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- microG GmsCore must always have network access for GCM. -->
-<config>
-    <allow-in-power-save package="com.google.android.gms" />
-    <allow-in-data-usage-save package="com.google.android.gms" />
-    <allow-unthrottled-location package="com.google.android.gms" />
-</config>

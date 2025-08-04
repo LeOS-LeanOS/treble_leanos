@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="e_keyboard_background">#1A1C1F</color>
+    <color name="e_keyboard_key_background">#2F3033</color>
+    <color name="e_keyboard_key_pressed_background">#46474A</color>
+    <color name="e_keyboard_key_text">#FFFFFF</color>
+    <color name="e_keyboard_functional_background">#46474A</color>
+    <color name="e_keyboard_functional_pressed_background">#8BA6BF</color>
+    <color name="e_keyboard_key_enter_background">@color/e_accent</color>
+    <color name="e_keyboard_key_enter_pressed_background">#309DFF</color>
+</resources>
