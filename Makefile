@@ -21,7 +21,7 @@ endef
 #######################
 
 # ROM configuration
-ANDROID_VERSION_TAG ?= ap1a
+ANDROID_VERSION_TAG ?= bp2a
 APPLY_DEBUG_PATCHES ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
