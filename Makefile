@@ -174,7 +174,6 @@ apply-patches: build-container create-folders
 				patches/apply.sh . trebledroid && \
 				patches/apply.sh . ponces_personal && \
 				patches/apply.sh . ponces_staging && \
-				patches/apply.sh . leos && \
 				if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
 					patches/apply.sh . debug; \
 				fi && \
