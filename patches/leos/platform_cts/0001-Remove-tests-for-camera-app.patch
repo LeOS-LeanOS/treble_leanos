@@ -1,0 +1,27 @@
+From 13c8b1ffad12de747acda4e343e453d1fb927848 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 15:55:57 +0100
+Subject: [PATCH 1/1] Remove tests for camera app
+
+We don't need to test the camera app since we remove it from our build
+anyway.
+
+Change-Id: Ida7b1fd1076eb6f8237ef19fe144f0031ac9bd00
+---
+ apps/CtsVerifier/Android.bp | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/apps/CtsVerifier/Android.bp b/apps/CtsVerifier/Android.bp
+index ee82327d..6ae36a6b 100644
+--- a/apps/CtsVerifier/Android.bp
++++ b/apps/CtsVerifier/Android.bp
+@@ -224,7 +224,6 @@ filegroup {
+         ":CtsVpnFirewallAppApi23",
+         ":CtsVpnFirewallAppApi24",
+         ":CtsVpnFirewallAppNotAlwaysOn",
+-        ":jetpack-camera-app",
+     ],
+ }
+
+--
+2.49.0

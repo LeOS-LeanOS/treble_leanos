@@ -1,0 +1,35 @@
+From 7809b87722f20d613a6499fb1c37ac99d74c6b82 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 16:09:11 +0100
+Subject: [PATCH 2/4] Enable adb debug and disable secure
+
+---
+ rw-system.sh | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/rw-system.sh b/rw-system.sh
+index d2ef432..372452d 100644
+--- a/rw-system.sh
++++ b/rw-system.sh
+@@ -860,8 +860,8 @@ copyprop() {
+     resetprop_phh ro.boot.veritymode enforcing
+     resetprop_phh ro.boot.warranty_bit 0
+     resetprop_phh ro.warranty_bit 0
+-    resetprop_phh ro.debuggable 0
+-    resetprop_phh ro.secure 1
++    resetprop_phh ro.debuggable 1
++    resetprop_phh ro.secure 0
+     resetprop_phh ro.build.type user
+     resetprop_phh ro.product.build.type user
+     resetprop_phh ro.system.build.type user
+@@ -869,8 +869,6 @@ copyprop() {
+     resetprop_phh ro.vendor.build.type user
+     resetprop_phh --delete ro.build.selinux
+
+-    resetprop_phh ro.adb.secure 1
+-
+ for abi in "" 64;do
+     f=/vendor/lib$abi/libstagefright_foundation.so
+     if [ -f "$f" ];then
+--
+2.49.0

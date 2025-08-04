@@ -1,0 +1,25 @@
+From c826610009757625ed02ac89c870e91796c9101a Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 18:46:16 +0100
+Subject: [PATCH 2/2] Change DNS over LTS check endpoint to Graphene from google
+
+Change-Id: I548072ac12751d588e6c44b62e537528b4e64006
+---
+ src/com/android/networkstack/util/DnsUtils.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/com/android/networkstack/util/DnsUtils.java b/src/com/android/networkstack/util/DnsUtils.java
+index 622f56a..95c44ba 100644
+--- a/src/com/android/networkstack/util/DnsUtils.java
++++ b/src/com/android/networkstack/util/DnsUtils.java
+@@ -50,7 +50,7 @@ public class DnsUtils {
+     public static final int TYPE_ADDRCONFIG = -1;
+     // A one time host name suffix of private dns probe.
+     // q.v. system/netd/server/dns/DnsTlsTransport.cpp
+-    public static final String PRIVATE_DNS_PROBE_HOST_SUFFIX = "-dnsotls-ds.metric.gstatic.com";
++    public static final String PRIVATE_DNS_PROBE_HOST_SUFFIX = "-dnsotls-ds.dnscheck.grapheneos.org";
+     private static final String TAG = DnsUtils.class.getSimpleName();
+     private static final boolean DBG = Log.isLoggable(TAG, Log.DEBUG);
+
+--
+2.49.0
