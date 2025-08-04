@@ -13,9 +13,9 @@ index 5eb5f00..50fc550 100644
 --- a/ui/build/androidmk_denylist.go
 +++ b/ui/build/androidmk_denylist.go
 @@ -62,6 +62,17 @@ var androidmk_allowlist []string = []string{
-	"art/Android.mk",
-	"bootable/deprecated-ota/updater/Android.mk",
-	"tools/vendor/google_prebuilts/arc/Android.mk",
+ 	"art/Android.mk",
+ 	"bootable/deprecated-ota/updater/Android.mk",
+ 	"tools/vendor/google_prebuilts/arc/Android.mk",
 +	"vendor/LeOS/prebuiltapks/GsfProxy/Android.mk",
 +	"vendor/LeOS/prebuiltapks/AdvancedPrivacy/Android.mk",
 +	"vendor/LeOS/prebuiltapks/FakeStore/Android.mk",
