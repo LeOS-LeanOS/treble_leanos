@@ -4,13 +4,13 @@ Date: Mon, 4 Aug 2025 16:07:17 +0100
 Subject: [PATCH 1/4] Adapt build scripts for LeOS
 
 ---
- generate.sh                                      | 11 ++++++-----
+ generate.sh					   | 11 ++++++-----
  {tdgsi_a64_ab => leos_a64_ab}/BoardConfig.mk     |  0
  {tdgsi_arm64_ab => leos_arm64_ab}/BoardConfig.mk |  0
- tdgsi_a64_a/BoardConfig.mk                       |  8 --------
- tdgsi_arm64_a/BoardConfig.mk                     |  7 -------
- tdgsi_arm_a/BoardConfig.mk                       | 11 -----------
- tdgsi_arm_ab/BoardConfig.mk                      |  7 -------
+ tdgsi_a64_a/BoardConfig.mk			  |  8 --------
+ tdgsi_arm64_a/BoardConfig.mk			|  7 -------
+ tdgsi_arm_a/BoardConfig.mk			  | 11 -----------
+ tdgsi_arm_ab/BoardConfig.mk			 |  7 -------
  7 files changed, 6 insertions(+), 38 deletions(-)
  rename {tdgsi_a64_ab => leos_a64_ab}/BoardConfig.mk (100%)
  rename {tdgsi_arm64_ab => leos_arm64_ab}/BoardConfig.mk (100%)
@@ -25,24 +25,24 @@ index 50912a8..7b591d0 100644
 +++ b/generate.sh
 @@ -15,8 +15,8 @@ fi
  echo 'PRODUCT_MAKEFILES := \' > AndroidProducts.mk
-
+ 
  for part in a ab;do
--       for apps in vanilla gapps foss gapps-go old;do
--               for arch in arm64 arm a64;do
-+       for apps in vanilla;do
-+               for arch in arm64 a64;do
-                        for su in yes no;do
-                                apps_suffix=""
-                                apps_script=""
+-	for apps in vanilla gapps foss gapps-go old;do
+-		 for arch in arm64 arm a64;do
++	for apps in vanilla;do
++		 for arch in arm64 a64;do
+ 			for su in yes no;do
+ 				apps_suffix=""
+ 				apps_script=""
 @@ -70,7 +70,7 @@ for part in a ab;do
-                                        optional_base='$(call inherit-product, device/phh/treble/base-sas.mk)'
-                                fi
-
--                               target="treble_${arch}_${part_suffix}${apps_suffix}${su_suffix}"
-+                               target="leos_${arch}_${part_suffix}${apps_suffix}${su_suffix}"
-
-                                baseArch="$arch"
-                                if [ "$arch" = "a64" ];then
+ 					optional_base='$(call inherit-product, device/phh/treble/base-sas.mk)'
+ 				fi
+ 
+-				target="treble_${arch}_${part_suffix}${apps_suffix}${su_suffix}"
++				target="leos_${arch}_${part_suffix}${apps_suffix}${su_suffix}"
+ 
+ 				baseArch="$arch"
+ 				if [ "$arch" = "a64" ];then
 @@ -86,15 +86,16 @@ for part in a ab;do
  TARGET_GAPPS_ARCH := ${baseArch}
  include build/make/target/product/aosp_${baseArch}.mk
