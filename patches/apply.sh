@@ -11,6 +11,7 @@ for project in $(cd "$patches"/"$tree"; echo *); do
     echo "> ${project}"
     p="$(tr _ / <<<"$project" |sed -e 's;platform/;;g')"
     [ "$p" == build ] && p=build/make
+    [ "$p" == testing ] && p=platform_testing
     [ "$p" == treble/app ] && p=treble_app
     [ "$p" == vendor/hardware/overlay ] && p=vendor/hardware_overlay
     [ "$p" == vendor/partner/gms ] && p=vendor/partner_gms
