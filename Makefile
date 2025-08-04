@@ -1,7 +1,7 @@
 # LeOS GSI Builder Makefile
 #
 # This Makefile automates the process of building LeOS GSI images for
-# microg variants in arm64 and arm32_binder64 architectures.
+# arm64 and arm32_binder64 architectures.
 #
 # Make sure Make stops if any command fails
 .SHELLFLAGS := -e -c
@@ -29,7 +29,7 @@ PONCES_AOSP_TAG ?= android-16.0
 VERIFY_SEPOLICY ?= true
 UPLOAD_TO_GITHUB ?= false
 
-# Build variants configuration - LeOS only supports microg
+# Build variants configuration
 ARCHITECTURES := arm64 a64
 ARCH_DISPLAY_NAMES := arm64 arm32_binder64
 
@@ -66,9 +66,8 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 #######################
 .PHONY: all build-container build-prerequisites build-treble-app \
 	clean clone-ponces-aosp-repo compress-images copy-manifest-config create-folders \
-	full-build generate-signing-keys init-aosp-manifest post-build rename-images \
-	stash-partner-gms sync-sources upload-to-github \
-	build-arm64 build-arm32
+	full-build copy-prebuilts init-aosp-manifest post-build rename-images \
+	sync-sources upload-to-github build-arm64 build-arm32
 
 #######################
 # Main targets
@@ -92,20 +91,20 @@ create-folders:
 
 # Build targets for each architecture
 build-arm64: build-prerequisites
-	$(call print_section,Build MicroG ARM64)
+	$(call print_section,Build ARM64)
 	$(call build_gsi_variant,arm64,$(VERIFY_SEPOLICY),$(ANDROID_VERSION_TAG))
 
 build-arm32: build-prerequisites
-	$(call print_section,Build MicroG ARM32_BINDER64)
+	$(call print_section,Build ARM32_BINDER64)
 	$(call build_gsi_variant,a64,$(VERIFY_SEPOLICY),$(ANDROID_VERSION_TAG))
 
 # Full build process
 full-build: clone-ponces-aosp-repo init-aosp-manifest copy-manifest-config sync-sources \
-	apply-patches stash-partner-gms generate-signing-keys \
+	apply-patches  copy-prebuilts \
 	build-treble-app build-arm64 build-arm32 post-build
 
 # Common build prerequisites
-build-prerequisites: build-container create-folders clone-ponces-aosp-repo copy-manifest-config sync-sources apply-patches stash-partner-gms generate-signing-keys build-treble-app
+build-prerequisites: build-container create-folders clone-ponces-aosp-repo copy-manifest-config sync-sources apply-patches  copy-prebuilts build-treble-app
 
 # Post-build steps
 post-build: rename-images compress-images
@@ -181,31 +180,18 @@ apply-patches: build-container create-folders
 				rm -rf patches/ && \
 			popd'
 
-# Step 6: Stash partner GMS - Move partner GMS files to tmp for microg builds
-stash-partner-gms: build-container create-folders
-	$(call print_section,Stash Partner GMS)
+# Step 6: Generate signing keys - Create keys for signing the build
+copy-prebuilts: build-container create-folders
+	$(call print_section,Copy prebuilts)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src && \
-				if [ -d vendor/partner_gms ]; then \
-					mv -v vendor/partner_gms /repo/tmp/; \
-				fi && \
+				cp -Rfv /repo/external . && \
+				cp -Rfv /repo/packages . && \
+				cp -Rfv /repo/vendor . && \
 			popd'
 
-# Step 7: Generate signing keys - Create keys for signing the build
-generate-signing-keys: build-container create-folders
-	$(call print_section,Generate Signing Keys)
-	$(CONTAINER_RUN) leos-gsi-builder \
-		/bin/bash -e -c ' \
-			pushd /repo/src && \
-				if [ -d vendor/leos-priv/keys ]; then \
-					pushd vendor/leos-priv/keys && \
-						./keys.sh || true && \
-					popd; \
-				fi && \
-			popd'
-
-# Step 8: Build treble app - Compile the Treble App
+# Step 7: Build treble app - Compile the Treble App
 build-treble-app: build-container create-folders
 	$(call print_section,Build Treble App)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -218,7 +204,7 @@ build-treble-app: build-container create-folders
 				fi && \
 			popd'
 
-# Step 9: Helper function to build a specific GSI variant
+# Step 8: Helper function to build a specific GSI variant
 define build_gsi_variant
 	$(CONTAINER_RUN) \
 	-e ARCH="$(1)" \
@@ -226,7 +212,7 @@ define build_gsi_variant
 	/bin/bash -e -c ' \
 		pushd /repo/src && \
 			pushd device/phh/treble && \
-				cp -fv "/repo/configs/leos-microg.mk" leos.mk && \
+				cp -fv "/repo/configs/leos.mk" leos.mk && \
 				bash generate.sh leos && \
 			popd && \
 			cp -Rfv /repo/tmp/partner_gms vendor/ && \
@@ -238,11 +224,11 @@ define build_gsi_variant
 				make vndk-test-sepolicy -j$(CPU_LIMIT); \
 			fi && \
 			rm -Rfv vendor/partner_gms && \
-			mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_microg_$(1).img && \
+			mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
 		popd'
 endef
 
-# Step 10: Rename image files - Convert temporary image names to final release filenames
+# Step 9: Rename image files - Convert temporary image names to final release filenames
 rename-images: build-container create-folders
 	$(call print_section,Rename Images)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -252,15 +238,15 @@ rename-images: build-container create-folders
 			arch_names=("arm64" "arm32_binder64"); \
 			BUILD_NUMBER_VAL=$$(cat /repo/$$BUILD_NUMBER_FILE); \
 			for j in $${!archs[@]}; do \
-				src="system_microg_$${archs[j]}.img"; \
+				src="system_$${archs[j]}.img"; \
 				if [ -f "$$src" ]; then \
-					dest="LeOS-microg-$${arch_names[j]}-ab-$(ANDROID_VERSION_TAG)-$$BUILD_NUMBER_VAL-UNOFFICIAL.img"; \
+					dest="LeOS-$${arch_names[j]}-ab-$(ANDROID_VERSION_TAG)-$$BUILD_NUMBER_VAL-UNOFFICIAL.img"; \
 					mv -v "$$src" "$$dest"; \
 				fi; \
 			done && \
 			popd'
 
-# Step 11: Compress all images with xz
+# Step 10: Compress all images with xz
 compress-images: build-container create-folders
 	$(call print_section,Compress Images)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -270,7 +256,7 @@ compress-images: build-container create-folders
 				cp -fv *.img.xz /repo/out/ && \
 			popd'
 
-# Step 12: Upload images to GitHub
+# Step 11: Upload images to GitHub
 upload-to-github: create-folders
 	$(call print_section,Upload to GitHub)
 	@if ! command -v gh &> /dev/null; then \
