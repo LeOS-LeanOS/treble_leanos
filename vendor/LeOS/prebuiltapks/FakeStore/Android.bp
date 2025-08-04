@@ -1,0 +1,15 @@
+// Privapp-permissions XML als prebuilt_etc
+prebuilt_etc {
+    name: "privapp-permissions-com.android.vending.xml",
+    src: "privapp-permissions-com.android.vending.xml",
+    sub_dir: "permissions",
+    installable: true,
+}
+
+// Die App als prebuilt APK
+android_app_import {
+    name: "FakeStore",
+    apk: "FakeStore.apk",
+    certificate: "platform",
+    required: ["privapp-permissions-com.android.vending.xml"],
+}

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="permlab_useEmbms">Acceder a los contenidos emitidos por el proveedor de servicios</string>
-    <string name="permdesc_useEmbms">Poner los contenidos emitidos por tu proveedor de servicios a disposición de las aplicaciones de tu dispositivo.</string>
-</resources>

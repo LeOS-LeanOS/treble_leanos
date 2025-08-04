@@ -1,0 +1,28 @@
+// Privapp-permissions XML für GmsCore
+prebuilt_etc {
+    name: "privapp-permissions-com.google.android.gms.xml",
+    src: "privapp-permissions-com.google.android.gms.xml",
+    sub_dir: "permissions",
+    installable: true,
+}
+
+// sysconfig XML für GmsCore
+prebuilt_etc {
+    name: "sysconfig-com.google.android.gms.xml",
+    src: "sysconfig-com.google.android.gms.xml",
+    sub_dir: "sysconfig",
+    installable: true,
+}
+
+// Die App als privileged prebuilt APK
+android_app_import {
+    name: "GmsCore",
+    apk: "GmsCore.apk",
+    certificate: "platform",
+    privileged: true,
+    overrides: ["com.qualcomm.location"],
+    required: [
+        "privapp-permissions-com.google.android.gms.xml",
+        "sysconfig-com.google.android.gms.xml",
+    ],
+}

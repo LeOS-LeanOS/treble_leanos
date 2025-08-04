@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="permlab_useEmbms">Von deinem Dienstbetreiber ausgesendete Inhalte abrufen</string>
-    <string name="permdesc_useEmbms">Mache von deinem Dienstbetreiber ausgesendete Inhalte für Anwendungen auf deinem Gerät verfügbar</string>
-</resources>

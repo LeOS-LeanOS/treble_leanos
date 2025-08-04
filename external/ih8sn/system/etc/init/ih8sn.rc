@@ -1,0 +1,5 @@
+on init
+    exec u:r:ih8sn:s0 root root -- /system_ext/bin/ih8sn init
+
+on property:sys.boot_completed=1
+    exec u:r:ih8sn:s0 root root -- /system_ext/bin/ih8sn boot_completed
