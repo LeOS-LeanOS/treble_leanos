@@ -217,7 +217,7 @@ define build_gsi_variant
 			popd && \
 			rm -rfv out/target/product/leos_$(1)_ab/ && \
 			. build/envsetup.sh && \
-			lunch treble_$(1)_bmN-$(3)-userdebug && \
+			lunch leos_$(1)_bvN-$(3)-userdebug && \
 			make systemimage -j$(CPU_LIMIT) && \
 			if [ "$(2)" = "true" ]; then \
 				make vndk-test-sepolicy -j$(CPU_LIMIT); \
