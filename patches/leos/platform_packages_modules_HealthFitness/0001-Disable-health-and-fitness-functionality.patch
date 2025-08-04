@@ -1,0 +1,34 @@
+From d4f4f6e61fd6c374a049e90209ce41b418127bb7 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 18:37:40 +0100
+Subject: [PATCH 1/1] Disable health and fitness functionality
+
+Change-Id: I1f836ca6d815c765df2d71050d7eec3b45991fd8
+---
+ Android.bp | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/Android.bp b/Android.bp
+index d3484ce..d4f12ec 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -12,17 +12,3 @@
+ // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+-
+-package {
+-    default_visibility: [":__subpackages__"],
+-    default_applicable_licenses: ["packages_modules_HealthFitness_license"],
+-}
+-
+-license {
+-    name: "packages_modules_HealthFitness_license",
+-    visibility: [":__subpackages__"],
+-    license_kinds: [
+-        "SPDX-license-identifier-Apache-2.0",
+-        "SPDX-license-identifier-BSD",
+-    ],
+-}
+--
+2.49.0

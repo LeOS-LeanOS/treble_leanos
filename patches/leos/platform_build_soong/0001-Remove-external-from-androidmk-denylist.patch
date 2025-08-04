@@ -1,0 +1,24 @@
+From cdfa473bf8c2aec8a3d4cb2206e2faffad408134 Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 15:49:25 +0100
+Subject: [PATCH 1/2] Remove external from androidmk denylist
+
+Change-Id: I70b18887e81e32b9e2b7b9987e794480b16ff42e
+---
+ ui/build/androidmk_denylist.go | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/ui/build/androidmk_denylist.go b/ui/build/androidmk_denylist.go
+index 8266654..5eb5f00 100644
+--- a/ui/build/androidmk_denylist.go
++++ b/ui/build/androidmk_denylist.go
+@@ -34,7 +34,6 @@ var androidmk_denylist []string = []string{
+        "device/google/",
+        "device/google_car/",
+        "device/sample/",
+-       "external/",
+        "frameworks/",
+        "hardware/google/",
+        "hardware/interfaces/",
+--
+2.49.0

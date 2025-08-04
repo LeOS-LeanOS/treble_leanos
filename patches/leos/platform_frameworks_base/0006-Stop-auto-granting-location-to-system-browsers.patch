@@ -1,0 +1,36 @@
+From 5f29b99df37c36616f8953fb9ad79e9f7f034c2e Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 17:00:44 +0100
+Subject: [PATCH 6/8] Stop auto granting location to system browsers
+
+Change-Id: I69c97d0b0ac658f12254034e115de7778602f2a4
+---
+ .../pm/permission/DefaultPermissionGrantPolicy.java | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/services/core/java/com/android/server/pm/permission/DefaultPermissionGrantPolicy.java b/services/core/java/com/android/server/pm/permission/DefaultPermissionGrantPolicy.java
+index 098f113dc..da24f0822 100644
+--- a/services/core/java/com/android/server/pm/permission/DefaultPermissionGrantPolicy.java
++++ b/services/core/java/com/android/server/pm/permission/DefaultPermissionGrantPolicy.java
+@@ -792,19 +792,6 @@ final class DefaultPermissionGrantPolicy {
+                         Intent.CATEGORY_APP_EMAIL, userId),
+                 userId, CONTACTS_PERMISSIONS, CALENDAR_PERMISSIONS);
+
+-        // Browser
+-        String browserPackage = ArrayUtils.firstOrNull(getKnownPackages(
+-                KnownPackages.PACKAGE_BROWSER, userId));
+-        if (browserPackage == null) {
+-            browserPackage = getDefaultSystemHandlerActivityPackageForCategory(pm,
+-                    Intent.CATEGORY_APP_BROWSER, userId);
+-            if (!pm.isSystemPackage(browserPackage)) {
+-                browserPackage = null;
+-            }
+-        }
+-        grantPermissionsToPackage(pm, browserPackage, userId, false /* ignoreSystemPackage */,
+-                true /*whitelistRestrictedPermissions*/, FOREGROUND_LOCATION_PERMISSIONS);
+-
+         // Voice interaction
+         if (voiceInteractPackageNames != null) {
+             for (String voiceInteractPackageName : voiceInteractPackageNames) {
+--
+2.49.0
