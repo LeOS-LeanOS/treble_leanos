@@ -3,11 +3,6 @@
   <!-- device/generic -->
   <remove-project name="device/generic/trusty" />
 
-  <!-- device/google -->
-  <remove-project name="device/google/cuttlefish" />
-  <remove-project name="device/google/cuttlefish_prebuilts" />
-  <remove-project name="device/google/cuttlefish_vmm" />
-
   <!-- platform/prebuilts -->
   <remove-project name="platform/prebuilts/android-emulator" />
 
