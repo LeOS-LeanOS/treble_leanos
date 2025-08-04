@@ -13,12 +13,12 @@ index 8266654..5eb5f00 100644
 --- a/ui/build/androidmk_denylist.go
 +++ b/ui/build/androidmk_denylist.go
 @@ -34,7 +34,6 @@ var androidmk_denylist []string = []string{
-        "device/google/",
-        "device/google_car/",
-        "device/sample/",
--       "external/",
-        "frameworks/",
-        "hardware/google/",
-        "hardware/interfaces/",
+	"device/google/",
+	"device/google_car/",
+	"device/sample/",
+-	"external/",
+	"frameworks/",
+	"hardware/google/",
+	"hardware/interfaces/",
 --
 2.49.0
