@@ -215,8 +215,7 @@ define build_gsi_variant
 				cp -fv "/repo/configs/leos.mk" leos.mk && \
 				bash generate.sh leos && \
 			popd && \
-			cp -Rfv /repo/tmp/partner_gms vendor/ && \
-			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
+			rm -rfv out/target/product/leos_$(1)_ab/ && \
 			. build/envsetup.sh && \
 			lunch treble_$(1)_bmN-$(3)-userdebug && \
 			make systemimage -j$(CPU_LIMIT) && \
@@ -224,7 +223,7 @@ define build_gsi_variant
 				make vndk-test-sepolicy -j$(CPU_LIMIT); \
 			fi && \
 			rm -Rfv vendor/partner_gms && \
-			mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
+			mv -v out/target/product/leos_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
 		popd'
 endef
 
