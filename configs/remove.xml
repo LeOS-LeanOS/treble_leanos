@@ -3,6 +3,12 @@
   <!-- device/generic -->
   <remove-project name="device/generic/trusty" />
 
+  <!-- packages/apps -->
+  <remove-project name="packages/apps/ParanoidSense" />
+
+  <!-- packages/services/OmniJaws -->
+  <remove-project name="crdroidandroid/android_packages_services_OmniJaws" />
+
   <!-- platform/prebuilts -->
   <remove-project name="platform/prebuilts/android-emulator" />
 
@@ -32,7 +38,11 @@
   <!-- platform/external -->
   <remove-project name="platform/external/chromium-webview" />
 
+  <!-- treble_adapter -->
+  <remove-project name="treble_adapter" />
+
   <!-- vendor -->
-  <remove-project name="ponces/vendor" />
+  <remove-project name="vendor/gapps" />
+  <remove-project name="ponces/vendor_ponces" />
   <remove-project name="ponces/vendor_ponces-priv" />
 </manifest>
