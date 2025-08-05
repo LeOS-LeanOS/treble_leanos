@@ -33,5 +33,6 @@
   <remove-project name="platform/external/chromium-webview" />
 
   <!-- vendor -->
+  <remove-project name="ponces/vendor" />
   <remove-project name="ponces/vendor_ponces-priv" />
 </manifest>
