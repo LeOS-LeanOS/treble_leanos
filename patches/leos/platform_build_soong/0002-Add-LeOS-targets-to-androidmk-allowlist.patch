@@ -23,10 +23,10 @@ index 5eb5f00..50fc550 100644
 +	"vendor/LeOS/prebuiltapks/GsfProxy/Android.mk",
 +	"vendor/LeOS/prebuiltapks/Icons/Android.mk",
 +	"vendor/LeOS/prebuiltapks/LatinIME/Android.mk",
-+	"vendor/LeOS/prebuiltapks/Launcher/Android.mk",
++	"vendor/LeOS/prebuiltapks/LeOS-Launcher/Android.mk",
 +	"vendor/LeOS/prebuiltapks/LeOS-Droid/Android.mk",
 +	"vendor/LeOS/prebuiltapks/Sherpa/Android.mk",
-+	"vendor/LeOS/prebuiltapks/Wallpaper/Android.mk",
++	"vendor/LeOS/prebuiltapks/LeOS-Wallpaper/Android.mk",
  }
 
  func getAllLines(ctx Context, filename string) []string {

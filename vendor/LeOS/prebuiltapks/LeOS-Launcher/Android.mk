@@ -12,8 +12,8 @@ include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := Launcher
-LOCAL_SRC_FILES := LeOS-Launcher-v13.2.apk
+LOCAL_MODULE := LeOS-Launcher
+LOCAL_SRC_FILES := LeOS-Launcher.apk
 LOCAL_CERTIFICATE := PRESIGNED
 LOCAL_MODULE_CLASS := APPS
 LOCAL_REQUIRED_MODULES := privapp-permissions-com.leos.launcher.dev.xml
