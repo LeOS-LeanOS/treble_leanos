@@ -8,7 +8,7 @@ prebuilt_etc {
 // LatinIME APK
 android_app_import {
     name: "LatinIME",
-    apk: "latinime-stable-release.apk",
+    apk: "LatinIME.apk",
     privileged: false,
     certificate: "platform",
     overrides: ["Updater"],

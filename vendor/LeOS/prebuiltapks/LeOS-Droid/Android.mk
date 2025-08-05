@@ -3,7 +3,7 @@ LOCAL_PATH := $(my-dir)
 include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := LeOS-Droid
-LOCAL_SRC_FILES := LeOS-Droid-v1.6.4.apk
+LOCAL_SRC_FILES := LeOS-Droid.apk
 LOCAL_OPTIONAL_USES_LIBRARIES := androidx.window.extensions androidx.window.sidecar
 LOCAL_MODULE_CLASS := APPS
 LOCAL_CERTIFICATE := PRESIGNED
