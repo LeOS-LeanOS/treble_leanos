@@ -9,9 +9,6 @@
   <!-- packages/services -->
   <remove-project name="crdroidandroid/android_packages_services_OmniJaws" />
 
-  <!-- platform/prebuilts -->
-  <remove-project name="platform/prebuilts/android-emulator" />
-
   <!-- platform/packages/apps -->
   <remove-project name="platform/packages/apps/AvatarPicker" />
   <remove-project name="platform/packages/apps/BasicSmsReceiver" />
