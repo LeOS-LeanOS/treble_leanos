@@ -21,6 +21,12 @@ android_app_import {
     certificate: "platform",
     privileged: true,
     overrides: ["com.qualcomm.location"],
+    uses_libs: ["com.android.location.provider"],
+    optional_uses_libs: [
+        "org.apache.http.legacy",
+        "androidx.window.extensions",
+        "androidx.window.sidecar",
+    ],
     required: [
         "privapp-permissions-com.google.android.gms.xml",
         "sysconfig-com.google.android.gms.xml",

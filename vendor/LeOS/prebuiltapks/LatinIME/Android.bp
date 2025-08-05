@@ -12,5 +12,9 @@ android_app_import {
     privileged: false,
     certificate: "platform",
     overrides: ["Updater"],
+    optional_uses_libs: [
+        "androidx.window.extensions",
+        "androidx.window.sidecar",
+    ],
 //    enforce_uses_libraries: false, // Optional: nur falls relevant für deine API-Level, ansonsten weglassen
 }
