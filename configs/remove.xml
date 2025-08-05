@@ -39,7 +39,7 @@
   <remove-project name="platform/external/chromium-webview" />
 
   <!-- treble_adapter -->
-  <remove-project name="treble_adapter" />
+  <remove-project name="ponces/treble_adapter" />
 
   <!-- vendor -->
   <remove-project name="vendor/gapps" />
