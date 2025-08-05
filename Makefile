@@ -118,7 +118,7 @@ post-build: rename-images compress-images
 
 # Step 1: Clone ponces AOSP manifest
 clone-ponces-aosp-repo: build-container create-folders
-	$(call print_section,Clone ponces-aosp manifest)
+	$(call print_section,Clone ponces-aosp repo)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
