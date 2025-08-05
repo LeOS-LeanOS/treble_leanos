@@ -169,9 +169,7 @@ apply-patches: build-container create-folders
 				cp -Rv /repo/patches . && \
 				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
-				cp -Rv ponces_aosp/patches/personal patches/ponces_personal && \
 				patches/apply.sh . trebledroid && \
-				patches/apply.sh . ponces_personal && \
 				patches/apply.sh . ponces_staging && \
 				patches/apply.sh . leos && \
 				if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
