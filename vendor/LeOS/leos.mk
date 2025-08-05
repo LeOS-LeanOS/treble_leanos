@@ -1,9 +1,9 @@
 $(call inherit-product-if-exists, vendor/LeOS/bootanimation/android.mk)
 LOCAL_PATH := $(call my-dir)
 include $(call all-subdir-makefiles,$(LOCAL_PATH))
-    
+
 PRODUCT_SYSTEM_PROPERTIES += \
-    setprop persist.sys.input_method org.futo.inputmethod.latin/.LatinIME 
+    setprop persist.sys.input_method org.futo.inputmethod.latin/.LatinIME
 
 #prebuilts
 PRODUCT_PACKAGES += \
@@ -62,18 +62,18 @@ PRODUCT_PACKAGES += \
 	Tile \
 	HideAppIcon \
 	Datura
-                  
+
 # Bootanimation
 TARGET_SCREEN_WIDTH ?= 1080
 TARGET_SCREEN_HEIGHT ?= 1920
 PRODUCT_PACKAGES += \
     bootanimation.zip
-    
+
 # Enforce privapp-permissions whitelist
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.control_privapp_permissions=enforce \
     ro.input.defaultime=org.futo.inputmethod.latin/.LatinIME \
-    
+
 #Launcher Default
 PRODUCT_COPY_FILES += \
   vendor/LeOS/prebuiltapks/Launcher/preferred-home.xml:system/etc/preferred-apps/preferred-activities-home.xml
