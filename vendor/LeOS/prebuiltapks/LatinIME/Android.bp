@@ -14,4 +14,3 @@ android_app_import {
     overrides: ["Updater"],
 //    enforce_uses_libraries: false, // Optional: nur falls relevant für deine API-Level, ansonsten weglassen
 }
-
