@@ -8,10 +8,10 @@ Subject: [PATCH 2/4] Enable adb debug and disable secure
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/rw-system.sh b/rw-system.sh
-index d2ef432..372452d 100644
+index 3e25c0b..0bddcb9 100644
 --- a/rw-system.sh
 +++ b/rw-system.sh
-@@ -860,8 +860,8 @@ copyprop() {
+@@ -833,8 +833,8 @@ if [ -f /system/phh/secure ] || [ -f /metadata/phh/secure ];then
      resetprop_phh ro.boot.veritymode enforcing
      resetprop_phh ro.boot.warranty_bit 0
      resetprop_phh ro.warranty_bit 0
@@ -22,14 +22,14 @@ index d2ef432..372452d 100644
      resetprop_phh ro.build.type user
      resetprop_phh ro.product.build.type user
      resetprop_phh ro.system.build.type user
-@@ -869,8 +869,6 @@ copyprop() {
+@@ -842,8 +842,6 @@ if [ -f /system/phh/secure ] || [ -f /metadata/phh/secure ];then
      resetprop_phh ro.vendor.build.type user
      resetprop_phh --delete ro.build.selinux
 
 -    resetprop_phh ro.adb.secure 1
 -
- for abi in "" 64;do
-     f=/vendor/lib$abi/libstagefright_foundation.so
-     if [ -f "$f" ];then
+     # Hide system/xbin/su
+     mount /mnt/phh/empty_dir /system/xbin
+     mount /mnt/phh/empty_dir /system/app/me.phh.superuser
 --
 2.49.0
