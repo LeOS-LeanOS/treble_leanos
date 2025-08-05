@@ -12,24 +12,24 @@ index 3e25c0b..0bddcb9 100644
 --- a/rw-system.sh
 +++ b/rw-system.sh
 @@ -833,8 +833,8 @@ if [ -f /system/phh/secure ] || [ -f /metadata/phh/secure ];then
-     resetprop_phh ro.boot.veritymode enforcing
-     resetprop_phh ro.boot.warranty_bit 0
-     resetprop_phh ro.warranty_bit 0
--    resetprop_phh ro.debuggable 0
--    resetprop_phh ro.secure 1
-+    resetprop_phh ro.debuggable 1
-+    resetprop_phh ro.secure 0
-     resetprop_phh ro.build.type user
-     resetprop_phh ro.product.build.type user
-     resetprop_phh ro.system.build.type user
+ 	resetprop_phh ro.boot.veritymode enforcing
+ 	resetprop_phh ro.boot.warranty_bit 0
+ 	resetprop_phh ro.warranty_bit 0
+-	resetprop_phh ro.debuggable 0
+-	resetprop_phh ro.secure 1
++	resetprop_phh ro.debuggable 1
++	resetprop_phh ro.secure 0
+ 	resetprop_phh ro.build.type user
+ 	resetprop_phh ro.product.build.type user
+ 	resetprop_phh ro.system.build.type user
 @@ -842,8 +842,6 @@ if [ -f /system/phh/secure ] || [ -f /metadata/phh/secure ];then
-     resetprop_phh ro.vendor.build.type user
-     resetprop_phh --delete ro.build.selinux
-
--    resetprop_phh ro.adb.secure 1
+ 	resetprop_phh ro.vendor.build.type user
+ 	resetprop_phh --delete ro.build.selinux
+ 
+-	resetprop_phh ro.adb.secure 1
 -
-     # Hide system/xbin/su
-     mount /mnt/phh/empty_dir /system/xbin
-     mount /mnt/phh/empty_dir /system/app/me.phh.superuser
+ 	# Hide system/xbin/su
+ 	mount /mnt/phh/empty_dir /system/xbin
+ 	mount /mnt/phh/empty_dir /system/app/me.phh.superuser
 --
 2.49.0
