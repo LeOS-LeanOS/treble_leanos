@@ -21,7 +21,7 @@ PRODUCT_PACKAGES += \
 	NominatimNlpBackend \
 	gcamphotospreview-common \
 	eSpeakTTS \
-	Launcher \
+	LeOS-Launcher \
 	com.saggitt.omega \
 	omega \
 	Dialer \
@@ -39,8 +39,6 @@ PRODUCT_PACKAGES += \
 	GCamPhotosPreview \
 	LeOS-Icons \
 	com.leos.icons \
-	LeOS-Phone \
-	LeOS-Contacts \
 	com.leos.phone \
 	com.leos.contacts \
 	me.phh.superuser \
@@ -76,4 +74,4 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 
 #Launcher Default
 PRODUCT_COPY_FILES += \
-  vendor/LeOS/prebuiltapks/Launcher/preferred-home.xml:system/etc/preferred-apps/preferred-activities-home.xml
+  vendor/LeOS/prebuiltapks/LeOS-Launcher/preferred-home.xml:system/etc/preferred-apps/preferred-activities-home.xml
