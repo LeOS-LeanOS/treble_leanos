@@ -12,4 +12,3 @@ LOCAL_ENFORCE_USES_LIBRARIES := false
 endif
 
 include $(BUILD_PREBUILT)
-
