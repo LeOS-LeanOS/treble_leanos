@@ -63,9 +63,9 @@ prebuilt_etc {
 // Create symlink for dark bootanimation
 genrule {
     name: "bootanimation_dark_symlink",
-    srcs: [":bootanimation.zip"],
+    srcs: [":bootanimation_zip_gen"],
     out: ["bootanimation-dark.zip"],
-    cmd: "ln -sf bootanimation.zip $(out)",
+    cmd: "cp $(in) $(out)",
 }
 
 prebuilt_etc {
