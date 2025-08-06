@@ -6,8 +6,7 @@ Subject: [PATCH 3/4] Allow build to continue with missing modules
 Needed for some components when building arm32_binder64
 ---
  leos_a64_ab/BoardConfig.mk   | 2 ++
- leos_arm64_ab/BoardConfig.mk | 2 ++
- 2 files changed, 4 insertions(+)
+ 1 files changed, 2 insertions(+)
 
 diff --git a/leos_a64_ab/BoardConfig.mk b/leos_a64_ab/BoardConfig.mk
 index f131e88..551bb8f 100644
@@ -17,16 +16,6 @@ index f131e88..551bb8f 100644
  BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1572864000
  endif
  TARGET_USES_64_BIT_BINDER := true
-+
-+BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
-diff --git a/leos_arm64_ab/BoardConfig.mk b/leos_arm64_ab/BoardConfig.mk
-index 2fddc52..25f632a 100644
---- a/leos_arm64_ab/BoardConfig.mk
-+++ b/leos_arm64_ab/BoardConfig.mk
-@@ -6,3 +6,5 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2147483648
- else
- BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE := 33554432
- endif
 +
 +BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
 --
