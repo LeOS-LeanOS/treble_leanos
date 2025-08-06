@@ -6,7 +6,7 @@ prebuilt_etc {
     installable: true,
 }
 
-// AdvancedPrivacy APK with JNI libraries
+// AdvancedPrivacy APK
 android_app_import {
     name: "AdvancedPrivacy",
     apk: "AdvancedPrivacy.apk",
@@ -16,49 +16,4 @@ android_app_import {
         "androidx.window.sidecar",
     ],
     required: ["privapp-permissions-foundation.e.advancedprivacy.xml"],
-    jni_libs: [
-        "libgojni.so",
-        "libmapbox-gl.so", 
-        "libtor.so",
-        "libsentry.so",
-        "libsentry-android.so",
-    ],
-    arch: {
-        arm: {
-            jni_libs: [
-                "lib/armeabi-v7a/libgojni.so",
-                "lib/armeabi-v7a/libmapbox-gl.so",
-                "lib/armeabi-v7a/libtor.so",
-                "lib/armeabi-v7a/libsentry.so",
-                "lib/armeabi-v7a/libsentry-android.so",
-            ],
-        },
-        arm64: {
-            jni_libs: [
-                "lib/arm64-v8a/libgojni.so",
-                "lib/arm64-v8a/libmapbox-gl.so",
-                "lib/arm64-v8a/libtor.so",
-                "lib/arm64-v8a/libsentry.so",
-                "lib/arm64-v8a/libsentry-android.so",
-            ],
-        },
-        x86: {
-            jni_libs: [
-                "lib/x86/libgojni.so",
-                "lib/x86/libmapbox-gl.so",
-                "lib/x86/libtor.so",
-                "lib/x86/libsentry.so",
-                "lib/x86/libsentry-android.so",
-            ],
-        },
-        x86_64: {
-            jni_libs: [
-                "lib/x86_64/libgojni.so",
-                "lib/x86_64/libmapbox-gl.so",
-                "lib/x86_64/libtor.so",
-                "lib/x86_64/libsentry.so",
-                "lib/x86_64/libsentry-android.so",
-            ],
-        },
-    },
 }
