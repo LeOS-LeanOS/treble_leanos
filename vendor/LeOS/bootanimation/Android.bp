@@ -1,0 +1,77 @@
+//
+// Copyright (C) 2016 The CyanogenMod Project
+//               2017-2019 The LineageOS Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+genrule {
+    name: "bootanimation_zip_gen",
+    srcs: [
+        "bootanimation.tar",
+        "desc.txt",
+    ],
+    tools: [
+        "soong_zip",
+    ],
+    out: ["bootanimation.zip"],
+    cmd: "echo 'Building bootanimation.zip' && " +
+         "rm -rf $(genDir)/BOOTANIMATION && " +
+         "mkdir -p $(genDir)/BOOTANIMATION && " +
+         "tar xfp $(location bootanimation.tar) -C $(genDir)/BOOTANIMATION && " +
+         "if [ $${TARGET_SCREEN_HEIGHT:-1080} -lt $${TARGET_SCREEN_WIDTH:-1920} ]; then " +
+         "    IMAGEWIDTH=$${TARGET_SCREEN_HEIGHT:-1080}; " +
+         "else " +
+         "    IMAGEWIDTH=$${TARGET_SCREEN_WIDTH:-1920}; " +
+         "fi; " +
+         "IMAGESCALEWIDTH=$$IMAGEWIDTH; " +
+         "IMAGESCALEHEIGHT=$$(expr $$IMAGESCALEWIDTH / 3); " +
+         "if [ \"$${TARGET_BOOTANIMATION_HALF_RES}\" = \"true\" ]; then " +
+         "    IMAGEWIDTH=\"$$(expr \"$$IMAGEWIDTH\" / 2)\"; " +
+         "fi; " +
+         "IMAGEHEIGHT=$$(expr $$IMAGEWIDTH / 3); " +
+         "RESOLUTION=\"$$IMAGEWIDTH\"x\"$$IMAGEHEIGHT\"; " +
+         "for part_cnt in 0 1 2 3 4; do " +
+         "    mkdir -p $(genDir)/BOOTANIMATION/part$$part_cnt; " +
+         "done; " +
+         "if [ -f vendor/LeOS/tools-leos/linux-x86/bin/mogrify ]; then " +
+         "    vendor/LeOS/tools-leos/linux-x86/bin/mogrify -resize $$RESOLUTION -colors 250 $(genDir)/BOOTANIMATION/*/*.png; " +
+         "fi; " +
+         "echo \"$$IMAGESCALEWIDTH $$IMAGESCALEHEIGHT 60\" > $(genDir)/BOOTANIMATION/desc.txt; " +
+         "cat $(location desc.txt) >> $(genDir)/BOOTANIMATION/desc.txt && " +
+         "$(location soong_zip) -L 0 -o $(out) -C $(genDir)/BOOTANIMATION -D $(genDir)/BOOTANIMATION",
+}
+
+prebuilt_etc {
+    name: "bootanimation.zip",
+    src: ":bootanimation_zip_gen",
+    filename: "bootanimation.zip",
+    sub_dir: "media",
+    product_specific: true,
+}
+
+// Create symlink for dark bootanimation
+genrule {
+    name: "bootanimation_dark_symlink",
+    srcs: [":bootanimation.zip"],
+    out: ["bootanimation-dark.zip"],
+    cmd: "ln -sf bootanimation.zip $(out)",
+}
+
+prebuilt_etc {
+    name: "bootanimation-dark.zip",
+    src: ":bootanimation_dark_symlink",
+    filename: "bootanimation-dark.zip",
+    sub_dir: "media",
+    product_specific: true,
+}

@@ -1,0 +1,5 @@
+android_app_import {
+    name: "LeOS-Icons",
+    apk: "LeOS-Icons.apk",
+    certificate: "PRESIGNED",
+}
