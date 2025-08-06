@@ -11,5 +11,9 @@ android_app_import {
     name: "FakeStore",
     apk: "FakeStore.apk",
     certificate: "platform",
+    optional_uses_libs: [
+        "androidx.window.extensions",
+        "androidx.window.sidecar",
+    ],
     required: ["privapp-permissions-com.android.vending.xml"],
 }
