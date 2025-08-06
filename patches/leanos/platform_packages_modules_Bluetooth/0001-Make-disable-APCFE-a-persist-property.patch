@@ -1,7 +1,7 @@
 From ac445bf0aa4bb783c317bb5c43b408070dd700e4 Mon Sep 17 00:00:00 2001
 From: me-cafebabe <me.cafebabe@gmail.com>
 Date: Mon, 20 Mar 2023 19:54:49 +0800
-Subject: [PATCH 1/2] Add property to disable APCF extended features
+Subject: [PATCH 1/1] Add property to disable APCF extended features
 
 * It's broken on some legacy devices, rendering Bluetooth crashing
 
