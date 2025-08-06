@@ -21,8 +21,7 @@ endef
 #######################
 
 # ROM configuration
-ANDROID_VERSION_TAG ?= bp2a
-APPLY_LEANOS_PATCHES ?= false
+BUILD_LEANOS ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
 PONCES_AOSP_TAG ?= android-16.0
@@ -41,6 +40,7 @@ MAX_MEM_PERCENT ?= 100
 CONTAINER_RUNTIME ?= podman
 
 # System variables
+ANDROID_VERSION_FILE := tmp/.android_version
 BUILD_NUMBER_FILE := tmp/.build_number
 $(shell mkdir -p tmp)
 ifeq ($(wildcard $(BUILD_NUMBER_FILE)),)
@@ -56,7 +56,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--memory="$(MEM_LIMIT)" \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
-	-e APPLY_LEANOS_PATCHES="$(APPLY_LEANOS_PATCHES)" \
+	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
 	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)"
@@ -67,7 +67,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 #######################
 .PHONY: all build-container build-prerequisites build-treble-app \
 	clean clone-ponces-aosp-repo compress-images copy-manifest-config create-folders \
-	full-build copy-prebuilts init-aosp-manifest post-build rename-images \
+	extract-android-version full-build copy-prebuilts init-aosp-manifest post-build rename-images \
 	sync-sources upload-to-github build-arm64 build-arm32
 
 #######################
@@ -93,19 +93,19 @@ create-folders:
 # Build targets for each architecture
 build-arm64: build-prerequisites
 	$(call print_section,Build ARM64)
-	$(call build_gsi_variant,arm64,$(VERIFY_SEPOLICY),$(ANDROID_VERSION_TAG))
+	$(call build_gsi_variant,arm64,$(VERIFY_SEPOLICY))
 
 build-arm32: build-prerequisites
 	$(call print_section,Build ARM32_BINDER64)
-	$(call build_gsi_variant,a64,$(VERIFY_SEPOLICY),$(ANDROID_VERSION_TAG))
+	$(call build_gsi_variant,a64,$(VERIFY_SEPOLICY))
 
 # Full build process
-full-build: clone-ponces-aosp-repo init-aosp-manifest copy-manifest-config sync-sources \
+full-build: extract-android-version init-aosp-manifest copy-manifest-config sync-sources \
 	apply-patches  copy-prebuilts \
 	build-treble-app build-arm64 build-arm32 post-build
 
 # Common build prerequisites
-build-prerequisites: build-container create-folders clone-ponces-aosp-repo copy-manifest-config sync-sources apply-patches  copy-prebuilts build-treble-app
+build-prerequisites: build-container create-folders extract-android-version copy-manifest-config sync-sources apply-patches  copy-prebuilts build-treble-app
 
 # Post-build steps
 post-build: rename-images compress-images
@@ -127,17 +127,29 @@ clone-ponces-aosp-repo: build-container create-folders
 				git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_AOSP_TAG) ponces_aosp/ && \
 			popd'
 
-# Step 2: Init AOSP manifest
-init-aosp-manifest: build-container create-folders
-	$(call print_section,Init AOSP manifest)
+# Step 2: Extract Android version tag from ponces repo
+extract-android-version: clone-ponces-aosp-repo
+	$(call print_section,Extract Android Version Tag)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
 				ANDROID_TAG=$$(grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/") && \
+				echo "Extracted Android version tag: $$ANDROID_TAG" && \
+				echo "$$ANDROID_TAG" > /repo/$(ANDROID_VERSION_FILE) && \
+			popd'
+
+# Step 3: Init AOSP manifest
+init-aosp-manifest: extract-android-version
+	$(call print_section,Init AOSP manifest)
+	$(CONTAINER_RUN) leos-gsi-builder \
+		/bin/bash -e -c ' \
+			pushd /repo/src/ && \
+				ANDROID_TAG=$$(cat /repo/$(ANDROID_VERSION_FILE)) && \
+				echo "Using Android version tag: $$ANDROID_TAG" && \
 				repo init -u https://android.googlesource.com/platform/manifest -b $$ANDROID_TAG --depth=1 --git-lfs && \
 			popd'
 
-# Step 3: Copy manifest config - Add local manifest files to customize the source tree
+# Step 4: Copy manifest config - Add local manifest files to customize the source tree
 copy-manifest-config: build-container create-folders
 	$(call print_section,Copy manifest config)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -147,7 +159,7 @@ copy-manifest-config: build-container create-folders
 			cp -v /repo/src/ponces_aosp/build/default.xml /repo/src/.repo/local_manifests/ponces_default.xml && \
 			cp -v /repo/src/ponces_aosp/build/remove.xml /repo/src/.repo/local_manifests/ponces_remove.xml'
 
-# Step 4: Perform full sources sync - Download all source code with automatic retry on failure
+# Step 5: Perform full sources sync - Download all source code with automatic retry on failure
 sync-sources: build-container create-folders
 	$(call print_section,Sync Sources)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -159,7 +171,7 @@ sync-sources: build-container create-folders
 				done && \
 			popd'
 
-# Step 5: Apply patches - Apply LeOS patches to the source
+# Step 6: Apply patches - Apply LeOS patches to the source
 apply-patches: build-container create-folders
 	$(call print_section,Apply Patches)
 	$(CONTAINER_RUN) \
@@ -174,24 +186,31 @@ apply-patches: build-container create-folders
 				patches/apply.sh . ponces_staging && \
 				patches/apply.sh . leos && \
 				patches/apply.sh . personal && \
-				if [ "$$APPLY_LEANOS_PATCHES" = "true" ]; then \
+				if [ "$$BUILD_LEANOS" = "true" ]; then \
 					patches/apply.sh . leanos; \
 				fi && \
 				rm -rf patches/ && \
 			popd'
 
-# Step 6: Generate signing keys - Create keys for signing the build
+# Step 7: Copy prebuilts to vendor/
 copy-prebuilts: build-container create-folders
 	$(call print_section,Copy prebuilts)
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src && \
+				rm -rfv vendor/LeOS vendor/LeanOS && \
 				cp -Rfv /repo/external . && \
 				cp -Rfv /repo/packages . && \
-				cp -Rfv /repo/vendor . && \
+				if [ "$$BUILD_LEANOS" = "true" ]; then \
+					echo "BUILD_LEANOS=true: Copying vendor/LeanOS to src/vendor/"; \
+					cp -Rfv /repo/vendor/LeanOS vendor/; \
+				else \
+					echo "BUILD_LEANOS=false: Copying vendor/LeOS to src/vendor/"; \
+					cp -Rfv /repo/vendor/LeOS vendor/; \
+				fi && \
 			popd'
 
-# Step 7: Build treble app - Compile the Treble App
+# Step 8: Build treble app - Compile the Treble App
 build-treble-app: build-container create-folders
 	$(call print_section,Build Treble App)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -204,20 +223,22 @@ build-treble-app: build-container create-folders
 				fi && \
 			popd'
 
-# Step 8: Helper function to build a specific GSI variant
+# Step 9: Helper function to build a specific GSI variant
 define build_gsi_variant
 	$(CONTAINER_RUN) \
 	-e ARCH="$(1)" \
 	leos-gsi-builder \
 	/bin/bash -e -c ' \
 		pushd /repo/src && \
+			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_FILE)) && \
+			echo "Building $(1) with Android version tag: $$ANDROID_VERSION_TAG_VAL" && \
 			pushd device/phh/treble && \
 				cp -fv "/repo/configs/leos.mk" leos.mk && \
 				bash generate.sh leos && \
 			popd && \
 			rm -rfv out/target/product/leos_$(1)_ab/ && \
 			. build/envsetup.sh && \
-			lunch leos_$(1)_bvN-$(3)-userdebug && \
+			lunch leos_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
 			make systemimage -j$(CPU_LIMIT) && \
 			if [ "$(2)" = "true" ]; then \
 				make vndk-test-sepolicy -j$(CPU_LIMIT); \
@@ -227,7 +248,7 @@ define build_gsi_variant
 		popd'
 endef
 
-# Step 9: Rename image files - Convert temporary image names to final release filenames
+# Step 10: Rename image files - Convert temporary image names to final release filenames
 rename-images: build-container create-folders
 	$(call print_section,Rename Images)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -235,17 +256,19 @@ rename-images: build-container create-folders
 			pushd /repo/tmp && \
 			archs=("arm64" "a64"); \
 			arch_names=("arm64" "arm32_binder64"); \
+			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_FILE)); \
 			BUILD_NUMBER_VAL=$$(cat /repo/$$BUILD_NUMBER_FILE); \
+			echo "Using Android version tag for filenames: $$ANDROID_VERSION_TAG_VAL"; \
 			for j in $${!archs[@]}; do \
 				src="system_$${archs[j]}.img"; \
 				if [ -f "$$src" ]; then \
-					dest="LeOS-$${arch_names[j]}-ab-$(ANDROID_VERSION_TAG)-$$BUILD_NUMBER_VAL-UNOFFICIAL.img"; \
+					dest="LeOS-$${arch_names[j]}-ab-$$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL-UNOFFICIAL.img"; \
 					mv -v "$$src" "$$dest"; \
 				fi; \
 			done && \
 			popd'
 
-# Step 10: Compress all images with xz
+# Step 11: Compress all images with xz
 compress-images: build-container create-folders
 	$(call print_section,Compress Images)
 	$(CONTAINER_RUN) leos-gsi-builder \
@@ -255,7 +278,7 @@ compress-images: build-container create-folders
 				cp -fv *.img.xz /repo/out/ && \
 			popd'
 
-# Step 11: Upload images to GitHub
+# Step 12: Upload images to GitHub
 upload-to-github: create-folders
 	$(call print_section,Upload to GitHub)
 	@if ! command -v gh &> /dev/null; then \
@@ -266,7 +289,9 @@ upload-to-github: create-folders
 		git init && \
 		git remote add origin "https://github.com/cawilliamson/treble_leos.git" && \
 		gh repo set-default "cawilliamson/treble_leos" && \
+		ANDROID_VERSION_TAG_VAL=$$(cat $(PWD)/$(ANDROID_VERSION_FILE)) && \
 		BUILD_NUMBER_VAL=$$(cat $(PWD)/$(BUILD_NUMBER_FILE)) && \
-		gh release create -d -n "" -t "LeOS $(ANDROID_VERSION_TAG)-$$BUILD_NUMBER_VAL" "$(ANDROID_VERSION_TAG)-$$BUILD_NUMBER_VAL" && \
-		gh release upload "$(ANDROID_VERSION_TAG)-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
+		echo "Using Android version tag for GitHub release: $$ANDROID_VERSION_TAG_VAL" && \
+		gh release create -d -n "" -t "LeOS $$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL" "$$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL" && \
+		gh release upload "$$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
 		rm -rf .git/
