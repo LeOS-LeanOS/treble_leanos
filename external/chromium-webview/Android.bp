@@ -43,6 +43,7 @@ webview_app_import {
     name: "webview",
     product_specific: true,
     default_dev_cert: true,
+    enforce_uses_libs: false,
     required: [
         "libwebviewchromium_loader",
         "libwebviewchromium_plat_support",
