@@ -10,7 +10,7 @@ prebuilt_etc {
 android_app_import {
     name: "LeOS-Launcher",
     apk: "LeOS-Launcher.apk",
-    certificate: "PRESIGNED",
+    presigned: true,
     optional_uses_libs: [
         "androidx.window.extensions",
         "androidx.window.sidecar",
