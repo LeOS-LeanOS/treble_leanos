@@ -22,7 +22,7 @@ endef
 
 # ROM configuration
 ANDROID_VERSION_TAG ?= bp2a
-APPLY_DEBUG_PATCHES ?= false
+APPLY_LEANOS_PATCHES ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
 PONCES_AOSP_TAG ?= android-16.0
@@ -56,10 +56,11 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--memory="$(MEM_LIMIT)" \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
+	-e APPLY_LEANOS_PATCHES="$(APPLY_LEANOS_PATCHES)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
-	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)" \
-	-e APPLY_DEBUG_PATCHES="$(APPLY_DEBUG_PATCHES)"
+	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)"
+
 
 #######################
 # Define all phony targets
@@ -173,8 +174,8 @@ apply-patches: build-container create-folders
 				patches/apply.sh . ponces_staging && \
 				patches/apply.sh . leos && \
 				patches/apply.sh . personal && \
-				if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
-					patches/apply.sh . debug; \
+				if [ "$$APPLY_LEANOS_PATCHES" = "true" ]; then \
+					patches/apply.sh . leanos; \
 				fi && \
 				rm -rf patches/ && \
 			popd'
