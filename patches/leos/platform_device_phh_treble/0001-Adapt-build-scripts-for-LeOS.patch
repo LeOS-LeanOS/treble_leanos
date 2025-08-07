@@ -1,7 +1,7 @@
 From 4fc7634fb2b94142425f80ae42e3b9046d397a68 Mon Sep 17 00:00:00 2001
 From: "Christopher A. Williamson" <contact@chrisaw.io>
 Date: Thu, 7 Aug 2025 23:19:22 +0100
-Subject: [PATCH 1/4] Adapt build scripts for LeOS
+Subject: [PATCH 1/5] Adapt build scripts for LeOS
 
 ---
  generate.sh | 7 ++++---

@@ -1,7 +1,7 @@
 From bd6da5e870c0aa81ef278f99c2c5fa5f6a2280a2 Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 16:11:03 +0100
-Subject: [PATCH 3/4] Allow build to continue with missing modules
+Subject: [PATCH 3/5] Allow build to continue with missing modules
 
 Needed for some components when building arm32_binder64
 ---

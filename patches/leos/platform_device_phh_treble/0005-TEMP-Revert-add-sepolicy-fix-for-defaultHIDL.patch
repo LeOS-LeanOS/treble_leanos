@@ -1,0 +1,44 @@
+From 76d1a8549290bdbc154ed8a7445719016adb7068 Mon Sep 17 00:00:00 2001
+From: "Christopher A. Williamson" <contact@chrisaw.io>
+Date: Thu, 15 May 2025 21:12:23 +0100
+Subject: [PATCH 5/5] Revert: "Add sepolicy fix for defaultHIDL"
+
+---
+ sepolicy/fingerprint.te   | 1 -
+ sepolicy/service.te       | 1 -
+ sepolicy/service_contexts | 3 ---
+ 3 files changed, 5 deletions(-)
+ delete mode 100644 sepolicy/fingerprint.te
+
+diff --git a/sepolicy/fingerprint.te b/sepolicy/fingerprint.te
+deleted file mode 100644
+index 23c4c3f..0000000
+--- a/sepolicy/fingerprint.te
++++ /dev/null
+@@ -1 +0,0 @@
+-allow system_server fingerprint_hidl_service:service_manager find;
+diff --git a/sepolicy/service.te b/sepolicy/service.te
+index 3a75de8..7ae4018 100644
+--- a/sepolicy/service.te
++++ b/sepolicy/service.te
+@@ -1,5 +1,4 @@
+ type qcrilam_service,    service_manager_type;
+-type fingerprint_hidl_service, system_api_service, service_manager_type;
+
+ type adbroot_service, service_manager_type;
+ type lineage_hardware_service, system_api_service, system_server_service, service_manager_type;
+diff --git a/sepolicy/service_contexts b/sepolicy/service_contexts
+index 75491c6..a390e3f 100644
+--- a/sepolicy/service_contexts
++++ b/sepolicy/service_contexts
+@@ -12,8 +12,5 @@ mtkIms                                    u:object_r:radio_service:s0
+ # Audio AIDL interface
+ android.hardware.bluetooth.audio.IBluetoothAudioProviderFactory/sysbta    u:object_r:hal_audio_service:s0
+
+-# Fingerprint
+-android.hardware.biometrics.fingerprint.IFingerprint/defaultHIDL     u:object_r:fingerprint_hidl_service:s0
+-
+ # QcRilAm
+ me.phh.qcrilam                                                            u:object_r:qcrilam_service:s0
+--
+2.49.0
