@@ -21,6 +21,7 @@ endef
 #######################
 
 # ROM configuration
+APPLY_STAGING_PATCHES ?= true
 BUILD_LEANOS ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
@@ -31,10 +32,6 @@ UPLOAD_TO_GITHUB ?= false
 # Build variants configuration
 ARCHITECTURES := arm64 a64
 ARCH_DISPLAY_NAMES := arm64 arm32_binder64
-
-# Resource configuration
-MAX_CPU_PERCENT ?= 100
-MAX_MEM_PERCENT ?= 100
 
 # Container configuration
 CONTAINER_RUNTIME ?= podman
@@ -86,7 +83,6 @@ build-container:
 # Create necessary directories for the build process
 create-folders:
 	mkdir -p out/ src/ tmp/
-	rm -rf tmp/*
 
 # Build targets for each architecture
 build-arm64: build-prerequisites
@@ -184,7 +180,9 @@ apply-patches: build-container create-folders
 				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
 				patches/apply.sh . trebledroid && \
-				patches/apply.sh . ponces_staging && \
+                                if [ "$$APPLY_STAGING_PATCHES" = "true"; then \
+                                  patches/apply.sh . ponces_staging && \
+                                fi && \
 				patches/apply.sh . leos && \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
 					patches/apply.sh . leanos; \
