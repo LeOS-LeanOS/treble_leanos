@@ -236,14 +236,14 @@ define build_gsi_variant
 				cp -fv "/repo/configs/leos.mk" leos.mk && \
 				bash generate.sh leos && \
 			popd && \
-			rm -rfv out/target/product/treble_$(1)_ab/ && \
+			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
 			. build/envsetup.sh && \
 			lunch treble_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
 			make systemimage -j$$(nproc --all) && \
 			if [ "$(2)" = "true" ]; then \
 				make vndk-test-sepolicy -j$$(nproc --all); \
 			fi && \
-			mv -v out/target/product/treble_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
+			mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
 		popd'
 endef
 
