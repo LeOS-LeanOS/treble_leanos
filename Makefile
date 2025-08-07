@@ -243,7 +243,6 @@ define build_gsi_variant
 			if [ "$(2)" = "true" ]; then \
 				make vndk-test-sepolicy -j$$(nproc --all); \
 			fi && \
-			rm -Rfv vendor/partner_gms && \
 			mv -v out/target/product/treble_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
 		popd'
 endef
