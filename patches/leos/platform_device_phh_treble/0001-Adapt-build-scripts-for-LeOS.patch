@@ -1,19 +1,11 @@
-From 73676f3b10ef497fcae6a8a4a1a4a7a0607b0311 Mon Sep 17 00:00:00 2001
-From: harvey186 <harvey186@hotmail.com>
-Date: Mon, 4 Aug 2025 16:07:17 +0100
+From 4fc7634fb2b94142425f80ae42e3b9046d397a68 Mon Sep 17 00:00:00 2001
+From: "Christopher A. Williamson" <contact@chrisaw.io>
+Date: Thu, 7 Aug 2025 23:19:22 +0100
 Subject: [PATCH 1/4] Adapt build scripts for LeOS
 
 ---
- generate.sh                  |  7 ++++---
- tdgsi_a64_a/BoardConfig.mk   |  8 --------
- tdgsi_arm64_a/BoardConfig.mk |  7 -------
- tdgsi_arm_a/BoardConfig.mk   | 11 -----------
- tdgsi_arm_ab/BoardConfig.mk  |  7 -------
- 5 files changed, 4 insertions(+), 36 deletions(-)
- delete mode 100644 tdgsi_a64_a/BoardConfig.mk
- delete mode 100644 tdgsi_arm64_a/BoardConfig.mk
- delete mode 100644 tdgsi_arm_a/BoardConfig.mk
- delete mode 100644 tdgsi_arm_ab/BoardConfig.mk
+ generate.sh | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/generate.sh b/generate.sh
 index 8f24152..283664f 100644
@@ -21,15 +13,15 @@ index 8f24152..283664f 100644
 +++ b/generate.sh
 @@ -15,8 +15,8 @@ fi
  echo 'PRODUCT_MAKEFILES := \' > AndroidProducts.mk
-
+ 
  for part in a ab;do
--       for apps in vanilla gapps foss gapps-go old;do
--               for arch in arm64 arm a64;do
-+       for apps in vanilla;do
-+               for arch in arm64 a64;do
-                        for su in yes no;do
-                                apps_suffix=""
-                                apps_script=""
+-	for apps in vanilla gapps foss gapps-go old;do
+-		for arch in arm64 arm a64;do
++	for apps in vanilla;do
++		for arch in arm64 a64;do
+ 			for su in yes no;do
+ 				apps_suffix=""
+ 				apps_script=""
 @@ -86,6 +86,7 @@ for part in a ab;do
  TARGET_GAPPS_ARCH := ${baseArch}
  include build/make/target/product/aosp_${baseArch}.mk
@@ -44,65 +36,8 @@ index 8f24152..283664f 100644
  PRODUCT_SYSTEM_BRAND := google
 -PRODUCT_MODEL := TrebleDroid $apps_name
 +PRODUCT_MODEL := LeOS-A16
-
+ 
  # Overwrite the inherited "emulator" characteristics
  PRODUCT_CHARACTERISTICS := device
-diff --git a/tdgsi_a64_a/BoardConfig.mk b/tdgsi_a64_a/BoardConfig.mk
-deleted file mode 100644
-index d430bf8..0000000
---- a/tdgsi_a64_a/BoardConfig.mk
-+++ /dev/null
-@@ -1,8 +0,0 @@
--include build/make/target/board/generic_arm_ab/BoardConfig.mk
--include device/phh/treble/board-base.mk
--
--ifeq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
--BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1572864000
--endif
--TARGET_USES_64_BIT_BINDER := true
--BOARD_SYSTEMIMAGE_AS_SYSTEM := true
-diff --git a/tdgsi_arm64_a/BoardConfig.mk b/tdgsi_arm64_a/BoardConfig.mk
-deleted file mode 100644
-index c9bc831..0000000
---- a/tdgsi_arm64_a/BoardConfig.mk
-+++ /dev/null
-@@ -1,7 +0,0 @@
--include build/make/target/board/generic_arm64_ab/BoardConfig.mk
--include device/phh/treble/board-base.mk
--
--ifeq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
--BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2080374784
--endif
--BOARD_SYSTEMIMAGE_AS_SYSTEM := true
-diff --git a/tdgsi_arm_a/BoardConfig.mk b/tdgsi_arm_a/BoardConfig.mk
-deleted file mode 100644
-index 7340fc4..0000000
---- a/tdgsi_arm_a/BoardConfig.mk
-+++ /dev/null
-@@ -1,11 +0,0 @@
--include build/make/target/board/generic_arm_ab/BoardConfig.mk
--include device/phh/treble/board-base.mk
--
--ifeq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
--BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1313583104
--else
--BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE := 25165824
--endif
--
--TARGET_USES_64_BIT_BINDER := false
--BOARD_SYSTEMIMAGE_AS_SYSTEM := true
-diff --git a/tdgsi_arm_ab/BoardConfig.mk b/tdgsi_arm_ab/BoardConfig.mk
-deleted file mode 100644
-index a9a4fe3..0000000
---- a/tdgsi_arm_ab/BoardConfig.mk
-+++ /dev/null
-@@ -1,7 +0,0 @@
--include build/make/target/board/generic_arm_ab/BoardConfig.mk
--include device/phh/treble/board-base.mk
--
--ifeq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
--BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1073741824
--endif
--TARGET_USES_64_BIT_BINDER := false
---
+-- 
 2.49.0
