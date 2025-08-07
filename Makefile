@@ -181,7 +181,7 @@ apply-patches: build-container create-folders
 				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
 				patches/apply.sh . trebledroid && \
                                 if [ "$$APPLY_STAGING_PATCHES" = "true"; then \
-                                  patches/apply.sh . ponces_staging && \
+                                  patches/apply.sh . ponces_staging; \
                                 fi && \
 				patches/apply.sh . leos && \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
