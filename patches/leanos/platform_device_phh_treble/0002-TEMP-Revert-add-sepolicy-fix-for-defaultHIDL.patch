@@ -18,12 +18,15 @@ index 23c4c3f..0000000
 @@ -1 +0,0 @@
 -allow system_server fingerprint_hidl_service:service_manager find;
 diff --git a/sepolicy/service.te b/sepolicy/service.te
-index b4758df..a9120f9 100644
+index 3a75de8..7ae4018 100644
 --- a/sepolicy/service.te
 +++ b/sepolicy/service.te
-@@ -1,2 +1 @@
+@@ -1,5 +1,4 @@
  type qcrilam_service,    service_manager_type;
 -type fingerprint_hidl_service, system_api_service, service_manager_type;
+
+ type adbroot_service, service_manager_type;
+ type lineage_hardware_service, system_api_service, system_server_service, service_manager_type;
 diff --git a/sepolicy/service_contexts b/sepolicy/service_contexts
 index 75491c6..a390e3f 100644
 --- a/sepolicy/service_contexts
@@ -38,5 +41,4 @@ index 75491c6..a390e3f 100644
  # QcRilAm
  me.phh.qcrilam                                                            u:object_r:qcrilam_service:s0
 --
-2.47.2
-a
+2.49.0
