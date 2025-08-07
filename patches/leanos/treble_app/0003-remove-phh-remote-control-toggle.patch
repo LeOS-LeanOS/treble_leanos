@@ -10,10 +10,10 @@ Subject: [PATCH 3/8] Remove phh remote control toggle
  3 files changed, 9 deletions(-)
 
 diff --git a/app/src/main/java/me/phh/treble/app/Misc.kt b/app/src/main/java/me/phh/treble/app/Misc.kt
-index 8038e65..4cc21ec 100644
+index 493c3f0..6497567 100644
 --- a/app/src/main/java/me/phh/treble/app/Misc.kt
 +++ b/app/src/main/java/me/phh/treble/app/Misc.kt
-@@ -211,10 +211,6 @@ object Misc: EntryStartup {
+@@ -205,10 +205,6 @@ object Misc: EntryStartup {
                  val value = sp.getBoolean(key, false)
                  SystemProperties.set("persist.sys.phh.dynamic_fps", if (value) "1" else "0")
              }
@@ -25,22 +25,22 @@ index 8038e65..4cc21ec 100644
                  val value = sp.getBoolean(key, false)
                  SystemProperties.set("persist.sys.phh.disable_audio_effects", if (value) "1" else "0")
 diff --git a/app/src/main/java/me/phh/treble/app/MiscSettings.kt b/app/src/main/java/me/phh/treble/app/MiscSettings.kt
-index a023297..c2e20c4 100644
+index 4f75ddc..58612c6 100644
 --- a/app/src/main/java/me/phh/treble/app/MiscSettings.kt
 +++ b/app/src/main/java/me/phh/treble/app/MiscSettings.kt
-@@ -25,7 +25,6 @@ object MiscSettings : Settings {
+@@ -24,7 +24,6 @@ object MiscSettings : Settings {
+     val securize = "key_misc_securize"
      val secureAdb = "key_misc_secure_adb"
      val removeTelephony = "key_misc_removetelephony"
-     val simSlots = "key_misc_sim_slots"
 -    val remotectl = "key_misc_remotectl"
      val disableAudioEffects = "key_misc_disable_audio_effects"
      val disableFastAudio = "key_misc_disable_fast_audio"
      val cameraTimestampOverride = "key_misc_camera_timestamp"
 diff --git a/app/src/main/res/xml/pref_misc.xml b/app/src/main/res/xml/pref_misc.xml
-index 6339fde..905ac5e 100644
+index eaf3572..2016122 100644
 --- a/app/src/main/res/xml/pref_misc.xml
 +++ b/app/src/main/res/xml/pref_misc.xml
-@@ -255,9 +255,5 @@
+@@ -231,9 +231,5 @@
                  android:targetPackage="me.phh.treble.app"
                  android:targetClass="me.phh.treble.app.DebugSensors" />
          </Preference>
