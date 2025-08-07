@@ -12,29 +12,30 @@ Subject: [PATCH 2/2] Revert: "Add sepolicy fix for defaultHIDL"
 
 diff --git a/sepolicy/fingerprint.te b/sepolicy/fingerprint.te
 deleted file mode 100644
-index 23c4c3fb5..000000000
+index 23c4c3f..0000000
 --- a/sepolicy/fingerprint.te
 +++ /dev/null
 @@ -1 +0,0 @@
 -allow system_server fingerprint_hidl_service:service_manager find;
 diff --git a/sepolicy/service.te b/sepolicy/service.te
-index b4758dfd0..a9120f966 100644
+index b4758df..a9120f9 100644
 --- a/sepolicy/service.te
 +++ b/sepolicy/service.te
 @@ -1,2 +1 @@
--type qcrilam_service,    service_manager_type;
+ type qcrilam_service,    service_manager_type;
 -type fingerprint_hidl_service, system_api_service, service_manager_type;
-+type qcrilam_service,    service_manager_type;
 diff --git a/sepolicy/service_contexts b/sepolicy/service_contexts
-index 75491c6ae..a390e3f1c 100644
+index 75491c6..a390e3f 100644
 --- a/sepolicy/service_contexts
 +++ b/sepolicy/service_contexts
-@@ -12,8 +12,5 @@
+@@ -12,8 +12,5 @@ mtkIms                                    u:object_r:radio_service:s0
+ # Audio AIDL interface
  android.hardware.bluetooth.audio.IBluetoothAudioProviderFactory/sysbta    u:object_r:hal_audio_service:s0
- 
+
 -# Fingerprint
---android.hardware.biometrics.fingerprint.IFingerprint/defaultHIDL     u:object_r:fingerprint_hidl_service:s0
+-android.hardware.biometrics.fingerprint.IFingerprint/defaultHIDL     u:object_r:fingerprint_hidl_service:s0
 -
  # QcRilAm
  me.phh.qcrilam                                                            u:object_r:qcrilam_service:s0
+--
 2.47.2
