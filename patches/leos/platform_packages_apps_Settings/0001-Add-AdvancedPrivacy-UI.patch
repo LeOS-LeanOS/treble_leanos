@@ -1439,7 +1439,7 @@ index e0665302fbb..120ce7bd070 100644
          controllers.add(new PreferenceCategoryController(context, WORK_PROFILE_SECURITY_CATEGORY)
                  .setChildren(profileSecurityControllers));
          controllers.addAll(profileSecurityControllers);
-+        ontrollers.add(new AdvancedPrivacyPreferenceController(context, "advanced_privacy"));
++        controllers.add(new AdvancedPrivacyPreferenceController(context, "advanced_privacy"));
          return controllers;
      }
  
