@@ -64,7 +64,6 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
 	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)"
 
-
 #######################
 # Define all phony targets
 #######################
@@ -191,7 +190,6 @@ apply-patches: build-container create-folders
 				patches/apply.sh . trebledroid && \
 				patches/apply.sh . ponces_staging && \
 				patches/apply.sh . leos && \
-				patches/apply.sh . personal && \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
 					patches/apply.sh . leanos; \
 				fi && \
