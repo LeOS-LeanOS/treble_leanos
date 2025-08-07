@@ -48,13 +48,9 @@ ifeq ($(wildcard $(BUILD_NUMBER_FILE)),)
     $(shell echo "$(BUILD_DATE).$(BUILD_TIME)" > $(BUILD_NUMBER_FILE))
 endif
 BUILD_NUMBER := $(shell cat $(BUILD_NUMBER_FILE))
-CPU_LIMIT := $(shell echo $$(( $(shell nproc --all) * $(MAX_CPU_PERCENT) / 100 )))
-MEM_LIMIT := $(shell echo "$$(( $(shell free -m | awk '/^Mem:/{print $$2}') * $(MAX_MEM_PERCENT) / 100 ))m")
 
 # Common container parameters
 CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
-	--cpus="$(CPU_LIMIT)" \
-	--memory="$(MEM_LIMIT)" \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
 	-e ANDROID_VERSION_FILE="$(ANDROID_VERSION_FILE)" \
@@ -170,7 +166,7 @@ sync-sources: build-container create-folders
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				until repo sync -c -j$(CPU_LIMIT) --force-sync --no-clone-bundle --no-tags; do \
+				until repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
 					echo "Sync failed, retrying in 30 seconds..."; \
 					sleep 30; \
 				done && \
@@ -243,9 +239,9 @@ define build_gsi_variant
 			rm -rfv out/target/product/leos_$(1)_ab/ && \
 			. build/envsetup.sh && \
 			lunch leos_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
-			make systemimage -j$(CPU_LIMIT) && \
+			make systemimage -j$(nproc --all) && \
 			if [ "$(2)" = "true" ]; then \
-				make vndk-test-sepolicy -j$(CPU_LIMIT); \
+				make vndk-test-sepolicy -j$(nproc --all); \
 			fi && \
 			rm -Rfv vendor/partner_gms && \
 			mv -v out/target/product/leos_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
