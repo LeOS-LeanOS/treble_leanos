@@ -166,7 +166,7 @@ sync-sources: build-container create-folders
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				until repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
+				until repo sync -c -$((nproc --all)) --force-sync --no-clone-bundle --no-tags; do \
 					echo "Sync failed, retrying in 30 seconds..."; \
 					sleep 30; \
 				done && \
@@ -239,9 +239,9 @@ define build_gsi_variant
 			rm -rfv out/target/product/leos_$(1)_ab/ && \
 			. build/envsetup.sh && \
 			lunch leos_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
-			make systemimage -j$(nproc --all) && \
+			make systemimage -$((nproc --all)) && \
 			if [ "$(2)" = "true" ]; then \
-				make vndk-test-sepolicy -j$(nproc --all); \
+				make vndk-test-sepolicy -$((nproc --all)); \
 			fi && \
 			rm -Rfv vendor/partner_gms && \
 			mv -v out/target/product/leos_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
