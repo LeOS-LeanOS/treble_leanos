@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+  <remote name="eos" fetch="https://gitlab.e.foundation/e/os/" />
   <remote name="phhusson" fetch="https://github.com/phhusson/" />
 
-  <!-- phhusson: vndk tests -->
+  <!-- external -->
+  <project path="external/ih8sn" name="ih8sn.git" remote="eos" revision="master" clone-depth="1" />
+
+  <!-- packages/apps -->
+  <project path="packages/apps/elib" name="elib.git" remote="eos" revision="master" clone-depth="1" />
+
+  <!-- vendor -->
   <project path="vendor/vndk-tests" name="vendor_vndk-tests" remote="phhusson" revision="master" clone-depth="1" />
 </manifest>

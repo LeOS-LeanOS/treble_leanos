@@ -198,7 +198,6 @@ copy-prebuilts: build-container create-folders
 			pushd /repo/src && \
 				rm -rfv vendor/LeOS && \
 				cp -Rfv /repo/external . && \
-				cp -Rfv /repo/packages . && \
 				echo "Copying vendor/common/* to src/vendor/LeOS"; \
 				cp -Rfv /repo/vendor/common vendor/LeOS; \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
