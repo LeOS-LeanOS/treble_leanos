@@ -178,11 +178,11 @@ apply-patches: build-container create-folders
 				rm -rf patches/ && \
 				cp -Rv /repo/patches . && \
 				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
-				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
 				patches/apply.sh . trebledroid && \
-                                if [ "$$APPLY_STAGING_PATCHES" = "true"; then \
-                                  patches/apply.sh . ponces_staging; \
-                                fi && \
+            	if [ "$$APPLY_STAGING_PATCHES" = "true" ] && [ -d "ponces_aosp/patches/staging" ]; then \
+					cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
+					patches/apply.sh . ponces_staging; \
+				fi && \
 				patches/apply.sh . leos && \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
 					patches/apply.sh . leanos; \
@@ -254,13 +254,19 @@ rename-images: build-container create-folders
 			pushd /repo/tmp && \
 			archs=("arm64" "a64"); \
 			arch_names=("arm64" "arm32_binder64"); \
-			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)); \
+			ANDROID_VERSION_VAL=$$(cat /repo/$(ANDROID_VERSION_FILE)); \
 			BUILD_NUMBER_VAL=$$(cat /repo/$$BUILD_NUMBER_FILE); \
-			echo "Using Android version tag for filenames: $$ANDROID_VERSION_TAG_VAL"; \
+			if [ "$$BUILD_LEANOS" = "true" ]; then \
+				ROM_PREFIX="LeanOS"; \
+			else \
+				ROM_PREFIX="LeOS"; \
+			fi; \
+			echo "Using Android version for filenames: $$ANDROID_VERSION_VAL"; \
+			echo "Using ROM prefix: $$ROM_PREFIX"; \
 			for j in $${!archs[@]}; do \
 				src="system_$${archs[j]}.img"; \
 				if [ -f "$$src" ]; then \
-					dest="LeOS-$${arch_names[j]}-ab-$$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL-UNOFFICIAL.img"; \
+					dest="$$ROM_PREFIX-$${arch_names[j]}-ab-$$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL.img"; \
 					mv -v "$$src" "$$dest"; \
 				fi; \
 			done && \
@@ -287,9 +293,15 @@ upload-to-github: create-folders
 		git init && \
 		git remote add origin "https://github.com/cawilliamson/treble_leos.git" && \
 		gh repo set-default "cawilliamson/treble_leos" && \
-		ANDROID_VERSION_TAG_VAL=$$(cat $(PWD)/$(ANDROID_VERSION_TAG_FILE)) && \
+		ANDROID_VERSION_VAL=$$(cat $(PWD)/$(ANDROID_VERSION_FILE)) && \
 		BUILD_NUMBER_VAL=$$(cat $(PWD)/$(BUILD_NUMBER_FILE)) && \
-		echo "Using Android version tag for GitHub release: $$ANDROID_VERSION_TAG_VAL" && \
-		gh release create -d -n "" -t "LeOS $$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL" "$$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL" && \
-		gh release upload "$$ANDROID_VERSION_TAG_VAL-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
+		if [ "$(BUILD_LEANOS)" = "true" ]; then \
+			ROM_PREFIX="LeanOS"; \
+		else \
+			ROM_PREFIX="LeOS"; \
+		fi && \
+		echo "Using Android version for GitHub release: $$ANDROID_VERSION_VAL" && \
+		echo "Using ROM prefix: $$ROM_PREFIX" && \
+		gh release create -d -n "" -t "$$ROM_PREFIX $$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL" "$$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL" && \
+		gh release upload "$$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
 		rm -rf .git/
