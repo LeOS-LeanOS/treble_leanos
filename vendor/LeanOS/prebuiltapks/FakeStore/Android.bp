@@ -10,7 +10,7 @@ prebuilt_etc {
 android_app_import {
     name: "FakeStore",
     apk: "FakeStore.apk",
-    certificate: "platform",
+    presigned: true,
     optional_uses_libs: [
         "androidx.window.extensions",
         "androidx.window.sidecar",
