@@ -1,0 +1,29 @@
+From 2ee6bc9610a702a71f170711420f935126f05dd9 Mon Sep 17 00:00:00 2001
+From: "Christopher A. Williamson" <contact@chrisaw.io>
+Date: Sat, 9 Aug 2025 23:22:07 +0100
+Subject: [PATCH 2/2] Force using release-keys to sign build
+
+Change-Id: I9dc26de6c3f93f9be3d5b7a96a544f4c936e7c59
+---
+ core/config.mk | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/core/config.mk b/core/config.mk
+index 8d0c201..d6bc7c6 100644
+--- a/core/config.mk
++++ b/core/config.mk
+@@ -1335,11 +1335,7 @@ endif
+ # non-default dev keys (usually private keys from a vendor directory).
+ # Both of these tags will be removed and replaced with "release-keys"
+ # when the target-files is signed in a post-build step.
+-ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/make/target/product/security/testkey)
+-BUILD_KEYS := test-keys
+-else
+-BUILD_KEYS := dev-keys
+-endif
++BUILD_KEYS := release-keys
+ BUILD_VERSION_TAGS += $(BUILD_KEYS)
+ BUILD_VERSION_TAGS := $(subst $(space),$(comma),$(sort $(BUILD_VERSION_TAGS)))
+
+--
+2.49.0
