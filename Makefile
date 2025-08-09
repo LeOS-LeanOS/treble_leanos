@@ -262,12 +262,13 @@ rename-images: build-container create-folders
 			else \
 				ROM_PREFIX="LeOS"; \
 			fi; \
-			echo "Using Android version for filenames: $$ANDROID_VERSION_VAL"; \
+			ANDROID_VERSION_CLEAN=$${ANDROID_VERSION_VAL#android-}; \
+			echo "Using Android version for filenames: $$ANDROID_VERSION_CLEAN (cleaned from $$ANDROID_VERSION_VAL)"; \
 			echo "Using ROM prefix: $$ROM_PREFIX"; \
 			for j in $${!archs[@]}; do \
 				src="system_$${archs[j]}.img"; \
 				if [ -f "$$src" ]; then \
-					dest="$$ROM_PREFIX-$${arch_names[j]}-ab-$$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL.img"; \
+					dest="$$ROM_PREFIX-$${arch_names[j]}-ab-$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL.img"; \
 					mv -v "$$src" "$$dest"; \
 				fi; \
 			done && \
@@ -301,8 +302,9 @@ upload-to-github: create-folders
 		else \
 			ROM_PREFIX="LeOS"; \
 		fi && \
-		echo "Using Android version for GitHub release: $$ANDROID_VERSION_VAL" && \
+		ANDROID_VERSION_CLEAN=$${ANDROID_VERSION_VAL#android-} && \
+		echo "Using Android version for GitHub release: $$ANDROID_VERSION_CLEAN (cleaned from $$ANDROID_VERSION_VAL)" && \
 		echo "Using ROM prefix: $$ROM_PREFIX" && \
-		gh release create -d -n "" -t "$$ROM_PREFIX $$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL" "$$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL" && \
-		gh release upload "$$ANDROID_VERSION_VAL-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
+		gh release create -d -n "" -t "$$ROM_PREFIX $$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" "$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" && \
+		gh release upload "$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
 		rm -rf .git/
