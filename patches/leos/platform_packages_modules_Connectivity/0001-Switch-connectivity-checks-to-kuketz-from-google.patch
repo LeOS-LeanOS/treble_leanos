@@ -1,7 +1,7 @@
 From 214b88eee95f17e315cdfde647d9cf0b30322282 Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 18:02:51 +0100
-Subject: [PATCH 1/2] Switch connectivity checks to kuketz from google
+Subject: [PATCH 1/4] Switch connectivity checks to kuketz from google
 
 Change-Id: I73c876720aa410c469ea52ed97f18ff01073d6b2
 ---

@@ -1,7 +1,7 @@
 From 89426f9ac57f07929553d5f2f2be131b10349708 Mon Sep 17 00:00:00 2001
 From: "Christopher A. Williamson" <contact@chrisaw.io>
 Date: Mon, 4 Aug 2025 20:48:40 +0100
-Subject: [PATCH 2/2] Add Xiaomi Mi11T device overlay
+Subject: [PATCH 3/4] Add Xiaomi Mi11T device overlay
 
 ---
  Xiaomi/Mi11T/Android.mk                |   8 +

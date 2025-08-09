@@ -1,7 +1,7 @@
 From ce3a8fa0feeabb707d6a4754e7ecdc63ed0e6485 Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 15:42:16 +0100
-Subject: [PATCH 3/3] Swap out Android keyboard with our own
+Subject: [PATCH 3/5] Swap out Android keyboard with our own
 
 Change-Id: I7097f170ef2f2d79893c60ebbbeb52a72c385854
 ---
