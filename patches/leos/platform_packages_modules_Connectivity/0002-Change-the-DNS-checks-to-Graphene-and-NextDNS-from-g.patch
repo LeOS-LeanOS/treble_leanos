@@ -1,7 +1,7 @@
 From b3feca13cd07738f772aae1b1714ddf2d60e9e18 Mon Sep 17 00:00:00 2001
 From: "Christopher A. Williamson" <contact@chrisaw.io>
 Date: Mon, 4 Aug 2025 20:32:59 +0100
-Subject: [PATCH 2/4] Change the DNS checks to Graphene and NextDNS from google
+Subject: [PATCH 2/2] Change the DNS checks to Graphene and NextDNS from google
 
 Change-Id: Id00b81de15a7ba03cf052510f6c2f6ed9339c363
 ---

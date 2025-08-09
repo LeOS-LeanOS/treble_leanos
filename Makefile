@@ -21,7 +21,7 @@ endef
 #######################
 
 # ROM configuration
-APPLY_STAGING_PATCHES ?= true
+APPLY_PONCES_STAGING_PATCHES ?= true
 BUILD_LEANOS ?= false
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_TIME := $(shell date "+%H%M%S")
@@ -179,7 +179,8 @@ apply-patches: build-container create-folders
 				cp -Rv /repo/patches . && \
 				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 				patches/apply.sh . trebledroid && \
-            	if [ "$$APPLY_STAGING_PATCHES" = "true" ] && [ -d "ponces_aosp/patches/staging" ]; then \
+				patches/apply.sh . common && \
+            	if [ "$$APPLY_PONCES_STAGING_PATCHES" = "true" ] && [ -d "ponces_aosp/patches/staging" ]; then \
 					cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
 					patches/apply.sh . ponces_staging; \
 				fi && \

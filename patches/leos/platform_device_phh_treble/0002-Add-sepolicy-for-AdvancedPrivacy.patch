@@ -1,7 +1,7 @@
 From 211d2211f224c0cfbfb9bc0b9dd5e2221c8cad5b Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 16:14:46 +0100
-Subject: [PATCH 4/5] Add sepolicy for AdvancedPrivacy
+Subject: [PATCH 2/2] Add sepolicy for AdvancedPrivacy
 
 ---
  sepolicy/netd.te         |  1 +

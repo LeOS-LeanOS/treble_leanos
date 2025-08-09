@@ -1,7 +1,7 @@
 From 76d1a8549290bdbc154ed8a7445719016adb7068 Mon Sep 17 00:00:00 2001
 From: "Christopher A. Williamson" <contact@chrisaw.io>
 Date: Thu, 15 May 2025 21:12:23 +0100
-Subject: [PATCH 5/5] Revert: "Add sepolicy fix for defaultHIDL"
+Subject: [PATCH 4/5] Revert: "Add sepolicy fix for defaultHIDL"
 
 ---
  sepolicy/fingerprint.te   | 1 -
