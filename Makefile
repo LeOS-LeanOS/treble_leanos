@@ -129,8 +129,6 @@ extract-android-version: clone-ponces-aosp-repo
 			pushd /repo/src/ && \
 				ANDROID_VERSION=$$(grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/") && \
 				ANDROID_VERSION_TAG=$$(grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$1\"-\([^-]*\)-.*/\1/") && \
-				echo "Extracted Android version: $$ANDROID_VERSION" && \
-				echo "Extracted Android version tag: $$ANDROID_VERSION_TAG" && \
 				echo "$$ANDROID_VERSION" > /repo/$(ANDROID_VERSION_FILE) && \
 				echo "$$ANDROID_VERSION_TAG" > /repo/$(ANDROID_VERSION_TAG_FILE) && \
 			popd'
@@ -142,7 +140,6 @@ init-aosp-manifest: extract-android-version
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
 				ANDROID_VERSION=$$(cat /repo/$(ANDROID_VERSION_FILE)) && \
-				echo "Using Android version: $$ANDROID_VERSION" && \
 				repo init -u https://android.googlesource.com/platform/manifest -b $$ANDROID_VERSION --depth=1 --git-lfs && \
 			popd'
 
@@ -162,7 +159,7 @@ sync-sources: build-container create-folders
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src/ && \
-				until repo sync -c -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
+				until repo sync -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
 					echo "Sync failed, retrying in 30 seconds..."; \
 					sleep 30; \
 				done && \
@@ -199,13 +196,10 @@ copy-prebuilts: build-container create-folders
 			pushd /repo/src && \
 				rm -rfv vendor/rom && \
 				cp -Rfv /repo/external . && \
-				echo "Copying vendor structure with inheritance support"; \
 				cp -Rfv /repo/vendor . && \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
-					echo "BUILD_LEANOS=true: Using LeanOS configuration"; \
 					cp -Rfv vendor/leanos vendor/rom; \
 				else \
-					echo "BUILD_LEANOS=false: Using LeOS configuration"; \
 					cp -Rfv vendor/leos vendor/rom; \
 				fi && \
 			popd'
@@ -231,7 +225,6 @@ define build_gsi_variant
 	/bin/bash -e -c ' \
 		pushd /repo/src && \
 			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
-			echo "Building $(1) with Android version tag: $$ANDROID_VERSION_TAG_VAL" && \
 			pushd device/phh/treble && \
 				cp -fv "/repo/configs/leos.mk" leos.mk && \
 				bash generate.sh leos && \
@@ -263,8 +256,6 @@ rename-images: build-container create-folders
 				ROM_PREFIX="LeOS"; \
 			fi; \
 			ANDROID_VERSION_CLEAN=$${ANDROID_VERSION_VAL#android-}; \
-			echo "Using Android version for filenames: $$ANDROID_VERSION_CLEAN (cleaned from $$ANDROID_VERSION_VAL)"; \
-			echo "Using ROM prefix: $$ROM_PREFIX"; \
 			for j in $${!archs[@]}; do \
 				src="system_$${archs[j]}.img"; \
 				if [ -f "$$src" ]; then \
@@ -303,8 +294,6 @@ upload-to-github: create-folders
 			ROM_PREFIX="LeOS"; \
 		fi && \
 		ANDROID_VERSION_CLEAN=$${ANDROID_VERSION_VAL#android-} && \
-		echo "Using Android version for GitHub release: $$ANDROID_VERSION_CLEAN (cleaned from $$ANDROID_VERSION_VAL)" && \
-		echo "Using ROM prefix: $$ROM_PREFIX" && \
 		gh release create -d -n "" -t "$$ROM_PREFIX $$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" "$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" && \
 		gh release upload "$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
 		rm -rf .git/
