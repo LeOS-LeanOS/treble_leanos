@@ -199,14 +199,14 @@ copy-prebuilts: build-container create-folders
 			pushd /repo/src && \
 				rm -rfv vendor/LeOS && \
 				cp -Rfv /repo/external . && \
-				echo "Copying vendor/common/* to src/vendor/LeOS"; \
-				cp -Rfv /repo/vendor/common vendor/LeOS; \
+				echo "Copying vendor structure with inheritance support"; \
+				cp -Rfv /repo/vendor . && \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
-					echo "BUILD_LEANOS=true: Merging vendor/LeanOS/* into src/vendor/LeOS"; \
-					cp -Rfv /repo/vendor/LeanOS/* vendor/LeOS/; \
+					echo "BUILD_LEANOS=true: Using LeanOS configuration"; \
+					cp -fv vendor/LeanOS/leos.mk vendor/LeOS/leos.mk; \
 				else \
-					echo "BUILD_LEANOS=false: Merging vendor/LeOS/* into src/vendor/LeOS"; \
-					cp -Rfv /repo/vendor/LeOS/* vendor/LeOS/; \
+					echo "BUILD_LEANOS=false: Using LeOS configuration"; \
+					cp -fv vendor/LeOS/leos.mk vendor/LeOS/leos.mk; \
 				fi && \
 			popd'
 
