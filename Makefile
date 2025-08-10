@@ -197,16 +197,16 @@ copy-prebuilts: build-container create-folders
 	$(CONTAINER_RUN) leos-gsi-builder \
 		/bin/bash -e -c ' \
 			pushd /repo/src && \
-				rm -rfv vendor/LeOS && \
+				rm -rfv vendor/rom && \
 				cp -Rfv /repo/external . && \
 				echo "Copying vendor structure with inheritance support"; \
 				cp -Rfv /repo/vendor . && \
 				if [ "$$BUILD_LEANOS" = "true" ]; then \
 					echo "BUILD_LEANOS=true: Using LeanOS configuration"; \
-					cp -fv vendor/LeanOS/leos.mk vendor/LeOS/leos.mk; \
+					cp -Rfv vendor/leanos vendor/rom; \
 				else \
 					echo "BUILD_LEANOS=false: Using LeOS configuration"; \
-					cp -fv vendor/LeOS/leos.mk vendor/LeOS/leos.mk; \
+					cp -Rfv vendor/leos vendor/rom; \
 				fi && \
 			popd'
 

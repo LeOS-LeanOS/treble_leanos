@@ -26,7 +26,7 @@ index 8f24152..283664f 100644
  TARGET_GAPPS_ARCH := ${baseArch}
  include build/make/target/product/aosp_${baseArch}.mk
  \$(call inherit-product, device/phh/treble/base.mk)
-+\$(call inherit-product, vendor/LeOS/leos.mk)
++\$(call inherit-product, vendor/rom/leos.mk)
  $optional_base
  $apps_script
  $rom_script

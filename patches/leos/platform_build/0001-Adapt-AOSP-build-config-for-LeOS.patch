@@ -22,7 +22,7 @@ index 595c3db..c01892f 100644
  # All components inherited here go to system image
  #
  $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_system.mk)
-+$(call inherit-product, vendor/LeOS/leos.mk)
++$(call inherit-product, vendor/rom/leos.mk)
 
  # Enable mainline checking for excat this product name
  ifeq (aosp_arm,$(TARGET_PRODUCT))
@@ -34,7 +34,7 @@ index cd3de51..593dc5e 100644
  #
  $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
  $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_system.mk)
-+$(call inherit-product, vendor/LeOS/leos.mk)
++$(call inherit-product, vendor/rom/leos.mk)
 
  # Enable mainline checking for excat this product name
  ifeq (aosp_arm64,$(TARGET_PRODUCT))
@@ -46,7 +46,7 @@ index 2482afc..a7ef65d 100644
  $(call inherit-product, $(SRC_TARGET_DIR)/product/handheld_system.mk)
  $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony_system.mk)
  $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_default.mk)
-+$(call inherit-product, vendor/LeOS/leos.mk)
++$(call inherit-product, vendor/rom/leos.mk)
  # Add adb keys to debuggable AOSP builds (if they exist)
  $(call inherit-product-if-exists, vendor/google/security/adb/vendor_key.mk)
 

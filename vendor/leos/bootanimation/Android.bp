@@ -44,8 +44,8 @@ genrule {
          "for part_cnt in 0 1 2 3 4; do " +
          "    mkdir -p $(genDir)/BOOTANIMATION/part$$part_cnt; " +
          "done; " +
-         "if [ -f vendor/LeOS/tools-leos/linux-x86/bin/mogrify ]; then " +
-         "    vendor/LeOS/tools-leos/linux-x86/bin/mogrify -resize $$RESOLUTION -colors 250 $(genDir)/BOOTANIMATION/*/*.png; " +
+         "if [ -f vendor/rom/tools-leos/linux-x86/bin/mogrify ]; then " +
+         "    vendor/rom/tools-leos/linux-x86/bin/mogrify -resize $$RESOLUTION -colors 250 $(genDir)/BOOTANIMATION/*/*.png; " +
          "fi; " +
          "echo \"$$IMAGESCALEWIDTH $$IMAGESCALEHEIGHT 60\" > $(genDir)/BOOTANIMATION/desc.txt; " +
          "cat $(location desc.txt) >> $(genDir)/BOOTANIMATION/desc.txt && " +

@@ -78,4 +78,4 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 
 # Common launcher configuration
 PRODUCT_COPY_FILES += \
-  vendor/LeOS/prebuiltapks/LeOS-Launcher/preferred-home.xml:system/etc/preferred-apps/preferred-activities-home.xml
+  vendor/rom/prebuiltapks/LeOS-Launcher/preferred-home.xml:system/etc/preferred-apps/preferred-activities-home.xml
