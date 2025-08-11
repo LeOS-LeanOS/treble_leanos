@@ -149,7 +149,8 @@ prepare-images: build-container
 	$(call print_section,Prepare Images)
 	$(CONTAINER_RUN) -w /repo/tmp $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
-			VERSION_TAG="$${$$(cat /repo/tmp/.android_version)#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
+			ANDROID_VERSION=$$(cat /repo/tmp/.android_version); \
+			VERSION_TAG="$${ANDROID_VERSION#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
 			for arch in $(ARCHITECTURES); do \
 				src="system_$$arch.img"; \
 				if [ -f "$$src" ]; then \
@@ -166,7 +167,8 @@ upload-to-github:
 	@cd $(PWD)/out/ && \
 		git init && \
 		git remote add origin "$(REPO_HOST)/$(REPO_PATH).git" && \
-		RELEASE_TAG="$${$$(cat $(PWD)/tmp/.android_version)#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
+		ANDROID_VERSION=$$(cat $(PWD)/tmp/.android_version) && \
+		RELEASE_TAG="$${ANDROID_VERSION#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
 		gh repo set-default "$(REPO_PATH)" && \
 		gh release create -d -n "" -t "$(ROM_PREFIX) $$RELEASE_TAG" "$$RELEASE_TAG" && \
 		gh release upload "$$RELEASE_TAG" --clobber -- *.img.xz && \
