@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v6.0.0
   hooks:
   - id: check-xml
   - id: end-of-file-fixer
@@ -11,8 +11,7 @@ repos:
   rev: v0.0.18
   hooks:
   - id: shellcheck
-- repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.28.0
+- repo: https://github.com/mrtazz/checkmake.git
+  rev: 0.2.2
   hooks:
-  - id: check-github-workflows
-
+  - id: checkmake-system

@@ -9,4 +9,3 @@
         <permission name="android.permission.BIND_ACCESSIBILITY_SERVICE"/>
     </privapp-permissions>
 </permissions>
-

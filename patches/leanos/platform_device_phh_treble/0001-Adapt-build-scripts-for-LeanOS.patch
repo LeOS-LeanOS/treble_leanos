@@ -8,18 +8,17 @@ Subject: [PATCH 1/1] Adapt build scripts for LeanOS
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/generate.sh b/generate.sh
-index 8f24152..283664f 100644
+index 8fc94a7..29fcd54 100644
 --- a/generate.sh
 +++ b/generate.sh
-
-@@ -94,7 +95,7 @@ PRODUCT_NAME := $target
+@@ -95,7 +95,7 @@ PRODUCT_NAME := $target
  PRODUCT_DEVICE := tdgsi_${arch}_$part
  PRODUCT_BRAND := google
  PRODUCT_SYSTEM_BRAND := google
 -PRODUCT_MODEL := LeOS
 +PRODUCT_MODEL := LeanOS
- 
+
  # Overwrite the inherited "emulator" characteristics
  PRODUCT_CHARACTERISTICS := device
--- 
+--
 2.49.0

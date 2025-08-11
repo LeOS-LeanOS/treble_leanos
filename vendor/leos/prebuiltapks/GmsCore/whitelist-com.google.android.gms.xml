@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="utf-8"?>
 <!-- microG GmsCore must always have network access for GCM. -->
 <config>

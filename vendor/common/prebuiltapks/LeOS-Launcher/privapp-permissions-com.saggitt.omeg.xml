@@ -40,4 +40,3 @@
         <permission name="android.permission.QUERY_ALL_PACKAGES" />
     </privapp-permissions>
 </permissions>
-
