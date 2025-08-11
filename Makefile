@@ -119,12 +119,10 @@ prepare-sources: build-container
 			patches/apply.sh . common && \
 			patches/apply.sh . leos && \
 			[ "$$BUILD_LEANOS" = "true" ] && patches/apply.sh . leanos; \
-			rm -rf patches/ && \
-			rm -rfv vendor/rom && \
 			cp -Rfv /repo/external . && \
 			cp -Rfv /repo/vendor/common vendor/rom && \
-			ROM_DIR=$${$(ROM_PREFIX),,} && \
-			cp -Rfv /repo/vendor/$$ROM_DIR/* vendor/rom/'
+			[ "$$BUILD_LEANOS" = "true" ] && cp -Rfv /repo/vendor/leanos/* vendor/rom/; \
+			[ "$$BUILD_LEANOS" != "true" ] && cp -Rfv /repo/vendor/leos/* vendor/rom/'
 
 # step 3: build treble app - compile the treble app
 build-treble-app: build-container
