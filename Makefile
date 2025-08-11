@@ -32,7 +32,7 @@ define build_arch
 		/bin/bash -e -c ' \
 			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
 			pushd device/phh/treble && \
-				cp -fv "/repo/configs/rom.mk" rom.mk && \
+				cp -fv "/repo/configs/base.mk" rom.mk && \
 				bash generate.sh leos && \
 			popd && \
 			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
@@ -65,14 +65,14 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	-v "$(PWD):/repo:Z" \
 	-e ANDROID_VERSION_FILE="$(ANDROID_VERSION_FILE)" \
 	-e ANDROID_VERSION_TAG_FILE="$(ANDROID_VERSION_TAG_FILE)" \
-	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
+	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
 	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)"
 
 # phony targets
-.PHONY: all apply-patches build-arm32 build-arm64 build-container build-treble-app \
-	clean copy-prebuilts full-build prepare-images sync-sources upload-to-github
+.PHONY: all build-arm32 build-arm64 build-container build-treble-app \
+	clean full-build prepare-images prepare-sources sync-sources upload-to-github
 
 # default target - runs the full build process
 all: full-build
@@ -86,12 +86,10 @@ build-container:
 	$(CONTAINER_RUNTIME) build -t $(CONTAINER_NAME) -f Containerfile .
 
 # full build process - simple linear chain
-full-build: build-container sync-sources apply-patches copy-prebuilts build-treble-app build-arm64 build-arm32 prepare-images
+full-build: build-container sync-sources prepare-sources build-treble-app build-arm64 build-arm32 prepare-images
 	@if [ "$(UPLOAD_TO_GITHUB)" = "true" ]; then \
 		$(MAKE) upload-to-github; \
 	fi
-
-# build steps
 
 # step 1: sync sources - clone ponces repo, extract versions, init manifest, and sync
 sync-sources: build-container
@@ -109,9 +107,9 @@ sync-sources: build-container
 			cp -v ponces_aosp/build/remove.xml .repo/local_manifests/ponces_remove.xml && \
 			while ! repo sync -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
 
-# step 2: apply patches - apply leos patches to the source
-apply-patches: build-container
-	$(call print_section,Apply Patches)
+# step 2: prepare sources - apply patches and copy prebuilts
+prepare-sources: build-container
+	$(call print_section,Prepare Sources)
 	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			rm -rf patches/ && \
@@ -120,23 +118,15 @@ apply-patches: build-container
 			patches/apply.sh . trebledroid && \
 			patches/apply.sh . common && \
 			patches/apply.sh . leos && \
-			if [ "$$BUILD_LEANOS" = "true" ]; then \
-				patches/apply.sh . leanos; \
-			fi && \
-			rm -rf patches/'
-
-# step 3: copy prebuilts to vendor/
-copy-prebuilts: build-container
-	$(call print_section,Copy prebuilts)
-	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
-		/bin/bash -e -c ' \
+			[ "$$BUILD_LEANOS" = "true" ] && patches/apply.sh . leanos; \
+			rm -rf patches/ && \
 			rm -rfv vendor/rom && \
 			cp -Rfv /repo/external . && \
 			cp -Rfv /repo/vendor/common vendor/rom && \
 			ROM_DIR=$${$(ROM_PREFIX),,} && \
 			cp -Rfv /repo/vendor/$$ROM_DIR/* vendor/rom/'
 
-# step 4: build treble app - compile the treble app
+# step 3: build treble app - compile the treble app
 build-treble-app: build-container
 	$(call print_section,Build Treble App)
 	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
@@ -146,15 +136,15 @@ build-treble-app: build-container
 					bash build.sh release; \
 			fi'
 
-# step 5a: build arm64 architecture
+# step 4a: build arm64 architecture
 build-arm64:
 	$(call build_arch,arm64,ARM64)
 
-# step 5b: build arm32_binder64 architecture
+# step 4b: build arm32_binder64 architecture
 build-arm32:
 	$(call build_arch,a64,ARM32_BINDER64)
 
-# step 6: prepare images - rename and compress image files in one step
+# step 5: prepare images - rename and compress image files in one step
 prepare-images: build-container
 	$(call print_section,Prepare Images)
 	$(CONTAINER_RUN) -w /repo/tmp $(CONTAINER_NAME) \
@@ -170,7 +160,7 @@ prepare-images: build-container
 			done && \
 			cp -fv *.img.xz /repo/out/'
 
-# step 7: upload images to github
+# step 6: upload images to github
 upload-to-github:
 	$(call print_section,Upload to GitHub)
 	@cd $(PWD)/out/ && \
