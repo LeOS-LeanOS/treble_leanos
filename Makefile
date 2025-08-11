@@ -133,7 +133,7 @@ copy-prebuilts: build-container
 			rm -rfv vendor/common vendor/rom && \
 			cp -Rfv /repo/external . && \
 			cp -Rfv /repo/vendor . && \
-			cp -Rfv vendor/$${$(ROM_PREFIX),,} vendor/rom'
+			cp -Rfv /repo/vendor/$${$(ROM_PREFIX),,} vendor/rom'
 
 # step 4: build treble app - compile the treble app
 build-treble-app: build-container
