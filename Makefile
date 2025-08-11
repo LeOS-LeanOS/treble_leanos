@@ -105,9 +105,9 @@ sync-sources: build-container
 			grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$1\"-\([^-]*\)-.*/\1/" > /repo/$(ANDROID_VERSION_TAG_FILE) && \
 			repo init -u https://android.googlesource.com/platform/manifest -b $$(cat /repo/$(ANDROID_VERSION_FILE)) --depth=1 --git-lfs && \
 			mkdir -p .repo/local_manifests && \
-			cp -v /repo/configs/*.xml ponces_aosp/build/{default,remove}.xml .repo/local_manifests/ && \
-			mv .repo/local_manifests/default.xml .repo/local_manifests/ponces_default.xml && \
-			mv .repo/local_manifests/remove.xml .repo/local_manifests/ponces_remove.xml && \
+			cp -v /repo/configs/*.xml .repo/local_manifests/ && \
+			cp -v ponces_aosp/build/default.xml .repo/local_manifests/ponces_default.xml && \
+			cp -v ponces_aosp/build/remove.xml .repo/local_manifests/ponces_remove.xml && \
 			until repo sync -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
 				echo "Sync failed, retrying in 30 seconds..."; sleep 30; \
 			done'
