@@ -10,20 +10,18 @@
 # define a function to build architecture-specific targets
 define build_arch
 	$(call print_section,Build $(2))
-	$(CONTAINER_RUN) \
+	$(CONTAINER_RUN) -w /repo/src \
 		/bin/bash -e -c ' \
-			pushd /repo/src && \
-				ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
-				pushd device/phh/treble && \
-					cp -fv "/repo/configs/leos.mk" leos.mk && bash generate.sh leos && \
-				popd && \
-				rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
-				. build/envsetup.sh && \
-				lunch treble_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
-				make systemimage -j$$(nproc --all) && \
-				$(SEPOLICY_CHECK) && \
-				mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_$(1).img && \
-			popd'
+			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
+			cd device/phh/treble && \
+				cp -fv "/repo/configs/leos.mk" leos.mk && bash generate.sh leos && \
+			cd /repo/src && \
+			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
+			. build/envsetup.sh && \
+			lunch treble_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
+			make systemimage -j$$(nproc --all) && \
+			$(SEPOLICY_CHECK) && \
+			mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_$(1).img'
 endef
 
 # define a function to print section headers
@@ -47,6 +45,8 @@ BUILD_NUMBER_FILE := tmp/.build_number
 BUILD_TIME := $(shell date "+%H%M%S")
 CONTAINER_RUNTIME ?= podman
 PONCES_AOSP_TAG ?= android-16.0
+REPO_HOST ?= https://github.com
+REPO_PATH ?= cawilliamson/treble_leos
 ROM_PREFIX = $(if $(filter true,$(BUILD_LEANOS)),LeanOS,LeOS)
 SEPOLICY_CHECK = if [ "$(VERIFY_SEPOLICY)" = "true" ]; then make vndk-test-sepolicy -j$$(nproc --all); fi
 UPLOAD_TO_GITHUB ?= false
@@ -73,9 +73,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 
 # phony targets
 .PHONY: all apply-patches build-arm32 build-arm64 build-container build-treble-app \
-	clean clone-ponces-aosp-repo copy-manifest-config copy-prebuilts \
-	extract-android-version full-build init-aosp-manifest prepare-images \
-	sync-sources upload-to-github
+	clean copy-prebuilts full-build prepare-images sync-sources upload-to-github
 
 # default target - runs the full build process
 all: full-build
@@ -86,162 +84,110 @@ clean:
 
 # build the container image used for all build operations
 build-container:
-	$(CONTAINER_RUNTIME) build -t gsi-builder -f Containerfile .
+	$(CONTAINER_RUNTIME) build -t leos-gsi-builder -f Containerfile .
 
 # full build process - simple linear chain
-full-build: build-container extract-android-version init-aosp-manifest copy-manifest-config sync-sources \
-	apply-patches copy-prebuilts build-treble-app build-arm64 build-arm32 prepare-images
+full-build: build-container sync-sources apply-patches copy-prebuilts build-treble-app build-arm64 build-arm32 prepare-images
 	@if [ "$(UPLOAD_TO_GITHUB)" = "true" ]; then \
 		$(MAKE) upload-to-github; \
 	fi
 
 # build steps
 
-# step 1: clone ponces aosp manifest
-clone-ponces-aosp-repo: build-container
-	$(call print_section,Clone ponces-aosp repo)
-	$(CONTAINER_RUN) \
-		/bin/bash -e -c ' \
-			pushd /repo/src/ && \
-				rm -rf ponces_aosp/ && \
-				git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_AOSP_TAG) ponces_aosp/ && \
-			popd'
-
-# step 2: extract android version and version tag from ponces repo
-extract-android-version: clone-ponces-aosp-repo
-	$(call print_section,Extract Android Version and Version Tag)
-	$(CONTAINER_RUN) \
-		/bin/bash -e -c ' \
-			pushd /repo/src/ && \
-				ANDROID_VERSION=$$(grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/") && \
-				ANDROID_VERSION_TAG=$$(grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$1\"-\([^-]*\)-.*/\1/") && \
-				echo "$$ANDROID_VERSION" > /repo/$(ANDROID_VERSION_FILE) && \
-				echo "$$ANDROID_VERSION_TAG" > /repo/$(ANDROID_VERSION_TAG_FILE) && \
-			popd'
-
-# step 3: init aosp manifest
-init-aosp-manifest: extract-android-version
-	$(call print_section,Init AOSP manifest)
-	$(CONTAINER_RUN) \
-		/bin/bash -e -c ' \
-			pushd /repo/src/ && \
-				ANDROID_VERSION=$$(cat /repo/$(ANDROID_VERSION_FILE)) && \
-				repo init -u https://android.googlesource.com/platform/manifest -b $$ANDROID_VERSION --depth=1 --git-lfs && \
-			popd'
-
-# step 4: copy manifest config - add local manifest files to customize the source tree
-copy-manifest-config: build-container
-	$(call print_section,Copy manifest config)
-	$(CONTAINER_RUN) \
-		/bin/bash -e -c ' \
-			mkdir -p /repo/src/.repo/local_manifests && \
-			cp -v /repo/configs/*.xml /repo/src/.repo/local_manifests/ && \
-			cp -v /repo/src/ponces_aosp/build/default.xml /repo/src/.repo/local_manifests/ponces_default.xml && \
-			cp -v /repo/src/ponces_aosp/build/remove.xml /repo/src/.repo/local_manifests/ponces_remove.xml'
-
-# step 5: perform full sources sync - download all source code with automatic retry on failure
+# step 1: sync sources - clone ponces repo, extract versions, init manifest, and sync
 sync-sources: build-container
 	$(call print_section,Sync Sources)
-	$(CONTAINER_RUN) \
+	$(CONTAINER_RUN) -w /repo/src \
 		/bin/bash -e -c ' \
-			pushd /repo/src/ && \
-				until repo sync -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
-					echo "Sync failed, retrying in 30 seconds..."; \
-					sleep 30; \
-				done && \
-			popd'
+			rm -rf ponces_aosp/ && \
+			git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_AOSP_TAG) ponces_aosp/ && \
+			grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/$(ANDROID_VERSION_FILE) && \
+			grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$1\"-\([^-]*\)-.*/\1/" > /repo/$(ANDROID_VERSION_TAG_FILE) && \
+			repo init -u https://android.googlesource.com/platform/manifest -b $$(cat /repo/$(ANDROID_VERSION_FILE)) --depth=1 --git-lfs && \
+			mkdir -p .repo/local_manifests && \
+			cp -v /repo/configs/*.xml ponces_aosp/build/{default,remove}.xml .repo/local_manifests/ && \
+			mv .repo/local_manifests/default.xml .repo/local_manifests/ponces_default.xml && \
+			mv .repo/local_manifests/remove.xml .repo/local_manifests/ponces_remove.xml && \
+			until repo sync -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
+				echo "Sync failed, retrying in 30 seconds..."; sleep 30; \
+			done'
 
-# step 6: apply patches - apply leos patches to the source
+# step 2: apply patches - apply leos patches to the source
 apply-patches: build-container
 	$(call print_section,Apply Patches)
-	$(CONTAINER_RUN) \
+	$(CONTAINER_RUN) -w /repo/src \
 		/bin/bash -e -c ' \
-			pushd /repo/src/ && \
-				rm -rf patches/ && \
-				cp -Rv /repo/patches . && \
-				cp -Rv ponces_aosp/patches/trebledroid patches/ && \
-				patches/apply.sh . trebledroid && \
-				patches/apply.sh . common && \
-            	if [ "$$APPLY_PONCES_STAGING_PATCHES" = "true" ] && [ -d "ponces_aosp/patches/staging" ]; then \
-					cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
-					patches/apply.sh . ponces_staging; \
-				fi && \
-				patches/apply.sh . leos && \
-				if [ "$$BUILD_LEANOS" = "true" ]; then \
-					patches/apply.sh . leanos; \
-				fi && \
-				rm -rf patches/ && \
-			popd'
+			rm -rf patches/ && \
+			cp -Rv /repo/patches . && \
+			cp -Rv ponces_aosp/patches/trebledroid patches/ && \
+			patches/apply.sh . trebledroid && \
+			patches/apply.sh . common && \
+            if [ "$$APPLY_PONCES_STAGING_PATCHES" = "true" ] && [ -d "ponces_aosp/patches/staging" ]; then \
+				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
+				patches/apply.sh . ponces_staging; \
+			fi && \
+			patches/apply.sh . leos && \
+			if [ "$$BUILD_LEANOS" = "true" ]; then \
+				patches/apply.sh . leanos; \
+			fi && \
+			rm -rf patches/'
 
-# step 7: copy prebuilts to vendor/
+# step 3: copy prebuilts to vendor/
 copy-prebuilts: build-container
 	$(call print_section,Copy prebuilts)
-	$(CONTAINER_RUN) \
+	$(CONTAINER_RUN) -w /repo/src \
 		/bin/bash -e -c ' \
-			pushd /repo/src && \
-				rm -rfv vendor/rom && \
-				cp -Rfv /repo/external . && \
-				cp -Rfv /repo/vendor . && \
-				if [ "$$BUILD_LEANOS" = "true" ]; then \
-					cp -Rfv vendor/leanos vendor/rom; \
-				else \
-					cp -Rfv vendor/leos vendor/rom; \
-				fi && \
-			popd'
+			rm -rfv vendor/common vendor/rom && \
+			cp -Rfv /repo/external . && \
+			cp -Rfv /repo/vendor . && \
+			cp -Rfv vendor/$${$(ROM_PREFIX),,} vendor/rom'
 
-# step 8: build treble app - compile the treble app
+# step 4: build treble app - compile the treble app
 build-treble-app: build-container
 	$(call print_section,Build Treble App)
-	$(CONTAINER_RUN) \
+	$(CONTAINER_RUN) -w /repo/src \
 		/bin/bash -e -c ' \
-			pushd /repo/src && \
-				if [ -d treble_app ]; then \
-					pushd treble_app/ && \
-						bash build.sh release && \
-					popd; \
-				fi && \
-			popd'
+			if [ -d treble_app ]; then \
+				cd treble_app/ && \
+					bash build.sh release; \
+			fi'
 
-# step 9a: build arm64 architecture
+# step 5a: build arm64 architecture
 build-arm64:
 	$(call build_arch,arm64,ARM64)
 
-# step 9b: build arm32_binder64 architecture
+# step 5b: build arm32_binder64 architecture
 build-arm32:
 	$(call build_arch,a64,ARM32_BINDER64)
 
-# step 10: prepare images - rename and compress image files in one step
+# step 6: prepare images - rename and compress image files in one step
 prepare-images: build-container
 	$(call print_section,Prepare Images)
-	$(CONTAINER_RUN) \
+	$(CONTAINER_RUN) -w /repo/tmp \
 		/bin/bash -e -c ' \
-			pushd /repo/tmp && \
-			archs=("arm64" "a64"); \
-			arch_names=("arm64" "arm32_binder64"); \
-			ANDROID_VERSION_VAL=$$(cat /repo/$(ANDROID_VERSION_FILE)); \
-			BUILD_NUMBER_VAL=$$(cat /repo/$$BUILD_NUMBER_FILE); \
-			ANDROID_VERSION_CLEAN=$${ANDROID_VERSION_VAL#android-}; \
-			for j in $${!archs[@]}; do \
-				src="system_$${archs[j]}.img"; \
+			VERSION_TAG="$${$$(cat /repo/$(ANDROID_VERSION_FILE))#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
+			for arch in $(ARCHITECTURES); do \
+				src="system_$$arch.img"; \
 				if [ -f "$$src" ]; then \
-					dest="$(ROM_PREFIX)-$${arch_names[j]}-ab-$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL.img"; \
+					case $$arch in \
+						arm64) arch_name="arm64" ;; \
+						a64) arch_name="arm32_binder64" ;; \
+					esac; \
+					dest="$(ROM_PREFIX)-$$arch_name-ab-$$VERSION_TAG.img"; \
 					mv -v "$$src" "$$dest"; \
 					xz -9 -T0 -v -z "$$dest"; \
 				fi; \
 			done && \
-			cp -fv *.img.xz /repo/out/ && \
-			popd'
+			cp -fv *.img.xz /repo/out/'
 
-# step 11: upload images to github
+# step 7: upload images to github
 upload-to-github:
 	$(call print_section,Upload to GitHub)
 	@cd $(PWD)/out/ && \
 		git init && \
-		git remote add origin "https://github.com/cawilliamson/treble_leos.git" && \
-		gh repo set-default "cawilliamson/treble_leos" && \
-		ANDROID_VERSION_VAL=$$(cat $(PWD)/$(ANDROID_VERSION_FILE)) && \
-		BUILD_NUMBER_VAL=$$(cat $(PWD)/$(BUILD_NUMBER_FILE)) && \
-		ANDROID_VERSION_CLEAN=$${ANDROID_VERSION_VAL#android-} && \
-		gh release create -d -n "" -t "$(ROM_PREFIX) $$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" "$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" && \
-		gh release upload "$$ANDROID_VERSION_CLEAN-$$BUILD_NUMBER_VAL" --clobber -- *.img.xz && \
+		git remote add origin "$(REPO_HOST)/$(REPO_PATH).git" && \
+		RELEASE_TAG="$${$$(cat $(PWD)/$(ANDROID_VERSION_FILE))#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
+		gh repo set-default "$(REPO_PATH)" && \
+		gh release create -d -n "" -t "$(ROM_PREFIX) $$RELEASE_TAG" "$$RELEASE_TAG" && \
+		gh release upload "$$RELEASE_TAG" --clobber -- *.img.xz && \
 		rm -rf .git/
