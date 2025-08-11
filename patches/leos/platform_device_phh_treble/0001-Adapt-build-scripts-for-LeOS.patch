@@ -35,7 +35,7 @@ index 8f24152..283664f 100644
  PRODUCT_BRAND := google
  PRODUCT_SYSTEM_BRAND := google
 -PRODUCT_MODEL := TrebleDroid $apps_name
-+PRODUCT_MODEL := LeOS-A16
++PRODUCT_MODEL := LeOS
  
  # Overwrite the inherited "emulator" characteristics
  PRODUCT_CHARACTERISTICS := device
