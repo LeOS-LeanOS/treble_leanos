@@ -118,11 +118,14 @@ prepare-sources: build-container
 			patches/apply.sh . trebledroid && \
 			patches/apply.sh . common && \
 			patches/apply.sh . leos && \
-			[ "$$BUILD_LEANOS" = "true" ] && patches/apply.sh . leanos; \
 			cp -Rfv /repo/external . && \
 			cp -Rfv /repo/vendor/common vendor/rom && \
-			[ "$$BUILD_LEANOS" = "true" ] && cp -Rfv /repo/vendor/leanos/* vendor/rom/; \
-			[ "$$BUILD_LEANOS" != "true" ] && cp -Rfv /repo/vendor/leos/* vendor/rom/'
+			if [ "$$BUILD_LEANOS" = "true" ]; then \
+				patches/apply.sh . leanos && \
+				cp -Rfv /repo/vendor/leanos/* vendor/rom/; \
+			else \
+				cp -Rfv /repo/vendor/leos/* vendor/rom/; \
+			fi'
 
 # step 3: build treble app - compile the treble app
 build-treble-app: build-container
