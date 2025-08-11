@@ -1,18 +1,18 @@
-# Common Base Configuration for LeOS/LeanOS
-# This file contains shared configuration for all ROM variants
+# Common ROM Configuration
+# This file defines common packages and configurations shared between LeOS and LeanOS builds
 
-# Common prebuilt packages
+# common overlays
+PRODUCT_PACKAGE_OVERLAYS += vendor/rom/common/overlay
+
+# common packages
 PRODUCT_PACKAGES += \
     AdvancedPrivacy \
+    FakeStore \
+    GmsCore \
+    GsfProxy \
     LatinIME \
     LeOS-Droid \
     LeOS-Icons \
     LeOS-Launcher \
     LeOS-Wallpaper \
     Sherpa
-
-# Bootanimation
-PRODUCT_PACKAGES += \
-    bootanimation.zip
-
-# Common overlays and configurations go here

@@ -32,7 +32,7 @@ define build_arch
 		/bin/bash -e -c ' \
 			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
 			pushd device/phh/treble && \
-				cp -fv "/repo/configs/base.mk" rom.mk && \
+				cp -fv "/repo/configs/rom.mk" . && \
 				bash generate.sh leos && \
 			popd && \
 			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \

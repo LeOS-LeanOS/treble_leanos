@@ -1,13 +1,5 @@
-# LeanOS ROM-Specific Configuration
-# Inherits from common base and adds LeanOS-specific packages
+# LeanOS ROM Configuration
+# This file defines the packages and configurations for LeanOS builds
 
-# Inherit common base configuration
+# Include common vendor configuration
 $(call inherit-product, vendor/rom/common.mk)
-
-# LeanOS-specific packages (microG)
-PRODUCT_PACKAGES += \
-    GmsCore \
-    FakeStore \
-    GsfProxy
-
-# LeanOS-specific customizations can be added here

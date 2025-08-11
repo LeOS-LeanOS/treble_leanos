@@ -1,13 +1,18 @@
-# LeOS ROM-Specific Configuration
-# Inherits from common base and adds LeOS-specific packages
+# LeOS ROM Configuration
+# This file defines the packages and configurations for LeOS builds
 
-# Inherit common base configuration
+# Include common vendor configuration
 $(call inherit-product, vendor/rom/common.mk)
 
-# LeOS-specific packages (microG)
+# LeOS specific packages
 PRODUCT_PACKAGES += \
     GmsCore \
     FakeStore \
-    GsfProxy
-
-# LeOS-specific customizations can be added here
+    GsfProxy \
+    AdvancedPrivacy \
+    LatinIME \
+    LeOS-Droid \
+    LeOS-Icons \
+    LeOS-Launcher \
+    LeOS-Wallpaper \
+    Sherpa
