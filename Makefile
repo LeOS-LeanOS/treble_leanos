@@ -10,9 +10,7 @@
 # variables
 ANDROID_VERSION_FILE := tmp/.android_version
 ANDROID_VERSION_TAG_FILE := tmp/.android_version_tag
-APPLY_PONCES_STAGING_PATCHES ?= true
 ARCHITECTURES := arm64 a64
-ARCH_DISPLAY_NAMES := arm64 arm32_binder64
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_LEANOS ?= false
 BUILD_NUMBER_FILE := tmp/.build_number
@@ -33,9 +31,10 @@ define build_arch
 	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
-			cd device/phh/treble && \
-				cp -fv "/repo/configs/leos.mk" leos.mk && bash generate.sh leos && \
-			cd /repo/src && \
+			pushd device/phh/treble && \
+				cp -fv "/repo/configs/leos.mk" leos.mk && \
+				bash generate.sh leos && \
+			popd && \
 			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
 			. build/envsetup.sh && \
 			lunch treble_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
@@ -108,9 +107,7 @@ sync-sources: build-container
 			cp -v /repo/configs/*.xml .repo/local_manifests/ && \
 			cp -v ponces_aosp/build/default.xml .repo/local_manifests/ponces_default.xml && \
 			cp -v ponces_aosp/build/remove.xml .repo/local_manifests/ponces_remove.xml && \
-			until repo sync -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do \
-				echo "Sync failed, retrying in 30 seconds..."; sleep 30; \
-			done'
+			while ! repo sync -j$$(nproc --all) --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
 
 # step 2: apply patches - apply leos patches to the source
 apply-patches: build-container
@@ -122,10 +119,6 @@ apply-patches: build-container
 			cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 			patches/apply.sh . trebledroid && \
 			patches/apply.sh . common && \
-            if [ "$$APPLY_PONCES_STAGING_PATCHES" = "true" ] && [ -d "ponces_aosp/patches/staging" ]; then \
-				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
-				patches/apply.sh . ponces_staging; \
-			fi && \
 			patches/apply.sh . leos && \
 			if [ "$$BUILD_LEANOS" = "true" ]; then \
 				patches/apply.sh . leanos; \
@@ -165,15 +158,11 @@ prepare-images: build-container
 	$(call print_section,Prepare Images)
 	$(CONTAINER_RUN) -w /repo/tmp $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
-			VERSION_TAG="$${$$(cat /repo/$(ANDROID_VERSION_FILE))#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
+			VERSION_TAG="$${$$(cat /repo/$$ANDROID_VERSION_FILE)#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
 			for arch in $(ARCHITECTURES); do \
 				src="system_$$arch.img"; \
 				if [ -f "$$src" ]; then \
-					case $$arch in \
-						arm64) arch_name="arm64" ;; \
-						a64) arch_name="arm32_binder64" ;; \
-					esac; \
-					dest="$(ROM_PREFIX)-$$arch_name-ab-$$VERSION_TAG.img"; \
+					dest="$(ROM_PREFIX)-$$arch-ab-$$VERSION_TAG.img"; \
 					mv -v "$$src" "$$dest"; \
 					xz -9 -T0 -v -z "$$dest"; \
 				fi; \
