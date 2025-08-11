@@ -7,10 +7,30 @@
 .SHELLFLAGS := -e -c
 .ONESHELL:
 
+# variables
+ANDROID_VERSION_FILE := tmp/.android_version
+ANDROID_VERSION_TAG_FILE := tmp/.android_version_tag
+APPLY_PONCES_STAGING_PATCHES ?= true
+ARCHITECTURES := arm64 a64
+ARCH_DISPLAY_NAMES := arm64 arm32_binder64
+BUILD_DATE := $(shell date "+%Y%m%d")
+BUILD_LEANOS ?= false
+BUILD_NUMBER_FILE := tmp/.build_number
+BUILD_TIME := $(shell date "+%H%M%S")
+CONTAINER_NAME := gsi-builder
+CONTAINER_RUNTIME ?= podman
+PONCES_AOSP_TAG ?= android-16.0
+REPO_HOST ?= https://github.com
+REPO_PATH ?= cawilliamson/treble_leos
+ROM_PREFIX = $(if $(filter true,$(BUILD_LEANOS)),LeanOS,LeOS)
+SEPOLICY_CHECK = if [ "$(VERIFY_SEPOLICY)" = "true" ]; then make vndk-test-sepolicy -j$$(nproc --all); fi
+UPLOAD_TO_GITHUB ?= false
+VERIFY_SEPOLICY ?= true
+
 # define a function to build architecture-specific targets
 define build_arch
 	$(call print_section,Build $(2))
-	$(CONTAINER_RUN) -w /repo/src \
+	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
 			cd device/phh/treble && \
@@ -33,25 +53,6 @@ define print_section
 	@echo ""
 endef
 
-# variables
-ANDROID_VERSION_FILE := tmp/.android_version
-ANDROID_VERSION_TAG_FILE := tmp/.android_version_tag
-APPLY_PONCES_STAGING_PATCHES ?= true
-ARCHITECTURES := arm64 a64
-ARCH_DISPLAY_NAMES := arm64 arm32_binder64
-BUILD_DATE := $(shell date "+%Y%m%d")
-BUILD_LEANOS ?= false
-BUILD_NUMBER_FILE := tmp/.build_number
-BUILD_TIME := $(shell date "+%H%M%S")
-CONTAINER_RUNTIME ?= podman
-PONCES_AOSP_TAG ?= android-16.0
-REPO_HOST ?= https://github.com
-REPO_PATH ?= cawilliamson/treble_leos
-ROM_PREFIX = $(if $(filter true,$(BUILD_LEANOS)),LeanOS,LeOS)
-SEPOLICY_CHECK = if [ "$(VERIFY_SEPOLICY)" = "true" ]; then make vndk-test-sepolicy -j$$(nproc --all); fi
-UPLOAD_TO_GITHUB ?= false
-VERIFY_SEPOLICY ?= true
-
 # automatically create necessary directories
 $(shell mkdir -p out/ src/ tmp/)
 ifeq ($(wildcard $(BUILD_NUMBER_FILE)),)
@@ -68,8 +69,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
-	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)" \
-	gsi-builder
+	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)"
 
 # phony targets
 .PHONY: all apply-patches build-arm32 build-arm64 build-container build-treble-app \
@@ -84,7 +84,7 @@ clean:
 
 # build the container image used for all build operations
 build-container:
-	$(CONTAINER_RUNTIME) build -t gsi-builder -f Containerfile .
+	$(CONTAINER_RUNTIME) build -t $(CONTAINER_NAME) -f Containerfile .
 
 # full build process - simple linear chain
 full-build: build-container sync-sources apply-patches copy-prebuilts build-treble-app build-arm64 build-arm32 prepare-images
@@ -97,7 +97,7 @@ full-build: build-container sync-sources apply-patches copy-prebuilts build-treb
 # step 1: sync sources - clone ponces repo, extract versions, init manifest, and sync
 sync-sources: build-container
 	$(call print_section,Sync Sources)
-	$(CONTAINER_RUN) -w /repo/src \
+	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			rm -rf ponces_aosp/ && \
 			git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_AOSP_TAG) ponces_aosp/ && \
@@ -115,7 +115,7 @@ sync-sources: build-container
 # step 2: apply patches - apply leos patches to the source
 apply-patches: build-container
 	$(call print_section,Apply Patches)
-	$(CONTAINER_RUN) -w /repo/src \
+	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			rm -rf patches/ && \
 			cp -Rv /repo/patches . && \
@@ -135,7 +135,7 @@ apply-patches: build-container
 # step 3: copy prebuilts to vendor/
 copy-prebuilts: build-container
 	$(call print_section,Copy prebuilts)
-	$(CONTAINER_RUN) -w /repo/src \
+	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			rm -rfv vendor/common vendor/rom && \
 			cp -Rfv /repo/external . && \
@@ -145,7 +145,7 @@ copy-prebuilts: build-container
 # step 4: build treble app - compile the treble app
 build-treble-app: build-container
 	$(call print_section,Build Treble App)
-	$(CONTAINER_RUN) -w /repo/src \
+	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			if [ -d treble_app ]; then \
 				cd treble_app/ && \
@@ -163,7 +163,7 @@ build-arm32:
 # step 6: prepare images - rename and compress image files in one step
 prepare-images: build-container
 	$(call print_section,Prepare Images)
-	$(CONTAINER_RUN) -w /repo/tmp \
+	$(CONTAINER_RUN) -w /repo/tmp $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			VERSION_TAG="$${$$(cat /repo/$(ANDROID_VERSION_FILE))#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
 			for arch in $(ARCHITECTURES); do \
