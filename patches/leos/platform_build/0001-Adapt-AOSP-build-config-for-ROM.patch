@@ -1,7 +1,7 @@
 From be0e1bba91106448b86286977cc46630962fb3da Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 15:29:43 +0100
-Subject: [PATCH 1/3] Adapt AOSP build config for LeOS
+Subject: [PATCH 1/3] Adapt AOSP build config for ROM
 
 Change-Id: I52abacd386275c1954091f60711153342ef4a661
 ---
@@ -22,7 +22,7 @@ index 595c3db..c01892f 100644
  # All components inherited here go to system image
  #
  $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_system.mk)
-+$(call inherit-product, vendor/rom/leos.mk)
++$(call inherit-product, vendor/rom/rom.mk)
 
  # Enable mainline checking for excat this product name
  ifeq (aosp_arm,$(TARGET_PRODUCT))
@@ -34,7 +34,7 @@ index cd3de51..593dc5e 100644
  #
  $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
  $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_system.mk)
-+$(call inherit-product, vendor/rom/leos.mk)
++$(call inherit-product, vendor/rom/rom.mk)
 
  # Enable mainline checking for excat this product name
  ifeq (aosp_arm64,$(TARGET_PRODUCT))
@@ -46,7 +46,7 @@ index 2482afc..a7ef65d 100644
  $(call inherit-product, $(SRC_TARGET_DIR)/product/handheld_system.mk)
  $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony_system.mk)
  $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_default.mk)
-+$(call inherit-product, vendor/rom/leos.mk)
++$(call inherit-product, vendor/rom/rom.mk)
  # Add adb keys to debuggable AOSP builds (if they exist)
  $(call inherit-product-if-exists, vendor/google/security/adb/vendor_key.mk)
 

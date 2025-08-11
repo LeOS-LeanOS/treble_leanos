@@ -32,7 +32,7 @@ define build_arch
 		/bin/bash -e -c ' \
 			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
 			pushd device/phh/treble && \
-				cp -fv "/repo/configs/leos.mk" leos.mk && \
+				cp -fv "/repo/configs/rom.mk" rom.mk && \
 				bash generate.sh leos && \
 			popd && \
 			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
@@ -130,10 +130,10 @@ copy-prebuilts: build-container
 	$(call print_section,Copy prebuilts)
 	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
-			rm -rfv vendor/common vendor/rom && \
+			rm -rfv vendor/rom && \
 			cp -Rfv /repo/external . && \
-			cp -Rfv /repo/vendor . && \
-			cp -Rfv /repo/vendor/$${$(ROM_PREFIX),,} vendor/rom'
+			cp -Rfv /repo/vendor/common vendor/rom && \
+			cp -Rfv /repo/vendor/$${$(ROM_PREFIX),,}/* vendor/rom/'
 
 # step 4: build treble app - compile the treble app
 build-treble-app: build-container
