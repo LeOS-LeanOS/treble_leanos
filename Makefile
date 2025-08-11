@@ -8,8 +8,6 @@
 .ONESHELL:
 
 # variables
-ANDROID_VERSION_FILE := tmp/.android_version
-ANDROID_VERSION_TAG_FILE := tmp/.android_version_tag
 ARCHITECTURES := arm64 a64
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_LEANOS ?= false
@@ -30,10 +28,10 @@ define build_arch
 	$(call print_section,Build $(2))
 	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
-			ANDROID_VERSION_TAG_VAL=$$(cat /repo/$(ANDROID_VERSION_TAG_FILE)) && \
+			ANDROID_VERSION_TAG_VAL=$$(cat /repo/tmp/.android_version_tag) && \
 			pushd device/phh/treble && \
 				cp -fv "/repo/configs/rom.mk" . && \
-				bash generate.sh leos && \
+				bash generate.sh rom && \
 			popd && \
 			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
 			. build/envsetup.sh && \
@@ -63,8 +61,6 @@ BUILD_NUMBER := $(shell cat $(BUILD_NUMBER_FILE))
 CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
-	-e ANDROID_VERSION_FILE="$(ANDROID_VERSION_FILE)" \
-	-e ANDROID_VERSION_TAG_FILE="$(ANDROID_VERSION_TAG_FILE)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
@@ -98,9 +94,9 @@ sync-sources: build-container
 		/bin/bash -e -c ' \
 			rm -rf ponces_aosp/ && \
 			git clone --depth=1 https://github.com/ponces/treble_aosp.git -b $(PONCES_AOSP_TAG) ponces_aosp/ && \
-			grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/$(ANDROID_VERSION_FILE) && \
-			grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$1\"-\([^-]*\)-.*/\1/" > /repo/$(ANDROID_VERSION_TAG_FILE) && \
-			repo init -u https://android.googlesource.com/platform/manifest -b $$(cat /repo/$(ANDROID_VERSION_FILE)) --depth=1 --git-lfs && \
+			grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/tmp/.android_version && \
+			grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$1\"-\([^-]*\)-.*/\1/" > /repo/tmp/.android_version_tag && \
+			repo init -u https://android.googlesource.com/platform/manifest -b $$(cat /repo/tmp/.android_version) --depth=1 --git-lfs && \
 			mkdir -p .repo/local_manifests && \
 			cp -v /repo/configs/*.xml .repo/local_manifests/ && \
 			cp -v ponces_aosp/build/default.xml .repo/local_manifests/ponces_default.xml && \
@@ -150,7 +146,7 @@ prepare-images: build-container
 	$(call print_section,Prepare Images)
 	$(CONTAINER_RUN) -w /repo/tmp $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
-			VERSION_TAG="$${$$(cat /repo/$$ANDROID_VERSION_FILE)#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
+			VERSION_TAG="$${$$(cat /repo/tmp/.android_version)#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
 			for arch in $(ARCHITECTURES); do \
 				src="system_$$arch.img"; \
 				if [ -f "$$src" ]; then \
@@ -167,7 +163,7 @@ upload-to-github:
 	@cd $(PWD)/out/ && \
 		git init && \
 		git remote add origin "$(REPO_HOST)/$(REPO_PATH).git" && \
-		RELEASE_TAG="$${$$(cat $(PWD)/$(ANDROID_VERSION_FILE))#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
+		RELEASE_TAG="$${$$(cat $(PWD)/tmp/.android_version)#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
 		gh repo set-default "$(REPO_PATH)" && \
 		gh release create -d -n "" -t "$(ROM_PREFIX) $$RELEASE_TAG" "$$RELEASE_TAG" && \
 		gh release upload "$$RELEASE_TAG" --clobber -- *.img.xz && \
