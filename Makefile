@@ -84,7 +84,7 @@ clean:
 
 # build the container image used for all build operations
 build-container:
-	$(CONTAINER_RUNTIME) build -t leos-gsi-builder -f Containerfile .
+	$(CONTAINER_RUNTIME) build -t gsi-builder -f Containerfile .
 
 # full build process - simple linear chain
 full-build: build-container sync-sources apply-patches copy-prebuilts build-treble-app build-arm64 build-arm32 prepare-images
