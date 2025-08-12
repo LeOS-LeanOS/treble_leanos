@@ -8,7 +8,7 @@ include $(call all-subdir-makefiles,$(LOCAL_PATH))
 $(call inherit-product, vendor/rom/common.mk)
 
 # sign build with auto generated key
-include vendor/rom/keys/keys.mk
+-include vendor/rom/keys/keys.mk
 
 # LeanOS-specific packages
 PRODUCT_PACKAGES += \
