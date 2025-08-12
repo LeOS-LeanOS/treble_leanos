@@ -112,6 +112,10 @@ prepare-sources: build-container
 			cp -Rv /repo/patches . && \
 			cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 			patches/apply.sh . trebledroid && \
+			if [ -d ponces_aosp/patches/staging ]; then \
+				cp -RV ponces_aosp/patches/staging patches/ponces_staging && \
+				patches/apply.sh . ponces_staging; \
+			fi; \
 			patches/apply.sh . common && \
 			patches/apply.sh . leos && \
 			cp -Rfv /repo/external . && \
