@@ -13,5 +13,8 @@ android_app_import {
         "androidx.window.extensions",
         "androidx.window.sidecar",
     ],
-    required: ["privapp-permissions-foundation.e.advancedprivacy.xml"],
+    required: [
+        "elib",
+        "privapp-permissions-foundation.e.advancedprivacy.xml",
+    ],
 }

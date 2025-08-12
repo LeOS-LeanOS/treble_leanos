@@ -1,18 +1,15 @@
-# LeOS ROM Configuration
-# This file defines the packages and configurations for LeOS builds
+# LeanOS ROM Configuration
+# This file defines the packages and configurations for LeanOS builds
+
+LOCAL_PATH := $(call my-dir)
+include $(call all-subdir-makefiles,$(LOCAL_PATH))
 
 # Include common vendor configuration
 $(call inherit-product, vendor/rom/common.mk)
 
-# LeOS specific packages
+# LeOS-specific packages
 PRODUCT_PACKAGES += \
-    GmsCore \
+    bootanimation.zip \
     FakeStore \
-    GsfProxy \
-    AdvancedPrivacy \
-    LatinIME \
-    LeOS-Droid \
-    LeOS-Icons \
-    LeOS-Launcher \
-    LeOS-Wallpaper \
-    Sherpa
+    GmsCore \
+    GsfProxy

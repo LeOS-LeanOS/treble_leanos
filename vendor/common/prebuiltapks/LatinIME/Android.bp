@@ -15,4 +15,5 @@ android_app_import {
         "androidx.window.extensions",
         "androidx.window.sidecar",
     ],
+    required: ["privapp-permissions-org.futo.inputmethod.latin.xml"],
 }
