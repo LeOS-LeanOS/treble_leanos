@@ -123,9 +123,6 @@ prepare-sources: build-container
 			if [ "$$BUILD_LEANOS" = "true" ]; then \
 				patches/apply.sh . leanos && \
 				cp -Rfv /repo/vendor/leanos/* vendor/rom/; \
-				pushd vendor/rom/keys && \
-					./keys.sh || true && \
-				popd; \
 			else \
 				cp -Rfv /repo/vendor/leos/* vendor/rom/; \
 			fi'
