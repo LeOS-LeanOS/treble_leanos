@@ -68,7 +68,7 @@ BUILD_NUMBER := $(shell cat $(BUILD_NUMBER_FILE))
 CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
-	-v "$$HOME/.android-certs:/certs:Z" \
+	$(if $(filter true,$(BUILD_LEANOS)),-v "$$HOME/.android-certs:/certs:Z") \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
