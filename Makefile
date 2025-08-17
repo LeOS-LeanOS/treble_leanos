@@ -38,6 +38,13 @@ define build_arch
 			lunch treble_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
 			make systemimage -j$$(nproc --all) && \
 			$(SEPOLICY_CHECK) && \
+			if [ "$$BUILD_LEANOS" = "true" ]; then \
+				make target-files-package otatools -j$$(nproc --all) && \
+				bash vendor/rom/keys/sign.sh out/target/product/tdgsi_$(1)_ab && \
+				rm -fv out/target/product/tdgsi_$(1)_ab/system.img && \
+				unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d out/target/product/tdgsi_$(1)_ab && \
+				rm -fv $$OUT/signed-target_files.zip; \
+			fi && \
 			mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_$(1).img'
 endef
 
@@ -61,6 +68,7 @@ BUILD_NUMBER := $(shell cat $(BUILD_NUMBER_FILE))
 CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
+	-v "$$HOME/.android-certs:/certs:Z" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \

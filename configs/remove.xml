@@ -39,7 +39,7 @@
   <remove-project name="ponces/treble_adapter" />
 
   <!-- vendor -->
-  <remove-project name="vendor_gapps" />
   <remove-project name="ponces/vendor_ponces" />
   <remove-project name="ponces/vendor_ponces-priv" />
+  <remove-project name="vendor_gapps" />
 </manifest>
