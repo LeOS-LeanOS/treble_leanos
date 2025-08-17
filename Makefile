@@ -76,7 +76,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 
 # phony targets
 .PHONY: all build-arm32 build-arm64 build-container build-treble-app \
-	clean full-build prepare-images prepare-sources sync-sources upload-to-github
+	clean enter-build-container full-build prepare-images prepare-sources sync-sources upload-to-github
 
 # default target - runs the full build process
 all: full-build
@@ -88,6 +88,11 @@ clean:
 # build the container image used for all build operations
 build-container:
 	$(CONTAINER_RUNTIME) build -t $(CONTAINER_NAME) -f Containerfile .
+
+# enter an interactive shell in the build container for debugging
+enter-build-container: build-container
+	$(call print_section,Enter Build Container)
+	$(CONTAINER_RUN) -it -w /repo/src $(CONTAINER_NAME) /bin/bash
 
 # full build process - simple linear chain
 full-build: build-container sync-sources prepare-sources build-treble-app build-arm64 build-arm32 prepare-images
