@@ -40,7 +40,7 @@ define build_arch
 			$(SEPOLICY_CHECK) && \
 			if [ "$$BUILD_LEANOS" = "true" ]; then \
 				make target-files-package otatools -j$$(nproc --all) && \
-				bash vendor/rom/keys/sign.sh out/target/product/tdgsi_$(1)_ab && \
+				bash vendor/rom/keys/sign.sh && \
 				rm -fv out/target/product/tdgsi_$(1)_ab/system.img && \
 				unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d out/target/product/tdgsi_$(1)_ab && \
 				rm -fv $$OUT/signed-target_files.zip; \
