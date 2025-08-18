@@ -1,0 +1,58 @@
+From e97b4cb9ddfe6b77b7aa2f2b8f12fe69b9c0d8c3 Mon Sep 17 00:00:00 2001
+From: "Christopher A. Williamson" <contact@chrisaw.io>
+Date: Mon, 18 Aug 2025 17:15:23 +0100
+Subject: [PATCH 1/1] Reset package signatures on boot
+
+Change-Id: I1dcdae280d09f0e72cb46f1614efb9853f59708a
+---
+ .../server/pm/InstallPackageHelper.java       | 35 +++----------------
+ 1 file changed, 5 insertions(+), 30 deletions(-)
+
+diff --git a/services/core/java/com/android/server/pm/InstallPackageHelper.java b/services/core/java/com/android/server/pm/InstallPackageHelper.java
+index d98f3617f..97bc04243 100644
+--- a/services/core/java/com/android/server/pm/InstallPackageHelper.java
++++ b/services/core/java/com/android/server/pm/InstallPackageHelper.java
+@@ -1723,36 +1723,11 @@ final class InstallPackageHelper {
+                 final KeySetManagerService ksms = mPm.mSettings.getKeySetManagerService();
+                 final SharedUserSetting signatureCheckSus = mPm.mSettings.getSharedUserSettingLPr(
+                         signatureCheckPs);
+-                if (ksms.shouldCheckUpgradeKeySetLocked(signatureCheckPs, signatureCheckSus,
+-                        scanFlags)) {
+-                    if (!ksms.checkUpgradeKeySetLocked(signatureCheckPs, parsedPackage)) {
+-                        throw new PrepareFailure(INSTALL_FAILED_UPDATE_INCOMPATIBLE, "Package "
+-                                + parsedPackage.getPackageName() + " upgrade keys do not match the "
+-                                + "previously installed version");
+-                    }
+-                } else {
+-                    try {
+-                        final boolean compareCompat =
+-                                ReconcilePackageUtils.isCompatSignatureUpdateNeeded(
+-                                        mPm.getSettingsVersionForPackage(parsedPackage));
+-                        final boolean compareRecover =
+-                                ReconcilePackageUtils.isRecoverSignatureUpdateNeeded(
+-                                        mPm.getSettingsVersionForPackage(parsedPackage));
+-                        // We don't care about disabledPkgSetting on install for now.
+-                        final boolean compatMatch =
+-                                PackageManagerServiceUtils.verifySignatures(signatureCheckPs,
+-                                        signatureCheckSus, null,
+-                                parsedPackage.getSigningDetails(), compareCompat, compareRecover,
+-                                isRollback);
+-                        // The new KeySets will be re-added later in the scanning process.
+-                        if (compatMatch) {
+-                            synchronized (mPm.mLock) {
+-                                ksms.removeAppKeySetDataLPw(parsedPackage.getPackageName());
+-                            }
+-                        }
+-                    } catch (PackageManagerException e) {
+-                        throw new PrepareFailure(e.error, e.getMessage());
+-                    }
++                Slog.d(TAG, "resetting signatures on package " + parsedPackage.getPackageName());
++                signatureCheckPs.setSigningDetails(parsedPackage.getSigningDetails());
++                if (signatureCheckSus != null) {
++                    signatureCheckSus.signatures.mSigningDetails =
++                            parsedPackage.getSigningDetails();
+                 }
+             }
+ 
+-- 
+2.49.0
