@@ -3,24 +3,23 @@ include $(call all-subdir-makefiles,$(LOCAL_PATH))
 
 # copy files
 PRODUCT_COPY_FILES += \
-  vendor/leanos/prebuiltapks/LeOS-Launcher/preferred-home.xml:system/etc/preferred-apps/preferred-activities-home.xml
+    vendor/leanos/prebuiltapks/LeOS-Launcher/preferred-home.xml:system/etc/preferred-apps/preferred-activities-home.xml
 
 # overlays
 PRODUCT_PACKAGE_OVERLAYS += vendor/leanos/common/overlay
 
 # packages
 PRODUCT_PACKAGES += \
-	AdvancedPrivacy \
-	bootanimation.zip \
+    AdvancedPrivacy \
     FakeStore \
     GmsCore \
     GsfProxy
-	LatinIME \
-	LeOS-Droid \
-	LeOS-Icons \
-	LeOS-Launcher \
-	LeOS-Wallpaper \
-	Sherpa
+    LatinIME \
+    LeOS-Droid \
+    LeOS-Icons \
+    LeOS-Launcher \
+    LeOS-Wallpaper \
+    Sherpa
 
 # system properties
 PRODUCT_SYSTEM_PROPERTIES += \
