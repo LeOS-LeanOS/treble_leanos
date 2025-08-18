@@ -41,11 +41,11 @@ define build_arch
 			if [ "$$BUILD_LEANOS" = "true" ]; then \
 				make target-files-package otatools -j$$(nproc --all) && \
 				bash vendor/rom/keys/sign.sh && \
-				rm -fv out/target/product/tdgsi_$(1)_ab/system.img && \
-				unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d out/target/product/tdgsi_$(1)_ab && \
+				rm -fv $$OUT/system.img && \
+				unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d $$OUT/ && \
 				rm -fv $$OUT/signed-target_files.zip; \
 			fi && \
-			mv -v out/target/product/tdgsi_$(1)_ab/system.img /repo/tmp/system_$(1).img'
+			mv -v $$OUT/system.img /repo/tmp/system_$(1).img'
 endef
 
 # define a function to print section headers
