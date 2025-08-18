@@ -15,7 +15,7 @@ index 8fc94a7..29fcd54 100644
  PRODUCT_DEVICE := tdgsi_${arch}_$part
  PRODUCT_BRAND := google
  PRODUCT_SYSTEM_BRAND := google
--PRODUCT_MODEL := LeOS
+-PRODUCT_MODEL := TrebleDroid $apps_name
 +PRODUCT_MODEL := LeanOS
 
  # Overwrite the inherited "emulator" characteristics

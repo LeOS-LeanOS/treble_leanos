@@ -123,7 +123,7 @@ prepare-sources: build-container
 			cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 			patches/apply.sh . trebledroid && \
 			if [ -d ponces_aosp/patches/staging ]; then \
-				cp -RV ponces_aosp/patches/staging patches/ponces_staging && \
+				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
 				patches/apply.sh . ponces_staging; \
 			fi; \
 			patches/apply.sh . personal && \
