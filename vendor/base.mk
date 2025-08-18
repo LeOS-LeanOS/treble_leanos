@@ -13,7 +13,7 @@ PRODUCT_PACKAGES += \
     AdvancedPrivacy \
     FakeStore \
     GmsCore \
-    GsfProxy
+    GsfProxy \
     LatinIME \
     LeOS-Droid \
     LeOS-Icons \
