@@ -1,0 +1,185 @@
+From d1adc3bfac873d78bfe418107118cc5131591acf Mon Sep 17 00:00:00 2001
+From: Abhishek Aggarwal <warabhishek@e.email>
+Date: Wed, 23 Mar 2022 15:35:02 +0000
+Subject: [PATCH 1/2] Settings: Integrate Advanced Privacy into settings
+
+Settings: Change packagename for advanced privacy
+
+ * ALso explicitly specify component name
+---
+ res/drawable/ic_homepage_advanced_privacy.xml | 39 ++++++++++++++
+ res/values/e_strings.xml                      |  4 ++
+ .../advanced_privacy_dashboard_settings.xml   | 28 ++++++++++
+ res/xml/top_level_settings.xml                |  8 +++
+ .../core/gateway/SettingsGateway.java         |  4 +-
+ .../dashboard/DashboardFragmentRegistry.java  |  3 ++
+ .../AdvancedPrivacyDashboardFragment.java     | 52 +++++++++++++++++++
+ 7 files changed, 137 insertions(+), 1 deletion(-)
+ create mode 100644 res/drawable/ic_homepage_advanced_privacy.xml
+ create mode 100644 res/xml/advanced_privacy_dashboard_settings.xml
+ create mode 100644 src/com/android/settings/privacy/AdvancedPrivacyDashboardFragment.java
+
+diff --git a/res/drawable/ic_homepage_advanced_privacy.xml b/res/drawable/ic_homepage_advanced_privacy.xml
+new file mode 100644
+index 00000000000..c75e102402b
+--- /dev/null
++++ b/res/drawable/ic_homepage_advanced_privacy.xml
+@@ -0,0 +1,39 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++  Copyright (C) 2019-2022 ECORP SAS
++
++  Licensed under the Apache License, Version 2.0 (the "License");
++  you may not use this file except in compliance with the License.
++  You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++  Unless required by applicable law or agreed to in writing, software
++  distributed under the License is distributed on an "AS IS" BASIS,
++  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  See the License for the specific language governing permissions and
++  limitations under the License.
++  -->
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="32dp"
++    android:height="32dp"
++    android:viewportWidth="32"
++    android:viewportHeight="32">
++    <path
++        android:fillColor="#00000000"
++        android:pathData="M15.99,4V4C15.79,3.998 15.592,4.028 15.402,4.089L5.845,8.136C5.598,8.244 5.385,8.425 5.233,8.658C5.081,8.893 5,9.17 5,9.453L5,9.455C5,19.19 10.484,25.771 15.442,27.89L15.444,27.891C15.612,27.963 15.792,28 15.974,28C16.155,28 16.335,27.963 16.504,27.891L16.507,27.889C20.475,26.204 26.995,20.295 27,9.466C26.992,9.179 26.904,8.902 26.746,8.666C26.587,8.429 26.365,8.247 26.11,8.138L15.99,4ZM15.99,4L15.996,4C16.182,4.001 16.368,4.03 16.545,4.088L26.109,8.138L15.99,4Z"
++        android:strokeWidth="2"
++        android:strokeColor="#0088ED" />
++    <path
++        android:fillColor="#00000000"
++        android:pathData="M19.5,12.291C20.466,13.257 20.95,14.524 20.95,15.791C20.95,17.058 20.466,18.324 19.5,19.291C18.534,20.257 17.267,20.741 16,20.741C14.733,20.741 13.466,20.258 12.5,19.291C11.533,18.324 11.05,17.058 11.05,15.791C11.05,14.524 11.533,13.257 12.5,12.291"
++        android:strokeWidth="2"
++        android:strokeColor="#0088ED"
++        android:strokeLineCap="round" />
++    <path
++        android:fillColor="#00000000"
++        android:pathData="M16.101,11.4L16.101,15.864"
++        android:strokeWidth="2"
++        android:strokeColor="#0088ED"
++        android:strokeLineCap="round" />
++</vector>
+
+diff --git a/res/xml/advanced_privacy_dashboard_settings.xml b/res/xml/advanced_privacy_dashboard_settings.xml
+new file mode 100644
+index 00000000000..8433a4402a8
+--- /dev/null
++++ b/res/xml/advanced_privacy_dashboard_settings.xml
+@@ -0,0 +1,28 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++  Copyright (C) 2019-2022 ECORP SAS
++
++  Licensed under the Apache License, Version 2.0 (the "License");
++  you may not use this file except in compliance with the License.
++  You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++  Unless required by applicable law or agreed to in writing, software
++  distributed under the License is distributed on an "AS IS" BASIS,
++  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  See the License for the specific language governing permissions and
++  limitations under the License.
++  -->
++
++<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:settings="http://schemas.android.com/apk/res-auto"
++    android:key="advanced_privacy"
++    android:title="@string/advanced_privacy_dashboard_title">
++
++    <Preference>
++        <intent android:action="android.intent.action.MAIN"
++            android:targetPackage="foundation.e.advancedprivacy"
++            android:targetClass="foundation.e.privacycentralapp.main.MainActivity" />
++    </Preference>
++</PreferenceScreen>
+
+
+diff --git a/src/com/android/settings/dashboard/DashboardFragmentRegistry.java b/src/com/android/settings/dashboard/DashboardFragmentRegistry.java
+index 849a80b3592..07357b34477 100644
+--- a/src/com/android/settings/dashboard/DashboardFragmentRegistry.java
++++ b/src/com/android/settings/dashboard/DashboardFragmentRegistry.java
+@@ -42,6 +42,7 @@ import com.android.settings.network.NetworkDashboardFragment;
+ import com.android.settings.notification.ConfigureNotificationSettings;
+ import com.android.settings.notification.SoundSettings;
+ import com.android.settings.notification.zen.ZenModeSettings;
++import com.android.settings.privacy.AdvancedPrivacyDashboardFragment;
+ import com.android.settings.privacy.PrivacyDashboardFragment;
+ import com.android.settings.safetycenter.MoreSecurityPrivacyFragment;
+ import com.android.settings.security.LockscreenDashboardFragment;
+@@ -116,6 +117,8 @@ public class DashboardFragmentRegistry {
+                 CategoryKey.CATEGORY_NIGHT_DISPLAY);
+         PARENT_TO_CATEGORY_KEY_MAP.put(PrivacyDashboardFragment.class.getName(),
+                 CategoryKey.CATEGORY_PRIVACY);
++        PARENT_TO_CATEGORY_KEY_MAP.put(AdvancedPrivacyDashboardFragment.class.getName(),
++                CategoryKey.CATEGORY_PRIVACY);
+         PARENT_TO_CATEGORY_KEY_MAP.put(EnterprisePrivacySettings.class.getName(),
+                 CategoryKey.CATEGORY_ENTERPRISE_PRIVACY);
+         PARENT_TO_CATEGORY_KEY_MAP.put(LegalSettings.class.getName(),
+diff --git a/src/com/android/settings/privacy/AdvancedPrivacyDashboardFragment.java b/src/com/android/settings/privacy/AdvancedPrivacyDashboardFragment.java
+new file mode 100644
+index 00000000000..c0564742c3c
+--- /dev/null
++++ b/src/com/android/settings/privacy/AdvancedPrivacyDashboardFragment.java
+@@ -0,0 +1,52 @@
++/*
++ * Copyright (C) 2019-2022 ECORP SAS
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.settings.privacy;
++
++import android.app.Activity;
++import android.content.ComponentName;
++import android.content.Intent;
++import android.os.Bundle;
++
++import androidx.fragment.app.Fragment;
++
++import com.android.settings.R;
++import com.android.settings.search.BaseSearchIndexProvider;
++import com.android.settingslib.search.SearchIndexable;
++
++@SearchIndexable
++public class AdvancedPrivacyDashboardFragment extends Fragment {
++
++    private static final String advancedPrivacyPackageName = "foundation.e.advancedprivacy";
++    private static final String advancedPrivacyActivityName = "foundation.e.advancedprivacy.main.MainActivity";
++
++    @Override
++    public void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++
++        Activity activity = getActivity();
++        Intent intent = new Intent().setComponent(new ComponentName(advancedPrivacyPackageName,
++                advancedPrivacyActivityName));
++        startActivity(intent);
++
++        if (activity != null) {
++            activity.finish();
++        }
++    }
++
++    public static final BaseSearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
++            new BaseSearchIndexProvider(R.xml.advanced_privacy_dashboard_settings);
++}
+\ No newline at end of file
+--
+2.49.0

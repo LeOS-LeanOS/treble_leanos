@@ -1,0 +1,32 @@
+From 9616a46b72bf8469298da60e6cbd75ec8f83d3ae Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 16:49:15 +0100
+Subject: [PATCH 3/10] Remove easter egg definition
+
+Change-Id: I439f93d19002641ca4e9c7ef2938fd86ab1fbb11
+---
+ tests/BinaryTransparencyHostTest/Android.bp | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/tests/BinaryTransparencyHostTest/Android.bp b/tests/BinaryTransparencyHostTest/Android.bp
+index 1c8386add..a1834eaf3 100644
+--- a/tests/BinaryTransparencyHostTest/Android.bp
++++ b/tests/BinaryTransparencyHostTest/Android.bp
+@@ -12,15 +12,6 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+
+-package {
+-    // See: http://go/android-license-faq
+-    // A large-scale-change added 'default_applicable_licenses' to import
+-    // all of the 'license_kinds' from "frameworks_base_license"
+-    // to get the below license kinds:
+-    //   SPDX-license-identifier-Apache-2.0
+-    default_applicable_licenses: ["frameworks_base_license"],
+-}
+-
+ java_test_host {
+     name: "BinaryTransparencyHostTest",
+     srcs: ["src/**/*.java"],
+--
+2.49.0

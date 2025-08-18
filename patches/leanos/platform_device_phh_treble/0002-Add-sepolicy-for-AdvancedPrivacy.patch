@@ -1,0 +1,81 @@
+From 211d2211f224c0cfbfb9bc0b9dd5e2221c8cad5b Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 16:14:46 +0100
+Subject: [PATCH 2/4] Add sepolicy for AdvancedPrivacy
+
+---
+ sepolicy/netd.te         |  1 +
+ sepolicy/platform_app.te |  9 +++++++++
+ sepolicy/service.te      |  8 ++++++++
+ sepolicy/updater_app.te  | 21 +++++++++++++++++++++
+ 4 files changed, 39 insertions(+)
+ create mode 100644 sepolicy/netd.te
+ create mode 100644 sepolicy/platform_app.te
+ create mode 100644 sepolicy/updater_app.te
+
+diff --git a/sepolicy/netd.te b/sepolicy/netd.te
+new file mode 100644
+index 0000000..bc71718
+--- /dev/null
++++ b/sepolicy/netd.te
+@@ -0,0 +1 @@
++allow netd platform_app:unix_stream_socket connectto;
+diff --git a/sepolicy/platform_app.te b/sepolicy/platform_app.te
+new file mode 100644
+index 0000000..80f0dbf
+--- /dev/null
++++ b/sepolicy/platform_app.te
+@@ -0,0 +1,9 @@
++# allow platform_app to create named pipes (used for realm support)
++allow platform_app fuse:fifo_file create;
++allow platform_app app_data_file:fifo_file create_file_perms;
++allow platform_app app_data_file:fifo_file open;
++allow platform_app rs_exec:file rx_file_perms;
++
++# allow platform apps to execute files in /data
++allow platform_app app_data_file:file execute;
++allow platform_app app_data_file:{ lnk_file sock_file fifo_file } create_file_perms;
+diff --git a/sepolicy/service.te b/sepolicy/service.te
+index b4758df..f8cb123 100644
+--- a/sepolicy/service.te
++++ b/sepolicy/service.te
+@@ -1,2 +1,10 @@
+ type qcrilam_service,    service_manager_type;
+ type fingerprint_hidl_service, system_api_service, service_manager_type;
++
++type adbroot_service, service_manager_type;
++type lineage_hardware_service, system_api_service, system_server_service, service_manager_type;
++type lineage_health_interface_service, system_api_service, system_server_service, service_manager_type;
++type lineage_globalactions_service, system_api_service, system_server_service, service_manager_type;
++type lineage_livedisplay_service, system_api_service, system_server_service, service_manager_type;
++type lineage_profile_service, system_api_service, system_server_service, service_manager_type;
++type lineage_trust_service, system_api_service, system_server_service, service_manager_type;
+diff --git a/sepolicy/updater_app.te b/sepolicy/updater_app.te
+new file mode 100644
+index 0000000..c597d4f
+--- /dev/null
++++ b/sepolicy/updater_app.te
+@@ -0,0 +1,21 @@
++type updater_app, domain, coredomain;
++
++app_domain(updater_app)
++net_domain(updater_app)
++
++binder_call(updater_app, gpuservice)
++binder_call(updater_app, update_engine)
++
++allow updater_app app_api_service:service_manager find;
++allow updater_app recovery_service:service_manager find;
++allow updater_app system_api_service:service_manager find;
++allow updater_app system_update_service:service_manager find;
++allow updater_app update_engine_service:service_manager find;
++
++allow updater_app app_data_file:dir create_dir_perms;
++allow updater_app app_data_file:{ file lnk_file } create_file_perms;
++
++allow updater_app cache_file:dir r_dir_perms;
++
++get_prop(updater_app, default_prop)
++get_prop(updater_app, build_prop)
+--
+2.49.0

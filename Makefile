@@ -122,11 +122,12 @@ prepare-sources: build-container
 			cp -Rv /repo/patches . && \
 			cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 			patches/apply.sh . trebledroid && \
+			patches/apply.sh . staging && \
 			if [ -d ponces_aosp/patches/staging ]; then \
 				cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
 				patches/apply.sh . ponces_staging; \
 			fi; \
-			patches/apply.sh . personal && \
+			patches/apply.sh . leanos && \
 			cp -Rfv /repo/external . && \
 			cp -Rfv /repo/vendor vendor/leanos && \
 			if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
