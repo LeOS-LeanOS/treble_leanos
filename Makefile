@@ -1,6 +1,6 @@
-# leos gsi builder makefile
+# leanos gsi builder makefile
 #
-# this makefile automates the process of building leos gsi images for
+# this makefile automates the process of building leanos gsi images for
 # arm64 and arm32_binder64 architectures.
 #
 # make sure make stops if any command fails
@@ -11,15 +11,13 @@
 APPLY_DEBUG_PATCHES := false
 ARCHITECTURES := arm64 a64
 BUILD_DATE := $(shell date "+%Y%m%d")
-BUILD_LEANOS ?= false
 BUILD_NUMBER_FILE := tmp/.build_number
 BUILD_TIME := $(shell date "+%H%M%S")
 CONTAINER_NAME := gsi-builder
 CONTAINER_RUNTIME ?= podman
 PONCES_AOSP_TAG ?= android-16.0
 REPO_HOST ?= https://github.com
-REPO_PATH ?= cawilliamson/treble_leos
-ROM_PREFIX = $(if $(filter true,$(BUILD_LEANOS)),LeanOS,LeOS)
+REPO_PATH ?= cawilliamson/treble_leanos
 SEPOLICY_CHECK = if [ "$(VERIFY_SEPOLICY)" = "true" ]; then make vndk-test-sepolicy -j$$(nproc --all); fi
 UPLOAD_TO_GITHUB ?= false
 VERIFY_SEPOLICY ?= true
@@ -31,21 +29,19 @@ define build_arch
 		/bin/bash -e -c ' \
 			ANDROID_VERSION_TAG_VAL=$$(cat /repo/tmp/.android_version_tag) && \
 			pushd device/phh/treble && \
-				cp -fv "/repo/configs/rom.mk" . && \
-				bash generate.sh rom && \
+				cp -fv "/repo/configs/leanos.mk" . && \
+				bash generate.sh leanos && \
 			popd && \
 			rm -rfv out/target/product/tdgsi_$(1)_ab/ && \
 			. build/envsetup.sh && \
 			lunch treble_$(1)_bvN-$$ANDROID_VERSION_TAG_VAL-userdebug && \
 			make systemimage -j$$(nproc --all) && \
 			$(SEPOLICY_CHECK) && \
-			if [ "$$BUILD_LEANOS" = "true" ]; then \
-				make target-files-package otatools -j$$(nproc --all) && \
-				bash vendor/rom/keys/sign.sh && \
-				rm -fv $$OUT/system.img && \
-				unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d $$OUT/ && \
-				rm -fv $$OUT/signed-target_files.zip; \
-			fi && \
+			make target-files-package otatools -j$$(nproc --all) && \
+			bash vendor/leanos/keys/sign.sh && \
+			rm -fv $$OUT/system.img && \
+			unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d $$OUT/ && \
+			rm -fv $$OUT/signed-target_files.zip && \
 			mv -v $$OUT/system.img /repo/tmp/system_$(1).img'
 endef
 
@@ -69,10 +65,9 @@ BUILD_NUMBER := $(shell cat $(BUILD_NUMBER_FILE))
 CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
-	$(if $(filter true,$(BUILD_LEANOS)),-v "$$HOME/.android-certs:/certs:Z") \
+	-v "$$HOME/.android-certs:/certs:Z" \
 	-e APPLY_DEBUG_PATCHES="$(APPLY_DEBUG_PATCHES)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
-	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
 	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)"
 
@@ -131,16 +126,9 @@ prepare-sources: build-container
 				cp -RV ponces_aosp/patches/staging patches/ponces_staging && \
 				patches/apply.sh . ponces_staging; \
 			fi; \
-			patches/apply.sh . common && \
-			patches/apply.sh . leos && \
+			patches/apply.sh . personal && \
 			cp -Rfv /repo/external . && \
-			cp -Rfv /repo/vendor/common vendor/rom && \
-			if [ "$$BUILD_LEANOS" = "true" ]; then \
-				patches/apply.sh . leanos && \
-				cp -Rfv /repo/vendor/leanos/* vendor/rom/; \
-			else \
-				cp -Rfv /repo/vendor/leos/* vendor/rom/; \
-			fi && \
+			cp -Rfv /repo/vendor vendor/leanos && \
 			if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
 				patches/apply.sh . debug; \
 			fi'
@@ -173,7 +161,7 @@ prepare-images: build-container
 			for arch in $(ARCHITECTURES); do \
 				src="system_$$arch.img"; \
 				if [ -f "$$src" ]; then \
-					dest="$(ROM_PREFIX)-$$arch-ab-$$VERSION_TAG.img"; \
+					dest="LeanOS-$$arch-ab-$$VERSION_TAG.img"; \
 					mv -v "$$src" "$$dest"; \
 					xz -9 -T0 -v -z "$$dest"; \
 				fi; \
@@ -189,6 +177,6 @@ upload-to-github:
 		ANDROID_VERSION=$$(cat $(PWD)/tmp/.android_version) && \
 		RELEASE_TAG="$${ANDROID_VERSION#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
 		gh repo set-default "$(REPO_PATH)" && \
-		gh release create -d -n "" -t "$(ROM_PREFIX) $$RELEASE_TAG" "$$RELEASE_TAG" && \
+		gh release create -d -n "" -t "LeanOS $$RELEASE_TAG" "$$RELEASE_TAG" && \
 		gh release upload "$$RELEASE_TAG" --clobber -- *.img.xz && \
 		rm -rf .git/
