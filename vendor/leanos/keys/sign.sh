@@ -135,4 +135,4 @@ sign_target_files_apks -o -d /certs \
     --extra_apex_payload_key com.google.pixel.vibrator.hal.apex=/certs/com.google.pixel.vibrator.hal.pem \
     --extra_apex_payload_key com.qorvo.uwb.apex=/certs/com.qorvo.uwb.pem \
     "$OUT"/obj/PACKAGING/target_files_intermediates/*-target_files*.zip \
-    signed-target_files.zip
+    "$OUT"/signed-target_files.zip
