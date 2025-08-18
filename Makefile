@@ -8,6 +8,7 @@
 .ONESHELL:
 
 # variables
+APPLY_DEBUG_PATCHES := false
 ARCHITECTURES := arm64 a64
 BUILD_DATE := $(shell date "+%Y%m%d")
 BUILD_LEANOS ?= false
@@ -69,6 +70,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--pids-limit=0 \
 	-v "$(PWD):/repo:Z" \
 	$(if $(filter true,$(BUILD_LEANOS)),-v "$$HOME/.android-certs:/certs:Z") \
+	-e APPLY_DEBUG_PATCHES="$(APPLY_DEBUG_PATCHES)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_LEANOS="$(BUILD_LEANOS)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
@@ -138,6 +140,9 @@ prepare-sources: build-container
 				cp -Rfv /repo/vendor/leanos/* vendor/rom/; \
 			else \
 				cp -Rfv /repo/vendor/leos/* vendor/rom/; \
+			fi && \
+			if [ "$$APPLY_DEBUG_PATCHES" = "true" ]; then \
+				patches/apply.sh . debug; \
 			fi'
 
 # step 3: build treble app - compile the treble app
