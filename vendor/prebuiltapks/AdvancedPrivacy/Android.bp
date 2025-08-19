@@ -1,20 +1,29 @@
-prebuilt_etc {
-    name: "privapp-permissions-foundation.e.advancedprivacy.xml",
-    src: "privapp-permissions-foundation.e.advancedprivacy.xml",
-    sub_dir: "permissions",
-    installable: true,
-}
-
 android_app_import {
+
     name: "AdvancedPrivacy",
-    apk: "AdvancedPrivacy.apk",
     certificate: "platform",
+    privileged: true,
+
+    required: [
+        "privapp-permissions-foundation.e.advancedprivacy.xml",
+    ],
+
     optional_uses_libs: [
         "androidx.window.extensions",
         "androidx.window.sidecar",
     ],
-    required: [
-        "elib",
-        "privapp-permissions-foundation.e.advancedprivacy.xml",
-    ],
+     arch: {
+        arm: {
+            apk: "Advanced_Privacy_3.1.0-eos-armeabi-v7a-release.apk",
+        },
+        arm64: {
+            apk: "Advanced_Privacy_3.1.0-eos-arm64-v8a-release.apk",
+        },
+    },
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-foundation.e.advancedprivacy.xml",
+    src: "privapp-permissions-foundation.e.advancedprivacy.xml",
+    relative_install_path: "permissions",
 }
