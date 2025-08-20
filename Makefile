@@ -19,6 +19,7 @@ PONCES_AOSP_TAG ?= android-16.0
 REPO_HOST ?= https://github.com
 REPO_PATH ?= cawilliamson/treble_leanos
 SEPOLICY_CHECK = if [ "$(VERIFY_SEPOLICY)" = "true" ]; then make vndk-test-sepolicy -j$$(nproc --all); fi
+SIGN_BUILD := true
 UPLOAD_TO_GITHUB ?= false
 VERIFY_SEPOLICY ?= true
 
@@ -38,10 +39,12 @@ define build_arch
 			make systemimage -j$$(nproc --all) && \
 			$(SEPOLICY_CHECK) && \
 			make target-files-package otatools -j$$(nproc --all) && \
-			bash vendor/leanos/keys/sign.sh && \
-			rm -fv $$OUT/system.img && \
-			unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d $$OUT/ && \
-			rm -fv $$OUT/signed-target_files.zip && \
+			if [ "$(SIGN_BUILD)" = "true" ]; then \
+				bash vendor/leanos/keys/sign.sh && \
+				rm -fv $$OUT/system.img && \
+				unzip -joq $$OUT/signed-target_files.zip IMAGES/system.img -d $$OUT/ && \
+				rm -fv $$OUT/signed-target_files.zip; \
+			fi && \
 			mv -v $$OUT/system.img /repo/tmp/system_$(1).img'
 endef
 
