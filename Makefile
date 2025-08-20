@@ -121,7 +121,7 @@ prepare-sources: build-container
 	$(call print_section,Prepare Sources)
 	$(CONTAINER_RUN) -w /repo/src $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
-			rm -rf patches/ && \
+			rm -rf patches/ vendor/leanos && \
 			cp -Rv /repo/patches . && \
 			cp -Rv ponces_aosp/patches/trebledroid patches/ && \
 			patches/apply.sh . trebledroid && \
