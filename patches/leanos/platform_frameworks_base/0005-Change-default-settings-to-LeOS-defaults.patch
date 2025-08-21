@@ -6,8 +6,8 @@ Subject: [PATCH 5/10] Change default settings to LeOS defaults
 Change-Id: I7a4c9efa5d879838ab19dbe4b93749b131cc94cd
 ---
  core/res/res/values/config.xml                    |  6 +++---
- packages/SettingsProvider/res/values/defaults.xml | 10 +++++-----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ packages/SettingsProvider/res/values/defaults.xml | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
 index 60f69f563..4d910224b 100644
@@ -59,19 +59,6 @@ index 94aa955f0..f715582f9 100644
      <bool name="def_wifi_display_on">false</bool>
      <bool name="def_install_non_market_apps">false</bool>
      <!-- 0 == off, 3 == on -->
-@@ -176,10 +176,10 @@
-     <integer name="def_heads_up_enabled">1</integer>
-
-     <!-- Default for Settings.Global.DEVICE_NAME $1=MANUFACTURER $2=MODEL-->
--    <string name="def_device_name">%1$s %2$s</string>
-+    <string name="def_device_name">%1$s LeOS-A16</string>
-
-     <!-- Default for Settings.Global.DEVICE_NAME $1=MODEL-->
--    <string name="def_device_name_simple">%1$s</string>
-+    <string name="def_device_name_simple">LeOS-A16</string>
-
-     <!-- Default for Settings.Secure.WAKE_GESTURE_ENABLED -->
-     <bool name="def_wake_gesture_enabled">true</bool>
 @@ -262,7 +262,7 @@
      <integer name="def_accessibility_magnification_capabilities">3</integer>
 
