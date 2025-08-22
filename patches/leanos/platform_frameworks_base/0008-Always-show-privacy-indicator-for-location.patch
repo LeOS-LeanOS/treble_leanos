@@ -1,7 +1,7 @@
 From e5c81c20a749053725fccf66a49e6549058ebd54 Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 17:03:09 +0100
-Subject: [PATCH 8/10] Always show privacy indicator for location
+Subject: [PATCH 8/11] Always show privacy indicator for location
 
 Change-Id: I6c47a087ea6aa3125d47cc289f3fb5bcc11d195a
 ---

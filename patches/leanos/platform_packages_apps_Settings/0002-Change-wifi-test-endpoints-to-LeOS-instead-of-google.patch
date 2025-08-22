@@ -1,7 +1,7 @@
 From ebb93830b395cfbfa6edd0691356d2afa6902954 Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 17:40:08 +0100
-Subject: [PATCH 2/2] Change wifi test endpoints to LeOS instead of google
+Subject: [PATCH 2/3] Change wifi test endpoints to LeOS instead of google
 
 Change-Id: I208391e8e57c9d438c50a2e82eb3f77bd080de65
 ---

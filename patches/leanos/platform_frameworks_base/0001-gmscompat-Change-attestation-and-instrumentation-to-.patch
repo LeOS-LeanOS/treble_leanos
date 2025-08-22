@@ -1,7 +1,7 @@
 From a82890949a60acf552f4f8d053a55ccc05ed1fe8 Mon Sep 17 00:00:00 2001
 From: Alberto Ponces <ponces26@gmail.com>
 Date: Thu, 9 Nov 2023 12:33:55 +0100
-Subject: [PATCH 1/10] gmscompat: Change attestation and instrumentation to pass
+Subject: [PATCH 1/11] gmscompat: Change attestation and instrumentation to pass
  Play Integrity API
 
 Original work by @kdrag0n.

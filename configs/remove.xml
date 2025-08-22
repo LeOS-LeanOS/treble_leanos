@@ -3,9 +3,6 @@
   <!-- device/generic -->
   <remove-project name="device/generic/trusty" />
 
-  <!-- packages/apps -->
-  <remove-project name="ponces/android_packages_apps_ParanoidSense" />
-
   <!-- packages/services -->
   <remove-project name="crdroidandroid/android_packages_services_OmniJaws" />
 

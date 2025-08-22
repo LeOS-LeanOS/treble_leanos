@@ -1,7 +1,7 @@
 From fdb0aa5ff8a8bad8393fd2dc1a61d5f5919fea10 Mon Sep 17 00:00:00 2001
 From: "Christopher A. Williamson" <contact@chrisaw.io>
 Date: Mon, 18 Aug 2025 21:44:12 +0100
-Subject: [PATCH 2/10] Add LeanOS branding resources
+Subject: [PATCH 2/11] Add LeanOS branding resources
 
 Change-Id: Ia2499d1fae73dacb8cb20f61817a1b876f9cb901
 ---
