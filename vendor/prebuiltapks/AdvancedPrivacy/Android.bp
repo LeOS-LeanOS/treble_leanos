@@ -1,5 +1,4 @@
 android_app_import {
-
     name: "AdvancedPrivacy",
     certificate: "platform",
     privileged: true,
@@ -14,10 +13,10 @@ android_app_import {
     ],
      arch: {
         arm: {
-            apk: "Advanced_Privacy_3.1.0-eos-armeabi-v7a-release.apk",
+            apk: "AdvancedPrivacy-arm.apk",
         },
         arm64: {
-            apk: "Advanced_Privacy_3.1.0-eos-arm64-v8a-release.apk",
+            apk: "AdvancedPrivacy-arm64.apk",
         },
     },
 }

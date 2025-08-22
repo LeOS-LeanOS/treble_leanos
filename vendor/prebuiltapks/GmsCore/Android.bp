@@ -1,4 +1,19 @@
 prebuilt_etc {
+    name: "default-permissions-com.google.android.gms.xml",
+    src: "default-permissions-com.google.android.gms.xml",
+    sub_dir: "default-permissions",
+    product_specific: true,
+    installable: true,
+}
+
+prebuilt_etc {
+    name: "microg.xml",
+    src: "microg.xml",
+    product_specific: true,
+    installable: true,
+}
+
+prebuilt_etc {
     name: "privapp-permissions-com.google.android.gms.xml",
     src: "privapp-permissions-com.google.android.gms.xml",
     sub_dir: "permissions",
@@ -25,6 +40,8 @@ android_app_import {
         "androidx.window.sidecar",
     ],
     required: [
+        "default-permissions-com.google.android.gms.xml",
+        "microg.xml",
         "privapp-permissions-com.google.android.gms.xml",
         "sysconfig-com.google.android.gms.xml",
     ],

@@ -1,11 +1,9 @@
-// privapp-permissions XML-Datei
 prebuilt_etc {
     name: "privapp-permissions-org.futo.inputmethod.latin.xml",
     src: "privapp-permissions-org.futo.inputmethod.latin.xml",
     sub_dir: "permissions",
 }
 
-// LatinIME APK
 android_app_import {
     name: "LatinIME",
     apk: "LatinIME.apk",

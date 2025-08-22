@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <permissions>
     <privapp-permissions package="com.google.android.gms">
-        <permission name="android.permission.FAKE_PACKAGE_SIGNATURE"/>
+      <permission name="android.permission.FAKE_PACKAGE_SIGNATURE"/>
       <permission name="android.permission.CHANGE_DEVICE_IDLE_TEMP_WHITELIST"/>
       <permission name="android.permission.FOREGROUND_SERVICE"/>
       <permission name="android.permission.INSTALL_LOCATION_PROVIDER"/>
@@ -16,5 +16,5 @@
       <permission name="android.permission.WATCH_APPOPS"/>
       <permission name="android.permission.INTERACT_ACROSS_PROFILES" />
       <permission name="android.permission.INTERACT_ACROSS_USERS" />
-    </privapp-permissions>
+     </privapp-permissions>
 </permissions>
