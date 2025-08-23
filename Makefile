@@ -15,6 +15,7 @@ BUILD_NUMBER_FILE := tmp/.build_number
 BUILD_TIME := $(shell date "+%H%M%S")
 CONTAINER_NAME := gsi-builder
 CONTAINER_RUNTIME ?= podman
+COPY_TO_WEB_DIR ?= false
 PONCES_AOSP_TAG ?= android-16.0
 REPO_HOST ?= https://github.com
 REPO_PATH ?= cawilliamson/treble_leanos
@@ -22,6 +23,7 @@ SEPOLICY_CHECK = if [ "$(VERIFY_SEPOLICY)" = "true" ]; then make vndk-test-sepol
 SIGN_BUILD := true
 UPLOAD_TO_GITHUB ?= false
 VERIFY_SEPOLICY ?= true
+WEB_DIR ?= /var/www/build.chrisaw.io
 
 # define a function to build architecture-specific targets
 define build_arch
@@ -67,8 +69,9 @@ BUILD_NUMBER := $(shell cat $(BUILD_NUMBER_FILE))
 # common container parameters
 CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--pids-limit=0 \
-	-v "$(PWD):/repo:Z" \
 	-v "$$HOME/.android-certs:/certs:Z" \
+	-v "$(PWD):/repo:Z" \
+	-v "$(WEB_DIR):/web:Z" \
 	-e APPLY_DEBUG_PATCHES="$(APPLY_DEBUG_PATCHES)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
@@ -76,7 +79,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 
 # phony targets
 .PHONY: all build-arm32 build-arm64 build-container build-treble-app \
-	clean enter-build-container full-build prepare-images prepare-sources sync-sources upload-to-github
+	clean enter-build-container full-build prepare-images prepare-sources sync-sources upload-to-github copy-to-webdir
 
 # default target - runs the full build process
 all: full-build
@@ -96,6 +99,9 @@ enter-build-container: build-container
 
 # full build process - simple linear chain
 full-build: build-container sync-sources prepare-sources build-treble-app build-arm64 build-arm32 prepare-images
+	@if [ "$(COPY_TO_WEB_DIR)" = "true" ]; then \
+		$(MAKE) copy-to-webdir; \
+	fi
 	@if [ "$(UPLOAD_TO_GITHUB)" = "true" ]; then \
 		$(MAKE) upload-to-github; \
 	fi
@@ -172,7 +178,18 @@ prepare-images: build-container
 			done && \
 			cp -fv *.img.xz /repo/out/'
 
-# step 6: upload images to github
+# step 6: copy images to web directory
+copy-to-webdir: build-container
+	$(call print_section,Copy to Web Directory)
+	$(CONTAINER_RUN) -w /repo/tmp $(CONTAINER_NAME) \
+		/bin/bash -e -c ' \
+			ANDROID_VERSION=$$(cat /repo/tmp/.android_version); \
+			RELEASE_TAG="$${ANDROID_VERSION#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
+			mkdir -p "/web/$$RELEASE_TAG" && \
+			cp -fv *.img.xz "/web/$$RELEASE_TAG/" && \
+			echo "Images copied to /web/$$RELEASE_TAG/"'
+
+# step 7: upload images to github
 upload-to-github:
 	$(call print_section,Upload to GitHub)
 	@cd $(PWD)/out/ && \
@@ -181,6 +198,7 @@ upload-to-github:
 		ANDROID_VERSION=$$(cat $(PWD)/tmp/.android_version) && \
 		RELEASE_TAG="$${ANDROID_VERSION#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
 		gh repo set-default "$(REPO_PATH)" && \
-		gh release create -d -n "" -t "LeanOS $$RELEASE_TAG" "$$RELEASE_TAG" && \
+		RELEASE_DESCRIPTION="Download mirror: https://build.chrisaw.io/$$RELEASE_TAG/" && \
+		gh release create -d -n "$$RELEASE_DESCRIPTION" -t "LeanOS $$RELEASE_TAG" "$$RELEASE_TAG" && \
 		gh release upload "$$RELEASE_TAG" --clobber -- *.img.xz && \
 		rm -rf .git/
