@@ -184,10 +184,11 @@ copy-to-webdir: build-container
 	$(CONTAINER_RUN) -w /repo/tmp $(CONTAINER_NAME) \
 		/bin/bash -e -c ' \
 			ANDROID_VERSION=$$(cat /repo/tmp/.android_version); \
-			RELEASE_TAG="$${ANDROID_VERSION#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
-			mkdir -p "/web/$$RELEASE_TAG" && \
-			cp -fv *.img.xz "/web/$$RELEASE_TAG/" && \
-			echo "Images copied to /web/$$RELEASE_TAG/"'
+			VERSION_TAG="$${ANDROID_VERSION#android-}-$$(cat /repo/$$BUILD_NUMBER_FILE)"; \
+			RELEASE_NAME="LeanOS-ab-$$VERSION_TAG"; \
+			mkdir -p "/web/$$RELEASE_NAME" && \
+			cp -fv *.img.xz "/web/$$RELEASE_NAME/" && \
+			echo "Images copied to /web/$$RELEASE_NAME/"'
 
 # step 7: upload images to github
 upload-to-github:
@@ -198,7 +199,8 @@ upload-to-github:
 		ANDROID_VERSION=$$(cat $(PWD)/tmp/.android_version) && \
 		RELEASE_TAG="$${ANDROID_VERSION#android-}-$$(cat $(PWD)/$(BUILD_NUMBER_FILE))" && \
 		gh repo set-default "$(REPO_PATH)" && \
-		RELEASE_DESCRIPTION="Download mirror: https://build.chrisaw.io/$$RELEASE_TAG/" && \
+		RELEASE_NAME="LeanOS-ab-$$RELEASE_TAG" && \
+		RELEASE_DESCRIPTION="Download mirror: https://build.chrisaw.io/$$RELEASE_NAME/" && \
 		gh release create -d -n "$$RELEASE_DESCRIPTION" -t "LeanOS $$RELEASE_TAG" "$$RELEASE_TAG" && \
 		gh release upload "$$RELEASE_TAG" --clobber -- *.img.xz && \
 		rm -rf .git/
