@@ -70,9 +70,6 @@ sign_target_files_apks -o -d /certs \
     --extra_apks com.android.wifi.apex=/certs/com.android.wifi \
     --extra_apks com.android.wifi.dialog.apex=/certs/com.android.wifi.dialog \
     --extra_apks com.android.wifi.resources.apex=/certs/com.android.wifi.resources \
-    --extra_apks com.google.pixel.camera.hal.apex=/certs/com.google.pixel.camera.hal \
-    --extra_apks com.google.pixel.vibrator.hal.apex=/certs/com.google.pixel.vibrator.hal \
-    --extra_apks com.qorvo.uwb.apex=/certs/com.qorvo.uwb \
     --extra_apex_payload_key com.android.adbd.apex=/certs/com.android.adbd.pem \
     --extra_apex_payload_key com.android.adservices.apex=/certs/com.android.adservices.pem \
     --extra_apex_payload_key com.android.adservices.api.apex=/certs/com.android.adservices.api.pem \
@@ -131,8 +128,5 @@ sign_target_files_apks -o -d /certs \
     --extra_apex_payload_key com.android.wifi.apex=/certs/com.android.wifi.pem \
     --extra_apex_payload_key com.android.wifi.dialog.apex=/certs/com.android.wifi.dialog.pem \
     --extra_apex_payload_key com.android.wifi.resources.apex=/certs/com.android.wifi.resources.pem \
-    --extra_apex_payload_key com.google.pixel.camera.hal.apex=/certs/com.google.pixel.camera.hal.pem \
-    --extra_apex_payload_key com.google.pixel.vibrator.hal.apex=/certs/com.google.pixel.vibrator.hal.pem \
-    --extra_apex_payload_key com.qorvo.uwb.apex=/certs/com.qorvo.uwb.pem \
     "$OUT"/obj/PACKAGING/target_files_intermediates/*-target_files*.zip \
     "$OUT"/signed-target_files.zip
