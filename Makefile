@@ -71,7 +71,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	--pids-limit=0 \
 	-v "$$HOME/.android-certs:/certs:Z" \
 	-v "$(PWD):/repo:Z" \
-	-v "$(WEB_DIR):/web:Z" \
+	$(if $(filter true,$(COPY_TO_WEB_DIR)),-v "$(WEB_DIR):/web:Z") \
 	-e APPLY_DEBUG_PATCHES="$(APPLY_DEBUG_PATCHES)" \
 	-e BUILD_DATE="$(BUILD_DATE)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
