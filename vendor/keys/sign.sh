@@ -43,11 +43,7 @@ sign_target_files_apks -o -d /certs \
     --extra_apks com.android.tzdata.apex=/certs/com.android.tzdata \
     --extra_apks com.android.uwb.apex=/certs/com.android.uwb \
     --extra_apks com.android.virt.apex=/certs/com.android.virt \
-    --extra_apks com.android.vndk.current.apex=/certs/com.android.vndk.current \
-    --extra_apks com.android.vndk.current.on_vendor.apex=/certs/com.android.vndk.current.on_vendor \
     --extra_apks com.android.wifi.apex=/certs/com.android.wifi \
-    --extra_apks com.android.wifi.dialog.apex=/certs/com.android.wifi.dialog \
-    --extra_apks com.android.wifi.resources.apex=/certs/com.android.wifi.resources \
     --extra_apex_payload_key com.android.adbd.apex=/certs/com.android.adbd.pem \
     --extra_apex_payload_key com.android.adservices.apex=/certs/com.android.adservices.pem \
     --extra_apex_payload_key com.android.appsearch.apex=/certs/com.android.appsearch.pem \
@@ -79,10 +75,6 @@ sign_target_files_apks -o -d /certs \
     --extra_apex_payload_key com.android.tzdata.apex=/certs/com.android.tzdata.pem \
     --extra_apex_payload_key com.android.uwb.apex=/certs/com.android.uwb.pem \
     --extra_apex_payload_key com.android.virt.apex=/certs/com.android.virt.pem \
-    --extra_apex_payload_key com.android.vndk.current.apex=/certs/com.android.vndk.current.pem \
-    --extra_apex_payload_key com.android.vndk.current.on_vendor.apex=/certs/com.android.vndk.current.on_vendor.pem \
     --extra_apex_payload_key com.android.wifi.apex=/certs/com.android.wifi.pem \
-    --extra_apex_payload_key com.android.wifi.dialog.apex=/certs/com.android.wifi.dialog.pem \
-    --extra_apex_payload_key com.android.wifi.resources.apex=/certs/com.android.wifi.resources.pem \
     "$OUT"/obj/PACKAGING/target_files_intermediates/*-target_files*.zip \
     "$OUT"/signed-target_files.zip
