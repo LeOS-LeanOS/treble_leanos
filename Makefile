@@ -73,7 +73,7 @@ CONTAINER_RUN = $(CONTAINER_RUNTIME) run --rm --privileged \
 	-v "$(PWD):/repo:Z" \
 	$(if $(filter true,$(COPY_TO_WEB_DIR)),-v "$(WEB_DIR):/web:Z") \
 	-e APPLY_DEBUG_PATCHES="$(APPLY_DEBUG_PATCHES)" \
-	-e BUILD_DATE="$(BUILD_DATE)" \
+	-e BUILD_DATETIME="$(BUILD_DATE)_$(BUILD_TIME)" \
 	-e BUILD_NUMBER="$(BUILD_NUMBER)" \
 	-e BUILD_NUMBER_FILE="$(BUILD_NUMBER_FILE)"
 
