@@ -8,7 +8,4 @@
 
   <!-- packages/apps -->
   <project path="packages/apps/elib" name="elib.git" remote="eos" revision="main" clone-depth="1" />
-
-  <!-- vendor -->
-  <project path="vendor/vndk-tests" name="vendor_vndk-tests" remote="phhusson" revision="master" clone-depth="1" />
 </manifest>

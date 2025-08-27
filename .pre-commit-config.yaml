@@ -11,8 +11,3 @@ repos:
   rev: v0.0.18
   hooks:
   - id: shellcheck
-- repo: https://github.com/mrtazz/checkmake.git
-  rev: 0.2.2
-  hooks:
-  - id: checkmake-system
-    files: '^[Mm]akefile$|\.makefile$'
