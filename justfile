@@ -42,6 +42,7 @@ sync-sources: build-container
     mkdir -p out/ src/ tmp/
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
+            echo "Sync sources..." && \
             rm -rf ponces_aosp/ && \
             git clone --depth=1 https://github.com/ponces/treble_aosp.git ponces_aosp/ && \
             grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/tmp/.android_version && \
@@ -57,6 +58,7 @@ sync-sources: build-container
 prepare-sources: build-container
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
+            echo "Preparing sources..." && \
             rm -rf patches/ vendor/leanos && \
             cp -Rv /repo/patches . && \
             cp -Rv ponces_aosp/patches/trebledroid patches/ && \
@@ -76,12 +78,16 @@ prepare-sources: build-container
 # step 3: build treble app - compile the treble app
 build-treble-app: build-container
     {{CONTAINER_RUN}} -w /repo/src/treble_app gsi-builder \
-        /bin/bash -e -c 'bash build.sh release'
+        /bin/bash -e -c '
+            echo "Building TrebleApp..." && \
+            bash build.sh release
+        '
 
 # build architecture-specific targets
 build_arch arch display_name:
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
+            echo "Building system image..." && \
             ANDROID_VERSION_TAG_VAL=$(cat /repo/tmp/.android_version_tag) && \
             pushd device/phh/treble && \
                 cp -fv "/repo/configs/leanos.mk" . && \
@@ -126,6 +132,7 @@ prepare-images: build-container
 copy-to-webdir: build-container
     {{CONTAINER_RUN}} -w /repo/tmp gsi-builder \
         /bin/bash -e -c ' \
+            echo "Copying to webdir..." && \
             ANDROID_VERSION=$(cat /repo/tmp/.android_version); \
             VERSION_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}"; \
             RELEASE_NAME="LeanOS-ab-${VERSION_TAG}"; \
@@ -137,6 +144,7 @@ copy-to-webdir: build-container
 upload-to-github:
     #!/usr/bin/env bash
     cd "$(pwd)/out/" && \
+        echo "Uploading to GitHub..." && \
         git init && \
         git remote add origin "{{REPO_HOST}}/{{REPO_PATH}}.git" && \
         ANDROID_VERSION=$(cat "$(pwd)/tmp/.android_version") && \
