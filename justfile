@@ -15,13 +15,13 @@ UPLOAD_TO_GITHUB := env_var_or_default("UPLOAD_TO_GITHUB", "false")
 WEB_DIR := env_var_or_default("WEB_DIR", "/var/www/build.chrisaw.io")
 
 # common container parameters
-CONTAINER_RUN := "podman run --rm --privileged" +
-    " --pids-limit=0" +
-    " -v \"${HOME}/.android-certs:/certs:Z\"" +
-    " -v \"$(pwd):/repo:Z\"" +
-    if COPY_TO_WEB_DIR == "true" { " -v \"" + WEB_DIR + ":/web:Z\"" } else { "" } +
-    " -e APPLY_DEBUG_PATCHES=\"" + APPLY_DEBUG_PATCHES + "\"" +
-    " -e BUILD_DATETIME=\"" + BUILD_DATETIME + "\"" +
+CONTAINER_RUN := "podman run --rm --privileged" + \
+    " --pids-limit=0" + \
+    " -v \"${HOME}/.android-certs:/certs:Z\"" + \
+    " -v \"$(pwd):/repo:Z\"" + \
+    if COPY_TO_WEB_DIR == "true" { " -v \"" + WEB_DIR + ":/web:Z\"" } else { "" } + \
+    " -e APPLY_DEBUG_PATCHES=\"" + APPLY_DEBUG_PATCHES + "\"" + \
+    " -e BUILD_DATETIME=\"" + BUILD_DATETIME + "\"" + \
     " -e BUILD_NUMBER=\"" + BUILD_NUMBER + "\""
 
 # default target - runs the full build process
