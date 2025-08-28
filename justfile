@@ -80,7 +80,7 @@ build-treble-app: build-container
     {{CONTAINER_RUN}} -w /repo/src/treble_app gsi-builder \
         /bin/bash -e -c ' \
             echo "Building TrebleApp..." && \
-            bash build.sh release
+            bash build.sh release \
         '
 
 # build architecture-specific targets
