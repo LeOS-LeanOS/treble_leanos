@@ -147,7 +147,7 @@ upload-to-github:
         echo "Uploading to GitHub..." && \
         git init && \
         git remote add origin "{{REPO_HOST}}/{{REPO_PATH}}.git" && \
-        ANDROID_VERSION=$(cat "$(pwd)/tmp/.android_version") && \
+        ANDROID_VERSION=$(cat "../tmp/.android_version") && \
         RELEASE_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}" && \
         gh repo set-default "{{REPO_PATH}}" && \
         RELEASE_NAME="LeanOS-ab-${RELEASE_TAG}" && \
