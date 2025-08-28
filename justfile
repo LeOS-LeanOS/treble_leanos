@@ -78,7 +78,7 @@ prepare-sources: build-container
 # step 3: build treble app - compile the treble app
 build-treble-app: build-container
     {{CONTAINER_RUN}} -w /repo/src/treble_app gsi-builder \
-        /bin/bash -e -c '
+        /bin/bash -e -c ' \
             echo "Building TrebleApp..." && \
             bash build.sh release
         '
