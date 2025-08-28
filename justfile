@@ -46,7 +46,7 @@ sync-sources: build-container
             rm -rf ponces_aosp/ && \
             git clone --depth=1 https://github.com/ponces/treble_aosp.git ponces_aosp/ && \
             grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/tmp/.android_version && \
-            grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$1\"-\([^-]*\)-.*/\1/" > /repo/tmp/.android_version_tag && \
+            grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*\"\$$$1\"-\([^-]*\)-.*/\1/" > /repo/tmp/.android_version_tag && \
             repo init -u https://android.googlesource.com/platform/manifest -b $(cat /repo/tmp/.android_version) --depth=1 --git-lfs && \
             mkdir -p .repo/local_manifests && \
             cp -v /repo/configs/*.xml .repo/local_manifests/ && \
