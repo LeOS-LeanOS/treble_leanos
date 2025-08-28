@@ -8,10 +8,8 @@ APPLY_DEBUG_PATCHES := "false"
 ARCHITECTURES := "arm64 a64"
 BUILD_NUMBER := `date "+%Y%m%d.%H%M%S"`
 BUILD_DATETIME := `date "+%s"`
-COPY_TO_WEB_DIR := env_var_or_default("COPY_TO_WEB_DIR", "false")
 REPO_HOST := env_var_or_default("REPO_HOST", "https://github.com")
 REPO_PATH := env_var_or_default("REPO_PATH", "cawilliamson/treble_leanos")
-UPLOAD_TO_GITHUB := env_var_or_default("UPLOAD_TO_GITHUB", "false")
 WEB_DIR := env_var_or_default("WEB_DIR", "/var/www/build.chrisaw.io")
 
 # common container parameters
@@ -19,35 +17,24 @@ CONTAINER_RUN := "podman run --rm --privileged" + \
     " --pids-limit=0" + \
     " -v \"${HOME}/.android-certs:/certs:Z\"" + \
     " -v \"$(pwd):/repo:Z\"" + \
-    if COPY_TO_WEB_DIR == "true" { " -v \"" + WEB_DIR + ":/web:Z\"" } else { "" } + \
+    " -v \"" + WEB_DIR + ":/web:Z\"" + \
     " -e APPLY_DEBUG_PATCHES=\"" + APPLY_DEBUG_PATCHES + "\"" + \
     " -e BUILD_DATETIME=\"" + BUILD_DATETIME + "\"" + \
     " -e BUILD_NUMBER=\"" + BUILD_NUMBER + "\""
 
 # default target - runs the full build process
-default: build
+default: build-all
 
 # clean all build directories to start fresh
 clean:
     rm -rfv out/ src/ tmp/
 
+# full build process - simple linear chain
+build-all: build-container sync-sources prepare-sources build-treble-app build-arm64 build-arm32 prepare-images copy-to-webdir upload-to-github
+
 # build the container image used for all build operations
 build-container:
     podman build -t gsi-builder -f Containerfile .
-
-# enter an interactive shell in the build container for debugging
-enter-build-container: build-container
-    {{CONTAINER_RUN}} -it -w /repo/src gsi-builder /bin/bash
-
-# full build process - simple linear chain
-build: build-container sync-sources prepare-sources build-treble-app build-arm64 build-arm32 prepare-images
-    #!/usr/bin/env bash
-    if [ "{{COPY_TO_WEB_DIR}}" = "true" ]; then
-        just copy-to-webdir
-    fi
-    if [ "{{UPLOAD_TO_GITHUB}}" = "true" ]; then
-        just upload-to-github
-    fi
 
 # step 1: sync sources - clone ponces repo, extract versions, init manifest, and sync
 sync-sources: build-container
