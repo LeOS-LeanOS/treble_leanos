@@ -6,3 +6,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     ro.face.sense_service=true
+
+# Force package upgrades on dirty flash
+PRODUCT_SYSTEM_PROPERTIES += \
+    ro.build.version.incremental=$(shell date +%s)
