@@ -4,7 +4,6 @@
 # arm64 and arm32_binder64 architectures.
 
 # variables
-APPLY_DEBUG_PATCHES := "false"
 ARCHITECTURES := "arm64 a64"
 BUILD_NUMBER := `date "+%Y%m%d%H%M%S"`
 BUILD_DATETIME := `date "+%s"`
@@ -18,7 +17,6 @@ CONTAINER_RUN := "podman run --rm --privileged" + \
     " -v \"${HOME}/.android-certs:/certs:Z\"" + \
     " -v \"$(pwd):/repo:Z\"" + \
     " -v \"" + WEB_DIR + ":/web:Z\"" + \
-    " -e APPLY_DEBUG_PATCHES=\"" + APPLY_DEBUG_PATCHES + "\"" + \
     " -e BUILD_DATETIME=\"" + BUILD_DATETIME + "\"" + \
     " -e BUILD_NUMBER=\"" + BUILD_NUMBER + "\""
 
@@ -38,7 +36,6 @@ build-container:
 
 # step 1: sync sources - clone ponces repo, extract versions, init manifest, and sync
 sync-sources: build-container
-    #!/usr/bin/env bash
     mkdir -p out/ src/ tmp/
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
@@ -70,10 +67,7 @@ prepare-sources: build-container
             fi; \
             patches/apply.sh . leanos && \
             cp -Rfv /repo/external . && \
-            cp -Rfv /repo/vendor vendor/leanos && \
-            if [ "{{APPLY_DEBUG_PATCHES}}" = "true" ]; then \
-                patches/apply.sh . debug; \
-            fi'
+            cp -Rfv /repo/vendor vendor/leanos'
 
 # step 3: build treble app - compile the treble app
 build-treble-app: build-container
@@ -142,8 +136,7 @@ copy-to-webdir: build-container
 
 # step 7: upload images to github
 upload-to-github:
-    #!/usr/bin/env bash
-    cd "$(pwd)/out/" && \
+    /usr/bin/env bash -c 'cd "$(pwd)/out/" && \
         echo "Uploading to GitHub..." && \
         git init && \
         git remote add origin "{{REPO_HOST}}/{{REPO_PATH}}.git" && \
@@ -154,4 +147,4 @@ upload-to-github:
         RELEASE_DESCRIPTION="Download mirror: https://build.chrisaw.io/${RELEASE_NAME}/" && \
         gh release create -d -n "${RELEASE_DESCRIPTION}" -t "LeanOS ${RELEASE_TAG}" "${RELEASE_TAG}" && \
         gh release upload "${RELEASE_TAG}" --clobber -- *.img.xz && \
-        rm -rf .git/
+        rm -rf .git/'
