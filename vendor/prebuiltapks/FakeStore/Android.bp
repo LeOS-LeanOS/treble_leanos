@@ -10,6 +10,7 @@ prebuilt_etc {
     name: "privapp-permissions-com.android.vending.xml",
     src: "privapp-permissions-com.android.vending.xml",
     sub_dir: "permissions",
+    product_specific: true,
     installable: true,
 }
 
@@ -17,6 +18,8 @@ android_app_import {
     name: "FakeStore",
     apk: "FakeStore.apk",
     presigned: true,
+    privileged: true,
+    product_specific: true,
     optional_uses_libs: [
         "androidx.window.extensions",
         "androidx.window.sidecar",
