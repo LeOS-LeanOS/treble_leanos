@@ -36,7 +36,6 @@ fetch-ponces-build-info: build-container
             echo "Fetching build info..." && \
             rm -rf ponces_aosp/ && \
             git clone --depth=1 https://github.com/ponces/treble_aosp.git ponces_aosp/ && \
-            echo "Extracting android version and tag from ponces build script" && \
             grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/tmp/.android_version && \
             grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*-\([^-]*\)-userdebug.*/\1/" > /repo/tmp/.android_version_tag'
 
