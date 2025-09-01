@@ -1,5 +1,5 @@
 # variables
-BUILD_NUMBER := `date "+%Y%m%d%H%M%S"`
+BUILD_NUMBER := `date "+%Y%m%d%H%M"`
 BUILD_DATETIME := `date "+%s"`
 REPO_HOST := env_var_or_default("REPO_HOST", "https://github.com")
 REPO_PATH := env_var_or_default("REPO_PATH", "cawilliamson/treble_leanos")
