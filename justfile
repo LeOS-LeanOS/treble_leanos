@@ -36,7 +36,7 @@ fetch-ponces-build-info: build-container
             echo "Fetching build info..." && \
             rm -rf ponces_aosp/ && \
             git clone --depth=1 https://github.com/ponces/treble_aosp.git ponces_aosp/ && \
-            # extract android version and tag from ponces build script
+            echo "Extracting android version and tag from ponces build script" && \
             grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/tmp/.android_version && \
             grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*-\([^-]*\)-userdebug.*/\1/" > /repo/tmp/.android_version_tag'
 
@@ -46,13 +46,11 @@ sync-aosp-sources: build-container
         /bin/bash -e -c ' \
             echo "Syncing AOSP sources..." && \
             ANDROID_VERSION=$(cat /repo/tmp/.android_version) && \
-            # initialize repo and setup manifests
             repo init -u https://android.googlesource.com/platform/manifest -b ${ANDROID_VERSION} --depth=1 --git-lfs && \
             mkdir -p .repo/local_manifests && \
             cp -v /repo/configs/*.xml .repo/local_manifests/ && \
             cp -v ponces_aosp/build/default.xml .repo/local_manifests/ponces_default.xml && \
             cp -v ponces_aosp/build/remove.xml .repo/local_manifests/ponces_remove.xml && \
-            # sync with retry logic
             while ! repo sync -j$(nproc --all) --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
 
 # copy prebuilt components
@@ -60,7 +58,6 @@ copy-prebuilts: build-container
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
             echo "Copying prebuilts..." && \
-            # copy external components and vendor files
             cp -Rfv /repo/external . && \
             cp -Rfv /repo/vendor vendor/leanos'
 
@@ -72,7 +69,6 @@ apply-patches: build-container
             rm -rf patches/ && \
             cp -Rv /repo/patches . && \
             cp -Rv ponces_aosp/patches/trebledroid patches/ && \
-            # apply patches in order: trebledroid -> staging -> ponces_staging -> leanos
             patches/apply.sh . trebledroid && \
             patches/apply.sh . staging && \
             if [ -d ponces_aosp/patches/staging ]; then \
@@ -86,7 +82,6 @@ build-treble-app: build-container
     {{CONTAINER_RUN}} -w /repo/src/treble_app gsi-builder \
         /bin/bash -e -c ' \
             echo "Building TrebleApp..." && \
-            # build treble app in release mode
             bash build.sh release \
         '
 
@@ -96,14 +91,13 @@ build-rom-image arch:
         /bin/bash -e -c ' \
             echo "Building ROM image..." && \
             ANDROID_VERSION_TAG_VAL=$(cat /repo/tmp/.android_version_tag) && \
-            # generate device config and setup build environment
             pushd device/phh/treble && \
                 cp -fv "/repo/configs/leanos.mk" . && \
                 bash generate.sh leanos && \
             popd && \
+            rm -rfv out/target/product/tdgsi_{{arch}}_ab/ && \
             . build/envsetup.sh && \
             lunch treble_{{arch}}_bvN-${ANDROID_VERSION_TAG_VAL}-userdebug && \
-            # build system image and target files
             make systemimage -j$(nproc --all) && \
             make target-files-package otatools -j$(nproc --all)'
 
@@ -112,7 +106,6 @@ sign-rom-image arch:
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
             echo "Signing ROM image..." && \
-            # sign and extract final system image
             bash vendor/leanos/keys/sign.sh && \
             rm -fv ${OUT}/system.img && \
             unzip -joq ${OUT}/signed-target_files.zip IMAGES/system.img -d ${OUT}/ && \
@@ -126,7 +119,6 @@ compress-rom-image arch:
             echo "Compressing ROM image..." && \
             ANDROID_VERSION=$(cat /repo/tmp/.android_version) && \
             VERSION_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}" && \
-            # rename and compress image
             src="system_{{arch}}.img" && \
             dest="LeanOS-{{arch}}-ab-${VERSION_TAG}.img" && \
             mv -v "${src}" "${dest}" && \
@@ -153,7 +145,6 @@ copy-to-webdir: build-container
             ANDROID_VERSION=$(cat /repo/tmp/.android_version); \
             VERSION_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}"; \
             RELEASE_NAME="LeanOS-ab-${VERSION_TAG}"; \
-            # create release directory and copy images
             mkdir -p "/web/${RELEASE_NAME}" && \
             cp -fv *.img.xz "/web/${RELEASE_NAME}/" && \
             echo "Images copied to /web/${RELEASE_NAME}/"'
@@ -166,7 +157,6 @@ upload-to-github:
         git remote add origin "{{REPO_HOST}}/{{REPO_PATH}}.git" && \
         ANDROID_VERSION=$(cat "../tmp/.android_version") && \
         RELEASE_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}" && \
-        # create github release and upload images
         gh repo set-default "{{REPO_PATH}}" && \
         RELEASE_NAME="LeanOS-ab-${RELEASE_TAG}" && \
         RELEASE_DESCRIPTION="Download mirror: https://build.chrisaw.io/${RELEASE_NAME}/" && \
