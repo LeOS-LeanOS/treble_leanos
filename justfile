@@ -105,6 +105,9 @@ sign-rom-image arch:
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
             echo "Signing ROM image..." && \
+            ANDROID_VERSION_TAG_VAL=$(cat /repo/tmp/.android_version_tag) && \
+            . build/envsetup.sh && \
+            lunch treble_{{arch}}_bvN-${ANDROID_VERSION_TAG_VAL}-userdebug && \
             bash vendor/leanos/keys/sign.sh && \
             rm -fv ${OUT}/system.img && \
             unzip -joq ${OUT}/signed-target_files.zip IMAGES/system.img -d ${OUT}/ && \
