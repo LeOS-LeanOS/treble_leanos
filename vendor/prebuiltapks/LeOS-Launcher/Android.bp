@@ -1,20 +1,18 @@
-// Privapp-permissions XML for LeOS-Launcher
-prebuilt_etc {
-    name: "privapp-permissions-com.leos.launcher.dev.xml",
-    src: "privapp-permissions-com.leos.launcher.dev.xml",
-    sub_dir: "permissions",
-    installable: true,
-}
-
-// LeOS-Launcher APK
 android_app_import {
-    name: "LeOS-Launcher",
     apk: "LeOS-Launcher.apk",
-    presigned: true,
-    preprocessed: true,
+    name: "LeOS-Launcher",
     optional_uses_libs: [
         "androidx.window.extensions",
         "androidx.window.sidecar",
     ],
+    preprocessed: true,
+    presigned: true,
     required: ["privapp-permissions-com.leos.launcher.dev.xml"],
+}
+
+prebuilt_etc {
+    installable: true,
+    name: "privapp-permissions-com.leos.launcher.dev.xml",
+    src: "privapp-permissions-com.leos.launcher.dev.xml",
+    sub_dir: "permissions",
 }

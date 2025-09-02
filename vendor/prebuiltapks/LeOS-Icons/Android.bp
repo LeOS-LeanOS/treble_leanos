@@ -1,6 +1,6 @@
 android_app_import {
-    name: "LeOS-Icons",
     apk: "LeOS-Icons.apk",
-    presigned: true,
+    name: "LeOS-Icons",
     preprocessed: true,
+    presigned: true,
 }

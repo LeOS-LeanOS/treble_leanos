@@ -1,48 +1,35 @@
-prebuilt_etc {
-    name: "default-permissions-com.google.android.gms.xml",
-    src: "default-permissions-com.google.android.gms.xml",
-    sub_dir: "default-permissions",
-    product_specific: true,
-    installable: true,
-}
-
-prebuilt_etc {
-    name: "microg.xml",
-    src: "microg.xml",
-    product_specific: true,
-    installable: true,
-}
-
-prebuilt_etc {
-    name: "privapp-permissions-com.google.android.gms.xml",
-    src: "privapp-permissions-com.google.android.gms.xml",
-    sub_dir: "permissions",
-    installable: true,
-}
-
-prebuilt_etc {
-    name: "sysconfig-com.google.android.gms.xml",
-    src: "sysconfig-com.google.android.gms.xml",
-    sub_dir: "sysconfig",
-    installable: true,
-}
-
 android_app_import {
-    name: "GmsCore",
     apk: "GmsCore.apk",
-    presigned: true,
-    privileged: true,
-    overrides: ["com.qualcomm.location"],
-    uses_libs: ["com.android.location.provider"],
+    name: "GmsCore",
     optional_uses_libs: [
         "org.apache.http.legacy",
         "androidx.window.extensions",
         "androidx.window.sidecar",
     ],
+    overrides: ["com.qualcomm.location"],
+    preprocessed: true,
+    presigned: true,
+    privileged: true,
+    product_specific: true,
     required: [
-        "default-permissions-com.google.android.gms.xml",
-        "microg.xml",
         "privapp-permissions-com.google.android.gms.xml",
         "sysconfig-com.google.android.gms.xml",
     ],
+    uses_libs: ["com.android.location.provider"],
+}
+
+prebuilt_etc {
+    installable: true,
+    name: "privapp-permissions-com.google.android.gms.xml",
+    product_specific: true,
+    src: "privapp-permissions-com.google.android.gms.xml",
+    sub_dir: "permissions",
+}
+
+prebuilt_etc {
+    installable: true,
+    name: "sysconfig-com.google.android.gms.xml",
+    product_specific: true,
+    src: "sysconfig-com.google.android.gms.xml",
+    sub_dir: "sysconfig",
 }
