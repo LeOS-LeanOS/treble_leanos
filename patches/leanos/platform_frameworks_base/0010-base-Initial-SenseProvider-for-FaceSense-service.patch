@@ -1,7 +1,7 @@
 From b8a9952b1013480bdd5294661f98a769af118a4a Mon Sep 17 00:00:00 2001
 From: Alberto Ponces <ponces26@gmail.com>
 Date: Wed, 2 Jul 2025 16:24:36 +0100
-Subject: [PATCH 11/11] base: Initial SenseProvider for FaceSense service
+Subject: [PATCH 10/10] base: Initial SenseProvider for FaceSense service
 
 Squashed commit of the following:
 

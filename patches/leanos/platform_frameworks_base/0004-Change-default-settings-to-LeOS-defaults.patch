@@ -1,7 +1,7 @@
 From ac33df96786cc038db0269e3eeabc0a114ef031a Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 16:55:13 +0100
-Subject: [PATCH 5/11] Change default settings to LeOS defaults
+Subject: [PATCH 4/10] Change default settings to LeOS defaults
 
 Change-Id: I7a4c9efa5d879838ab19dbe4b93749b131cc94cd
 ---

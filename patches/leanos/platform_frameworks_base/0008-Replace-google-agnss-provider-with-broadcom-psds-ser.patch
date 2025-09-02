@@ -1,7 +1,7 @@
 From 36ca56bc0f9b096c44aff870d77d5768e6c4fc07 Mon Sep 17 00:00:00 2001
 From: harvey186 <harvey186@hotmail.com>
 Date: Mon, 4 Aug 2025 17:19:45 +0100
-Subject: [PATCH 9/11] Replace google agnss provider with broadcom psds server
+Subject: [PATCH 8/10] Replace google agnss provider with broadcom psds server
 
 Change-Id: I0f5f5f254ebcf694d8e59ad612385d56809d3ee4
 ---
