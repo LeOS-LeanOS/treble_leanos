@@ -47,7 +47,7 @@ sync-aosp-sources: build-container
             ANDROID_VERSION=$(cat /repo/tmp/.android_version) && \
             repo init -u https://android.googlesource.com/platform/manifest -b ${ANDROID_VERSION} --depth=1 --git-lfs && \
             mkdir -p .repo/local_manifests && \
-            cp -v /repo/configs/*.xml .repo/local_manifests/ && \
+            cp -v /repo/configs/local_manifest/*.xml .repo/local_manifests/ && \
             cp -v ponces_aosp/build/default.xml .repo/local_manifests/ponces_default.xml && \
             cp -v ponces_aosp/build/remove.xml .repo/local_manifests/ponces_remove.xml && \
             while ! repo sync -j$(nproc --all) --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
@@ -83,7 +83,7 @@ build-rom-image arch:
             echo "Building ROM image..." && \
             ANDROID_VERSION_TAG_VAL=$(cat /repo/tmp/.android_version_tag) && \
             pushd device/phh/treble && \
-                cp -fv "/repo/configs/leanos.mk" . && \
+                cp -fv "/repo/configs/rom/leanos.mk" . && \
                 bash generate.sh leanos && \
             popd && \
             rm -rfv out/target/product/tdgsi_{{arch}}_ab/ && \

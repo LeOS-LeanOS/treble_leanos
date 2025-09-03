@@ -6,7 +6,7 @@
   <remote name="phhusson" fetch="https://github.com/phhusson/" />
 
   <!-- external -->
-  <project path="external/chromium-webview" name="external_chromium-webview" remote="leos-leanos" revision="main" clone-depth="1" />
+  <project path="external/chromium-webview" name="platform_external_chromium-webview" remote="leos-leanos" revision="main" clone-depth="1" />
   <project path="external/ih8sn" name="ih8sn.git" remote="eos" revision="master" clone-depth="1" />
 
   <!-- packages/apps -->
