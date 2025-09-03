@@ -1,7 +1,0 @@
-android_app_import {
-    apk: "Sherpa.apk",
-    enforce_uses_libs: false,
-    name: "Sherpa",
-    presigned: true,
-    privileged: true,
-}
