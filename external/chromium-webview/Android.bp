@@ -21,7 +21,6 @@ soong_config_module_type {
 webview_app_import {
     name: "webview",
     product_specific: true,
-    default_dev_cert: true,
     enforce_uses_libs: false,
     presigned: true,
     required: [
