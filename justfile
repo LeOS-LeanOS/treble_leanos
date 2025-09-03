@@ -8,9 +8,9 @@ WEB_DIR := env_var_or_default("WEB_DIR", "/var/www/build.chrisaw.io")
 # common container parameters
 CONTAINER_RUN := "podman run --rm --privileged" + \
     " --pids-limit=0" + \
-    " -v \"${HOME}/.android-certs:/certs:Z\"" + \
     " -v \"$(pwd):/repo:Z\"" + \
     " -v \"" + WEB_DIR + ":/web:Z\"" + \
+    " -v \"$HOME/.ssh:/root/.ssh:Z\"" + \
     " -e BUILD_DATETIME=\"" + BUILD_DATETIME + "\"" + \
     " -e BUILD_NUMBER=\"" + BUILD_NUMBER + "\""
 
@@ -22,7 +22,7 @@ clean:
     rm -rfv out/ src/ tmp/
 
 # full build process - simple linear chain
-build-all: clean build-container fetch-ponces-build-info sync-aosp-sources copy-prebuilts apply-patches build-treble-app build-arm64 build-arm32 copy-to-webdir upload-to-github
+build-all: clean build-container fetch-ponces-build-info sync-aosp-sources apply-patches build-treble-app build-arm64 build-arm32 copy-to-webdir upload-to-github
 
 # build the container image used for all build operations
 build-container:
@@ -51,14 +51,6 @@ sync-aosp-sources: build-container
             cp -v ponces_aosp/build/default.xml .repo/local_manifests/ponces_default.xml && \
             cp -v ponces_aosp/build/remove.xml .repo/local_manifests/ponces_remove.xml && \
             while ! repo sync -j$(nproc --all) --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
-
-# copy prebuilt components
-copy-prebuilts: build-container
-    {{CONTAINER_RUN}} -w /repo/src gsi-builder \
-        /bin/bash -e -c ' \
-            echo "Copying prebuilts..." && \
-            cp -Rfv /repo/external . && \
-            cp -Rfv /repo/vendor vendor/leanos'
 
 # apply patches in correct order
 apply-patches: build-container
@@ -108,7 +100,7 @@ sign-rom-image arch:
             ANDROID_VERSION_TAG_VAL=$(cat /repo/tmp/.android_version_tag) && \
             . build/envsetup.sh && \
             lunch treble_{{arch}}_bvN-${ANDROID_VERSION_TAG_VAL}-userdebug && \
-            bash vendor/leanos/keys/sign.sh && \
+            bash vendor/chrisaw-priv/keys/sign.sh && \
             rm -fv ${OUT}/system.img && \
             unzip -joq ${OUT}/signed-target_files.zip IMAGES/system.img -d ${OUT}/ && \
             rm -fv ${OUT}/signed-target_files.zip && \

@@ -1,0 +1,24 @@
+From be0e1bba91106448b86286977cc46630962fb3da Mon Sep 17 00:00:00 2001
+From: harvey186 <harvey186@hotmail.com>
+Date: Mon, 4 Aug 2025 15:29:43 +0100
+Subject: [PATCH 1/4] Adapt AOSP build config for LeOS vendor
+
+Change-Id: I52abacd386275c1954091f60711153342ef4a661
+---
+ target/product/generic_system.mk           | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/target/product/generic_system.mk b/target/product/generic_system.mk
+index 2482afc..a7ef65d 100644
+--- a/target/product/generic_system.mk
++++ b/target/product/generic_system.mk
+@@ -18,6 +18,7 @@
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/handheld_system.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony_system.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_default.mk)
++$(call inherit-product, vendor/leos/base.mk)
+ # Add adb keys to debuggable AOSP builds (if they exist)
+ $(call inherit-product-if-exists, vendor/google/security/adb/vendor_key.mk)
+ 
+--
+2.49.0

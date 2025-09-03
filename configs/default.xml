@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+  <remote name="cawilliamson" fetch="https://github.com/cawilliamson/" />
   <remote name="leos-leanos" fetch="https://github.com/LeOS-LeanOS/" />
   <remote name="eos" fetch="https://gitlab.e.foundation/e/os/" />
   <remote name="phhusson" fetch="https://github.com/phhusson/" />
 
   <!-- external -->
-  <project path="external/chromium-webview" name="leos_external_chromium-webview" remote="leos-leanos" revision="main" clone-depth="1" />
+  <project path="external/chromium-webview" name="external_chromium-webview" remote="leos-leanos" revision="main" clone-depth="1" />
   <project path="external/ih8sn" name="ih8sn.git" remote="eos" revision="master" clone-depth="1" />
 
   <!-- packages/apps -->
   <project path="packages/apps/elib" name="elib.git" remote="eos" revision="main" clone-depth="1" />
 
   <!-- vendor -->
-  <project path="vendor/leanos" name="leanos_vendor_leanos.git" remote="leos-leanos" revision="main" clone-depth="1" />
-  <project path="vendor/leos" name="leos_vendor_leos.git" remote="leos-leanos" revision="main" clone-depth="1" />
+  <project path="vendor/chrisaw-priv" name="vendor_chrisaw-priv.git" remote="cawilliamson" revision="main" clone-depth="1" />
+  <project path="vendor/leos" name="vendor_leos.git" remote="leos-leanos" revision="main" clone-depth="1" />
 </manifest>
