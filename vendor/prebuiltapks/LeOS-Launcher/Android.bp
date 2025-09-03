@@ -5,7 +5,6 @@ android_app_import {
         "androidx.window.extensions",
         "androidx.window.sidecar",
     ],
-    preprocessed: true,
     presigned: true,
     required: ["privapp-permissions-com.leos.launcher.dev.xml"],
 }

@@ -1,6 +1,5 @@
 android_app_import {
     apk: "LeOS-Droid.apk",
     name: "LeOS-Droid",
-    preprocessed: true,
     presigned: true,
 }

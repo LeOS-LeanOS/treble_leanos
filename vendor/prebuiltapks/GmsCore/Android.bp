@@ -7,7 +7,6 @@ android_app_import {
         "androidx.window.sidecar",
     ],
     overrides: ["com.qualcomm.location"],
-    preprocessed: true,
     presigned: true,
     privileged: true,
     product_specific: true,

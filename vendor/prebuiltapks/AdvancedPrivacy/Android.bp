@@ -12,7 +12,6 @@ android_app_import {
         "androidx.window.extensions",
         "androidx.window.sidecar",
     ],
-    preprocessed: true,
     presigned: true,
     privileged: true,
     required: [

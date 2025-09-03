@@ -2,7 +2,6 @@ android_app_import {
     apk: "Sherpa.apk",
     enforce_uses_libs: false,
     name: "Sherpa",
-    preprocessed: true,
     presigned: true,
     privileged: true,
 }

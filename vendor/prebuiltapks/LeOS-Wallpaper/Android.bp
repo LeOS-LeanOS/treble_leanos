@@ -1,6 +1,5 @@
 android_app_import {
     apk: "LeOS-Wallpaper.apk",
     name: "LeOS-Wallpaper",
-    preprocessed: true,
     presigned: true,
 }
