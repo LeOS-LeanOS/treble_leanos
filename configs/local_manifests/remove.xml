@@ -3,10 +3,7 @@
   <!-- device/generic -->
   <remove-project name="device/generic/trusty" />
 
-  <!-- packages/services -->
-  <remove-project name="crdroidandroid/android_packages_services_OmniJaws" />
-
-  <!-- platform/packages/apps -->
+  <!-- packages/apps -->
   <remove-project name="platform/packages/apps/AvatarPicker" />
   <remove-project name="platform/packages/apps/BasicSmsReceiver" />
   <remove-project name="platform/packages/apps/Browser2" />
@@ -26,8 +23,11 @@
   <remove-project name="platform/packages/apps/QuickSearchBox" />
   <remove-project name="platform/packages/apps/UniversalMediaPlayer" />
 
-  <!-- platform/packages/inputmethods -->
+  <!-- packages/inputmethods -->
   <remove-project name="platform/packages/inputmethods/LatinIME" />
+
+  <!-- packages/services -->
+  <remove-project name="crdroidandroid/android_packages_services_OmniJaws" />
 
   <!-- treble_adapter -->
   <remove-project name="ponces/treble_adapter" />
