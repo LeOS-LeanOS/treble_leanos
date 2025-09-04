@@ -29,9 +29,6 @@
   <!-- platform/packages/inputmethods -->
   <remove-project name="platform/packages/inputmethods/LatinIME" />
 
-  <!-- platform/external -->
-  <remove-project name="platform/external/chromium-webview" />
-
   <!-- treble_adapter -->
   <remove-project name="ponces/treble_adapter" />
 

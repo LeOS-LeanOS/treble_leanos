@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="cawilliamson" fetch="https://github.com/cawilliamson/" />
+
+  <!-- must be removed first -->
+  <remove-project name="platform/external/chromium-webview" />
+
+  <!-- then the new entry defined -->
+  <project path="external/chromium-webview" name="platform_external_chromium-webview" remote="leos-leanos" revision="main" clone-depth="1" />
+</manifest>
