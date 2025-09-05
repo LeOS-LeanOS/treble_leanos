@@ -5,7 +5,7 @@ Subject: [PATCH 2/2] Rework securize tweak
 
 ---
  base.mk             |  1 -
- phh-on-boot.sh      | 32 +++++++++++++++++++
+ phh-on-boot.sh      | 33 ++++++++++++++++++++
  phh-prop-handler.sh | 11 +++++++
  rw-system.sh        | 77 +++++++++++++++++++--------------------------
  vndk.rc             | 11 +++++++
@@ -27,7 +27,7 @@ diff --git a/phh-on-boot.sh b/phh-on-boot.sh
 index d2d5b0a..4e052bb 100644
 --- a/phh-on-boot.sh
 +++ b/phh-on-boot.sh
-@@ -1,5 +1,37 @@
+@@ -1,5 +1,38 @@
  #!/system/bin/sh
  
 +# spoof post-boot props
@@ -59,6 +59,7 @@ index d2d5b0a..4e052bb 100644
 +  resetprop_phh --delete ro.build.selinux
 +  resetprop_phh ro.adb.secure 1
 +  resetprop_phh -n sys.oem_unlock_allowed 0
++  resetprop_phh -n init.svc.adbd stopped
 +  resetprop_phh -n init.svc.flash_recovery stopped
 +fi
 +
