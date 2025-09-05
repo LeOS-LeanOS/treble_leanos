@@ -1,0 +1,64 @@
+From 8ec6447655e0b7c72c69075da648fb6c792eeff7 Mon Sep 17 00:00:00 2001
+From: "Christopher A. Williamson" <contact@chrisaw.io>
+Date: Fri, 5 Sep 2025 23:27:19 +0100
+Subject: [PATCH 2/2] Spoof user build but enable userdebug props
+
+Change-Id: I363d0acdd085a57b003515724ebda9457feedc11
+---
+ scripts/gen_build_prop.py | 25 ++-----------------------
+ 1 file changed, 2 insertions(+), 23 deletions(-)
+
+diff --git a/scripts/gen_build_prop.py b/scripts/gen_build_prop.py
+index cef7241..130bb41 100644
+--- a/scripts/gen_build_prop.py
++++ b/scripts/gen_build_prop.py
+@@ -26,11 +26,6 @@ import sys
+ TEST_KEY_DIR = "build/make/target/product/security"
+
+ def get_build_variant(product_config):
+-  if product_config["Eng"]:
+-    return "eng"
+-  elif product_config["Debuggable"]:
+-    return "userdebug"
+-  else:
+     return "user"
+
+ def get_build_flavor(product_config):
+@@ -303,8 +298,7 @@ def append_additional_system_props(args):
+   props.append("ro.actionable_compatible_property.enabled=true")
+
+   # Enable core platform API violation warnings on userdebug and eng builds.
+-  if config["BuildVariant"] != "user":
+-    props.append("persist.debug.dalvik.vm.core_platform_api_policy=just-warn")
++  props.append("persist.debug.dalvik.vm.core_platform_api_policy=just-warn")
+
+   # Define ro.sanitize.<name> properties for all global sanitizers.
+   for sanitize_target in config["SanitizeDevice"]:
+@@ -334,24 +328,9 @@ def append_additional_system_props(args):
+     props.append("ro.secure=1")
+     props.append("security.perf_harden=1")
+
+-    if config["BuildVariant"] == "user":
+-      # Disable debugging in plain user builds.
+-      props.append("ro.adb.secure=1")
+-      enable_target_debugging = False
+-      enable_dalvik_lock_contention_logging = False
+-    else:
+-      # Disable debugging in userdebug builds if PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG
+-      # is set.
+-      if config["ProductNotDebuggableInUserdebug"]:
+-        enable_target_debugging = False
+-
+-    # Disallow mock locations by default for user builds
+-    props.append("ro.allow.mock.location=0")
+-  else:
+     # Turn on checkjni for non-user builds.
+     props.append("ro.kernel.android.checkjni=1")
+-    # Set device insecure for non-user builds.
+-    props.append("ro.secure=0")
++
+     # Allow mock locations by default for non user builds
+     props.append("ro.allow.mock.location=1")
+
+--
+2.50.1
