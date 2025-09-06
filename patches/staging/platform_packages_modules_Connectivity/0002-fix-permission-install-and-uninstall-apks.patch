@@ -1,5 +1,5 @@
 From 70b44c140cc47d1761a44a076608a31cb2a4d412 Mon Sep 17 00:00:00 2001
-From: Doze-off <Doze@off.com>
+From: Papacu <viniciussadxxx@gmail.com>
 Date: Wed, 16 Jul 2025 05:50:01 -0300
 Subject: [PATCH 1/2] Fix: Prevent NullPointerException in BpfNetMaps during UID removal
 
