@@ -6,16 +6,16 @@
   <remote name="cawilliamson-priv" fetch="ssh://git@github.com/cawilliamson/" />
 
   <!-- external -->
-  <project path="external/ih8sn" name="ih8sn.git" remote="eos" revision="master" clone-depth="1" />
+  <project path="external/ih8sn" name="ih8sn" remote="eos" revision="master" clone-depth="1" />
 
   <!-- packages/apps -->
-  <project path="packages/apps/elib" name="elib.git" remote="eos" revision="main" clone-depth="1" />
+  <project path="packages/apps/elib" name="elib" remote="eos" revision="main" clone-depth="1" />
 
   <!-- patches -->
-  <project path="patches/common" name="patches_common.git" remote="leos-leanos" revision="main" clone-depth="1" />
-  <project path="patches/staging" name="patches_staging.git" remote="leos-leanos" revision="main" clone-depth="1" />
+  <project path="patches/common" name="patches_common" remote="leos-leanos" revision="main" clone-depth="1" />
+  <project path="patches/staging" name="patches_staging" remote="leos-leanos" revision="main" clone-depth="1" />
 
   <!-- vendor -->
-  <project path="vendor/chrisaw-priv" name="vendor_chrisaw-priv.git" remote="cawilliamson-priv" revision="main" clone-depth="1" />
-  <project path="vendor/leos" name="vendor_leos.git" remote="leos-leanos" revision="main" clone-depth="1" />
+  <project path="vendor/chrisaw-priv" name="vendor_chrisaw-priv" remote="cawilliamson-priv" revision="main" clone-depth="1" />
+  <project path="vendor/leos" name="vendor_leos" remote="leos-leanos" revision="main" clone-depth="1" />
 </manifest>
