@@ -57,15 +57,14 @@ apply-patches: build-container
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
             echo "Applying patches..." && \
-            rm -rf patches/ && \
-            cp -Rv /repo/patches . && \
-            cp -Rv ponces_aosp/patches/trebledroid patches/ && \
-            patches/apply.sh . trebledroid && \
+            rm -rf patches/ponces_trebledroid patches/ponces_staging && \
+            cp -Rv /repo/patches/* patches/ && \
+            cp -Rv ponces_aosp/patches/trebledroid patches/ponces_trebledroid && \
+            cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
+            patches/apply.sh . ponces_trebledroid && \
+            patches/apply.sh . ponces_staging; \
             patches/apply.sh . staging && \
-            if [ -d ponces_aosp/patches/staging ]; then \
-                cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
-                patches/apply.sh . ponces_staging; \
-            fi; \
+            patches/apply.sh . common && \
             patches/apply.sh . leanos'
 
 # build treble app
