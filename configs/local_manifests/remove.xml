@@ -25,7 +25,4 @@
 
   <!-- packages/inputmethods -->
   <remove-project name="platform/packages/inputmethods/LatinIME" />
-
-  <!-- vendor -->
-  <remove-project name="vendor_gapps" />
 </manifest>
