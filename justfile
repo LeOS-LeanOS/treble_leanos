@@ -1,6 +1,9 @@
 # variables
-BUILD_NUMBER := `date "+%Y%m%d%H%M"`
+ANDROID_VERSION := env_var_or_default("ANDROID_VERSION", "16.0.0")
+ANDROID_VERSION_TAG := env_var_or_default("ANDROID_VERSION_TAG", "bp4a")
+AOSP_BRANCH := env_var_or_default("AOSP_BRANCH", "android16-qpr2-release")
 BUILD_DATETIME := `date "+%s"`
+BUILD_NUMBER := `date "+%Y%m%d%H%M"`
 REPO_HOST := env_var_or_default("REPO_HOST", "https://github.com")
 REPO_PATH := env_var_or_default("REPO_PATH", "LeOS-LeanOS/treble_leanos")
 WEB_DIR := env_var_or_default("WEB_DIR", "/var/www/build.chrisaw.io")
@@ -11,6 +14,9 @@ CONTAINER_RUN := "podman run --rm --privileged" + \
     " -v \"$(pwd):/repo:Z\"" + \
     " -v \"" + WEB_DIR + ":/web:Z\"" + \
     " -v \"$HOME/.ssh:/root/.ssh:Z\"" + \
+    " -e ANDROID_VERSION=\"" + ANDROID_VERSION + "\"" + \
+    " -e ANDROID_VERSION_TAG=\"" + ANDROID_VERSION_TAG + "\"" + \
+    " -e AOSP_BRANCH=\"" + AOSP_BRANCH + "\"" + \   
     " -e BUILD_DATETIME=\"" + BUILD_DATETIME + "\"" + \
     " -e BUILD_NUMBER=\"" + BUILD_NUMBER + "\""
 
@@ -22,34 +28,23 @@ clean:
     rm -rfv out/ src/ tmp/
 
 # full build process - simple linear chain
-build-all: clean build-container fetch-ponces-build-info sync-aosp-sources apply-patches build-treble-app build-arm64 build-arm32 copy-to-webdir upload-to-github
+build-all: clean build-container sync-aosp-sources apply-patches build-treble-app build-arm64 build-arm32 copy-to-webdir upload-to-github
 
 # build the container image used for all build operations
 build-container:
     podman build -t gsi-builder -f Containerfile .
 
-# fetch ponces build info and extract version details
-fetch-ponces-build-info: build-container
+# sync aosp sources with manifests
+sync-aosp-sources: build-container
     mkdir -p out/ src/ tmp/
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
-            echo "Fetching build info..." && \
-            rm -rf ponces_aosp/ && \
-            git clone --depth=1 https://github.com/ponces/treble_aosp.git ponces_aosp/ && \
-            grep "repo init" ponces_aosp/build.sh | sed "s/.*-b \([^ ]*\).*/\1/" > /repo/tmp/.android_version && \
-            grep "lunch.*-.*-userdebug" ponces_aosp/build.sh | sed "s/.*-\([^-]*\)-userdebug.*/\1/" > /repo/tmp/.android_version_tag'
-
-# sync aosp sources with manifests
-sync-aosp-sources: build-container
-    {{CONTAINER_RUN}} -w /repo/src gsi-builder \
-        /bin/bash -e -c ' \
             echo "Syncing AOSP sources..." && \
-            ANDROID_VERSION=$(cat /repo/tmp/.android_version) && \
-            repo init -u https://android.googlesource.com/platform/manifest -b ${ANDROID_VERSION} --depth=1 --git-lfs && \
+            repo init -u https://android.googlesource.com/platform/manifest -b ${AOSP_BRANCH} --depth=1 --git-lfs && \
+            echo "${ANDROID_VERSION}" > /repo/tmp/.android_version && \
+            echo "${ANDROID_VERSION_TAG}" > /repo/tmp/.android_version_tag && \
             mkdir -p .repo/local_manifests && \
             cp -v /repo/configs/local_manifests/*.xml .repo/local_manifests/ && \
-            cp -v ponces_aosp/build/default.xml .repo/local_manifests/ponces_default.xml && \
-            cp -v ponces_aosp/build/remove.xml .repo/local_manifests/ponces_remove.xml && \
             while ! repo sync -j$(nproc --all) --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
 
 # apply patches in correct order
@@ -57,10 +52,7 @@ apply-patches: build-container
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
         /bin/bash -e -c ' \
             echo "Applying patches..." && \
-            rm -rf patches/ponces_trebledroid patches/ponces_staging && \
             cp -Rv /repo/patches/* patches/ && \
-            cp -Rv ponces_aosp/patches/trebledroid patches/ponces_trebledroid && \
-            cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
             patches/apply.sh . trebledroid && \
             patches/apply.sh . staging && \
             patches/apply.sh . common && \
@@ -110,7 +102,7 @@ compress-rom-image arch:
         /bin/bash -e -c ' \
             echo "Compressing ROM image..." && \
             ANDROID_VERSION=$(cat /repo/tmp/.android_version) && \
-            VERSION_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}" && \
+            VERSION_TAG="${ANDROID_VERSION}-{{BUILD_NUMBER}}" && \
             src="system_{{arch}}.img" && \
             dest="LeanOS-{{arch}}-ab-${VERSION_TAG}.img" && \
             mv -v "${src}" "${dest}" && \
@@ -135,7 +127,7 @@ copy-to-webdir: build-container
         /bin/bash -e -c ' \
             echo "Copying to webdir..." && \
             ANDROID_VERSION=$(cat /repo/tmp/.android_version); \
-            VERSION_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}"; \
+            VERSION_TAG="${ANDROID_VERSION}-{{BUILD_NUMBER}}"; \
             RELEASE_NAME="LeanOS-ab-${VERSION_TAG}"; \
             mkdir -p "/web/${RELEASE_NAME}" && \
             cp -fv *.img.xz "/web/${RELEASE_NAME}/" && \
@@ -148,7 +140,7 @@ upload-to-github:
         git init && \
         git remote add origin "{{REPO_HOST}}/{{REPO_PATH}}.git" && \
         ANDROID_VERSION=$(cat "../tmp/.android_version") && \
-        RELEASE_TAG="${ANDROID_VERSION#android-}-{{BUILD_NUMBER}}" && \
+        RELEASE_TAG="${ANDROID_VERSION}-{{BUILD_NUMBER}}" && \
         gh repo set-default "{{REPO_PATH}}" && \
         RELEASE_NAME="LeanOS-ab-${RELEASE_TAG}" && \
         RELEASE_DESCRIPTION="Download mirror: https://build.chrisaw.io/${RELEASE_NAME}/" && \
