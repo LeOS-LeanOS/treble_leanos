@@ -61,8 +61,7 @@ apply-patches: build-container
             cp -Rv /repo/patches/* patches/ && \
             cp -Rv ponces_aosp/patches/trebledroid patches/ponces_trebledroid && \
             cp -Rv ponces_aosp/patches/staging patches/ponces_staging && \
-            patches/apply.sh . ponces_trebledroid && \
-            patches/apply.sh . ponces_staging; \
+            patches/apply.sh . trebledroid && \
             patches/apply.sh . staging && \
             patches/apply.sh . common && \
             patches/apply.sh . leanos'

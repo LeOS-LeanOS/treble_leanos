@@ -14,6 +14,7 @@
   <!-- patches -->
   <project path="patches/common" name="patches_common" remote="leos-leanos" revision="main" clone-depth="1" />
   <project path="patches/staging" name="patches_staging" remote="leos-leanos" revision="main" clone-depth="1" />
+  <project path="patches/trebledroid" name="patches_trebledroid" remote="leos-leanos" revision="main" clone-depth="1" />
 
   <!-- vendor -->
   <project path="vendor/chrisaw-priv" name="vendor_chrisaw-priv" remote="cawilliamson-priv" revision="main" clone-depth="1" />
