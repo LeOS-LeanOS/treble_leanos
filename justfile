@@ -16,7 +16,7 @@ CONTAINER_RUN := "podman run --rm --privileged" + \
     " -v \"$HOME/.ssh:/root/.ssh:Z\"" + \
     " -e ANDROID_VERSION=\"" + ANDROID_VERSION + "\"" + \
     " -e ANDROID_VERSION_TAG=\"" + ANDROID_VERSION_TAG + "\"" + \
-    " -e AOSP_BRANCH=\"" + AOSP_BRANCH + "\"" + \   
+    " -e AOSP_BRANCH=\"" + AOSP_BRANCH + "\"" + \
     " -e BUILD_DATETIME=\"" + BUILD_DATETIME + "\"" + \
     " -e BUILD_NUMBER=\"" + BUILD_NUMBER + "\""
 
