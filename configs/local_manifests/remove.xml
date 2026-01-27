@@ -26,14 +26,6 @@
   <!-- packages/inputmethods -->
   <remove-project name="platform/packages/inputmethods/LatinIME" />
 
-  <!-- packages/services -->
-  <remove-project name="crdroidandroid/android_packages_services_OmniJaws" />
-
-  <!-- treble_adapter -->
-  <remove-project name="ponces/treble_adapter" />
-
   <!-- vendor -->
-  <remove-project name="ponces/vendor_ponces" />
-  <remove-project name="ponces/vendor_ponces-priv" />
   <remove-project name="vendor_gapps" />
 </manifest>
