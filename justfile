@@ -34,7 +34,7 @@ build-all: clean build-container sync-aosp-sources apply-patches build-treble-ap
 build-container:
     podman build -t gsi-builder -f Containerfile .
 
-# sync aosp sources with manifests
+# sync aosp sources with manifests (hard limit to 4 concurrent to avoid limiting)
 sync-aosp-sources: build-container
     mkdir -p out/ src/ tmp/
     {{CONTAINER_RUN}} -w /repo/src gsi-builder \
@@ -45,7 +45,7 @@ sync-aosp-sources: build-container
             echo "${ANDROID_VERSION_TAG}" > /repo/tmp/.android_version_tag && \
             mkdir -p .repo/local_manifests && \
             cp -v /repo/configs/local_manifests/*.xml .repo/local_manifests/ && \
-            while ! repo sync -j$(nproc --all) --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
+            while ! repo sync -j4 --force-sync --no-clone-bundle --no-tags; do sleep 30; done'
 
 # apply patches in correct order
 apply-patches: build-container
